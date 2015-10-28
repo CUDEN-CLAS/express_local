@@ -1,6 +1,36 @@
 # Express Local
 A local development environment for Cu Boulder's Web Express Platform.
 
-* Uses Vagrant and Chef.
-* Provides a webserver with Varnish, Apache, MySQL, APC, and Memcache.
-* Additional applications include xdebug, RVM, Behat, and Drush.
+* VMs
+  * Vagrant 2
+  * Ansible 1.9.4
+  * CentOS 6
+* Webserver - Express
+  * Varnish
+  * Apache
+  * MySQL 5.6
+  * PHP
+  * APC
+  * Memcache
+  * xdebug
+  * RVM
+  * Behat
+  * Logstash Forwarder
+  * Drush
+    * DSLM
+  * Composer
+  * Express code
+    * cu_fit
+    * dslm_base
+    * packages_base
+    * express_webcentral
+* Webserver - Inventory
+  * Python 2.7
+    * Flask
+    * Eve
+    * Celery
+    * Fabric
+* Webserver - Logging
+  * Elasticsearch
+  * Logstash
+  * Kibana
