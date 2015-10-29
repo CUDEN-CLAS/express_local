@@ -1,6 +1,8 @@
 ---
   # This playbook will be run on webservers for Express.
-  - hosts: Web
+
+  # Need to set up ssh first
+  - hosts: web
     sudo: yes
     remote_user: vagrant
 
@@ -29,6 +31,7 @@
         copy: src=~/.ssh/id_dsa.pub dest=/root/.ssh/authorized_keys owner=root mode=0600
         when: rsa|failed
 
+  # Now we install all the applications we need to run Express
   - hosts: web
     roles:
       - server_base
@@ -43,4 +46,9 @@
       # - include: ../tasks/behat.yml
       # - include: ../tasks/logstash_forwarder.yml
       - drush
-      # - include: ../tasks/express_code.yml
+
+  # Finally we clone all the necessary repos
+  - hosts: 127.0.0.1
+    connection: local
+    roles:
+      - express_code
