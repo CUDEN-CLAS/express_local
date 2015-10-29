@@ -39,15 +39,15 @@ Vagrant.configure(2) do |config|
 
     end
 
+    if name.include? "express.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/express.yml"
+      end
+    end
+
     #sync folders
     config.vm.synced_folder "~/data", "/data", type: "nfs"
     config.vm.synced_folder "~/data/files", "/wwwng/sitefiles", type: "nfs"
-
-    if name.include? "express.local"
-      config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/playbooks/express.yml"
-      end
-    end
 
   end
 end
