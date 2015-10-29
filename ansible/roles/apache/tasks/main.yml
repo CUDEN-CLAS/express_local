@@ -1,0 +1,80 @@
+---
+  - name:  Apache | Install necessary packages
+    apt: name={{ item }} state=present update_cache=yes
+    with_items:
+      - apache2=2.2.15
+      - libapache2-mod-php5
+
+  - name:  Apache | Push future default virtual host configuration
+    template: src=express-app.j2 dest=/etc/apache2/sites-available/express-app mode=0640
+
+  - name:  Apache | Activate mod_rewrite
+    command: a2enmod rewrite
+
+  - name:  Apache | Activate ldap
+    command: a2enmod ldap
+
+  - name:  Apache | Activate our virtualhost
+    command: a2ensite awesome-app
+
+  - name:  Apache | Check that our config is valid
+    command: apache2ctl configtest
+    register: result
+    ignore_errors: True
+
+  - name:  Apache | Rolling back - Restoring old default virtualhost
+    command: a2ensite default
+    when: result|failed
+
+  - name:  Apache | Rolling back - Removing out virtualhost
+    command: a2dissite awesome-app
+    when: result|failed
+
+  - name:  Apache | Rolling back - Ending playbook
+    fail: msg="Configuration file is not valid. Please check that before re-running the playbook."
+    when: result|failed
+
+  - name:  Apache | Deactivate the default virtualhost
+    command: a2dissite default
+
+  - name:  Apache | Deactivate the default ssl virtualhost
+    command: a2dissite default-ssl
+    notify:
+      - restart apache
+
+  - name:  Apache | Push ports configuration
+    template: src=ports.conf.j2 dest=/etc/apache2/ports.conf mode=0640 owner=root group=root
+    notify:
+      - restart apache
+
+  - name:  Apache | Create directory to store outgoing mail.
+    file: >
+        path=~/var/log/mail
+        state=directory
+        mode=777
+
+  - name:  Apache | Create directory to store outgoing mail.
+    file: dest=/var/log/mail mode=777 owner=root state=directory
+
+  - name:  Apache | Copy sendmail php code to server
+    copy: src=sendmail dest=/usr/local/bin/sendmail owner=root group=root mode=0755
+
+  - name:  Apache | Add memcache lines to cli php.ini
+    lineinfile:
+      dest=/etc/php5/cli/php.ini
+      line="sendmail_path = /usr/local/bin/sendmail"
+      regexp="^sendmail_path = /usr/local/bin/sendmail"
+      state=present
+      insertafter=EOF
+      create=True
+
+  - name:  Apache | Add memcache lines to apache php.ini
+    lineinfile:
+      dest=/etc/php5/apache2/php.ini
+      line='sendmail_path = /usr/local/bin/sendmail'
+      regexp='^sendmail_path = /usr/local/bin/sendmail'
+      state=present
+      insertafter=EOF
+      create=True
+    notify:
+      - restart apache
