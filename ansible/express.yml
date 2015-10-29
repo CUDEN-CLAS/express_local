@@ -38,7 +38,7 @@
       # - include: ../tasks/varnish.yml
       # - include: ../tasks/apc.yml
       # - include: ../tasks/memcache.yml
-      # - include: ../tasks/xdebug.yml
+      - xdebug
       # - include: ../tasks/rvm.yml
       # - include: ../tasks/behat.yml
       # - include: ../tasks/logstash_forwarder.yml
