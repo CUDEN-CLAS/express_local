@@ -4,21 +4,21 @@ A local development environment for Cu Boulder's Web Express Platform.
 * VMs
   * Vagrant 2
   * Ansible 1.9.4
-  * CentOS 6
+  * CentOS 6.7
 * Webserver - Express
-  * Varnish
-  * Apache
-  * MySQL 5.6
-  * PHP
-  * APC
-  * Memcache
+  * Varnish 3.0.3
+  * Apache 2.2.15
+  * MySQL 5.6.20
+  * PHP 5.3.3
+  * APC 3.1.9
+  * Memcache 3.0.6
   * xdebug
   * RVM
   * Behat
   * Logstash Forwarder
   * Drush
     * DSLM
-  * Composer
+    * Composer
   * Express code
     * cu_fit
     * dslm_base
@@ -30,6 +30,7 @@ A local development environment for Cu Boulder's Web Express Platform.
     * Eve
     * Celery
     * Fabric
+  * Logstash Forwarder
 * Webserver - Logging
   * Elasticsearch
   * Logstash
