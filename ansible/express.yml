@@ -37,10 +37,10 @@
       - mysql
       # - include: ../tasks/varnish.yml
       # - include: ../tasks/apc.yml
-      # - include: ../tasks/memcache.yml
+      - memcache
       - xdebug
       # - include: ../tasks/rvm.yml
       # - include: ../tasks/behat.yml
       # - include: ../tasks/logstash_forwarder.yml
-      # - include: ../tasks/drush.yml
+      - drush
       # - include: ../tasks/express_code.yml
