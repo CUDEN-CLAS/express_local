@@ -1,0 +1,8 @@
+---
+  # This playbook will be run on webservers for the Inventory.
+  - hosts: logging
+    tasks:
+      - includes: ../tasks/server_base
+      # - includes: ../tasks/elasticsearch
+      # - includes: ../tasks/logstash
+      # - includes: ../tasks/kibana

@@ -1,0 +1,28 @@
+---
+- name: MySQL | Install mysql packages
+  apt: pkg=mysql-server state=present
+  sudo: true
+
+# Set root mysql user's pw to root
+# This will fail if this isn't the first time running..no biggie because it is already done
+- name: MySQL | Set the root password.
+  mysql_user: name=root password=root host=localhost login_user=root login_password=
+  ignore_errors: True
+  register: result
+
+- name: MySQL | Config for easy access as root user
+  template: src=mysql_root.my.cnf.j2 dest=/root/.my.cnf
+  when: result|success
+
+- name: MySQL | Config for easy access as dplagnt user
+  template: src=mysql_root.my.cnf.j2 dest=/home/dplagnt/.my.cnf owner=dplagnt
+  when: result|success
+
+- name: MySQL | create application database user
+  mysql_user: name=dplagnt password=dplagnt priv=*.*:ALL host='%' state=present login_password=root login_user=root
+  when: result|success
+
+- name: Comment out bind line
+  lineinfile: dest=/etc/mysql/my.cnf state=present regexp='bind-address\s+=\s+127.0.0.1' line='#bind-address = 127.0.0.1'
+  notify:
+    - restart mysql

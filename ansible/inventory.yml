@@ -1,0 +1,11 @@
+---
+  # This playbook will be run on webservers for the Inventory.
+  - hosts: inventory
+    tasks:
+      - include: ../tasks/server_base.yml
+      # - include: ../tasks/python.yml
+      # - include: ../tasks/flask.yml
+      # - include: ../tasks/celery.yml
+      # - include: ../tasks/eve.yml
+      # - include: ../tasks/fabric.yml
+      # - include: ../tasks/logstash_forwarder.yml

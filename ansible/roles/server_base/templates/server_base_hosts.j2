@@ -1,0 +1,22 @@
+127.0.0.1 localhost
+127.0.1.1 {{ inventory_hostname  }}
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+# VM hosts
+192.168.33.20 express.local
+192.168.33.21 inventory.local
+192.168.33.22 logs.local
+
+# Eve API URI
+# local
+192.168.33.21 eveuri
+# DEV
+#172.20.62.19  eveuri
+# PROD
+# 172.20.62.87 eveuri

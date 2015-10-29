@@ -1,0 +1,52 @@
+---
+    # Update OS packages list
+  - name: Update apt cache
+    apt: update_cache=true
+
+  # Install some basics
+  - name: Install necessary OS packages
+    apt: name={{item.name}}={{item.version}} state=present
+    with_items:
+      - { name: 'git', version: '1.7.1' }
+
+  # Setup the dplagnt user
+  - name: Create lapurd group
+    group: name=lapurd state=present
+
+  - name: Create dplagnt user
+    user: name=dplagnt group=lapurd shell=/bin/bash
+
+  - name: Update user dplagnt groups
+    user: name=dplagnt groups=adm,admin,sudo append=yes
+
+  # Get the user's SSH keys to dplagnt
+  - name: Create destination directory for SSH keys
+    # Workaround for #2372
+    file: state=directory mode=0700 dest=/home/dplagnt/.ssh/ owner=dplagnt
+
+  - name: Push user's rsa key to dplagnt's authorized_keys
+    # action: authorized_key user=root key='$FILE(~/.ssh/id_rsa.pub)'
+    # Workaround for #2372
+    copy: src=~/.ssh/id_rsa.pub dest=/home/dplagnt/.ssh/authorized_keys owner=dplagnt mode=0600
+    register: rsa
+    ignore_errors: yes
+
+  - name: Push user's id_rsa.pub to dplagnt's .ssh/id_rsa.pub
+    copy: src=~/.ssh/id_rsa.pub dest=/home/dplagnt/.ssh/ owner=dplagnt mode=0600
+    ignore_errors: yes
+
+  - name: Push user's id_rsa to dplagnt's .ssh/
+    copy: src=~/.ssh/id_rsa dest=/home/dplagnt/.ssh/ owner=dplagnt mode=0600
+    ignore_errors: yes
+
+  - name: Push ssh config
+    copy: src=config.ssh dest=/home/dplagnt/.ssh/config owner=dplagnt mode=0600
+    ignore_errors: yes
+
+  # Push the list of known hosts
+  # - name: Pushes known_hosts
+  #   copy: src=known_hosts dest=/home/dplagnt/.ssh/ owner=dplagnt mode=0600
+  #   ignore_errors: yes
+
+  - name: Create host file
+    template: src=templates/server_base_hosts.j2 dest=/etc/hosts owner=root

@@ -1,0 +1,69 @@
+---
+  - name: PHP | install memcached
+    apt: pkg={{ item }} state=installed update_cache=yes cache_valid_time=3600
+    with_items:
+     - memcached
+     - libmemcached-tools
+    tags: php
+    sudo: true
+
+  - name: PHP | Install PECL memcache
+    shell: yes | pecl install memcache creates=/usr/lib/php5/20090626+lfs/memcache.so
+    tags: php
+    sudo: true
+
+  - name: Add memcache lines to apache php.ini
+    lineinfile:
+      dest=/etc/php5/apache2/php.ini
+      line="extension=memcache.so"
+      regexp="^extension=memcache.so"
+      state=present
+      insertafter=EOF
+      create=True
+    notify:
+      - restart apache
+      - restart memcache
+
+  - name: Add memcache lines to apache php.ini
+    lineinfile:
+      dest=/etc/php5/apache2/php.ini
+      line='memcache.hash_strategy="consistent"'
+      regexp='^memcache.hash_strategy="consistent"'
+      state=present
+      insertafter=EOF
+      create=True
+    notify:
+      - restart apache
+      - restart memcache
+
+  - name: Add memcache lines to cli php.ini
+    lineinfile:
+      dest=/etc/php5/cli/php.ini
+      line="extension=memcache.so"
+      regexp="^extension=memcache.so"
+      state=present
+      insertafter=EOF
+      create=True
+    notify:
+      - restart memcache
+
+  - name: Add memcache lines to cli php.ini
+    lineinfile:
+      dest=/etc/php5/cli/php.ini
+      line='memcache.hash_strategy="consistent"'
+      regexp='^memcache.hash_strategy="consistent"'
+      state=present
+      insertafter=EOF
+      create=True
+    notify:
+      - restart memcache
+
+  - name: Comment out default ip in memcache conf
+    lineinfile:
+      dest=/etc/memcached.conf
+      line='#-l 127.0.0.1'
+      regexp='^-l 127.0.0.1'
+      insertbefore='^-l 127.0.0.1'
+      state=present
+    notify:
+      - restart memcache
