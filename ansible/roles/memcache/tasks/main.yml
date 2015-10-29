@@ -1,5 +1,5 @@
 ---
-  - name: PHP | install memcached
+  - name: Memcache | Install memcached
     apt: pkg={{ item }} state=installed update_cache=yes cache_valid_time=3600
     with_items:
      - memcached
@@ -7,12 +7,12 @@
     tags: php
     sudo: true
 
-  - name: PHP | Install PECL memcache
+  - name: Memcache | Install PECL memcache
     shell: yes | pecl install memcache creates=/usr/lib/php5/20090626+lfs/memcache.so
     tags: php
     sudo: true
 
-  - name: Add memcache lines to apache php.ini
+  - name: Memcache | Add memcache lines to apache php.ini
     lineinfile:
       dest=/etc/php5/apache2/php.ini
       line="extension=memcache.so"
@@ -24,7 +24,7 @@
       - restart apache
       - restart memcache
 
-  - name: Add memcache lines to apache php.ini
+  - name: Memcache | Add memcache lines to apache php.ini
     lineinfile:
       dest=/etc/php5/apache2/php.ini
       line='memcache.hash_strategy="consistent"'
@@ -36,7 +36,7 @@
       - restart apache
       - restart memcache
 
-  - name: Add memcache lines to cli php.ini
+  - name: Memcache | Add memcache lines to cli php.ini
     lineinfile:
       dest=/etc/php5/cli/php.ini
       line="extension=memcache.so"
@@ -47,7 +47,7 @@
     notify:
       - restart memcache
 
-  - name: Add memcache lines to cli php.ini
+  - name: Memcache | Add memcache lines to cli php.ini
     lineinfile:
       dest=/etc/php5/cli/php.ini
       line='memcache.hash_strategy="consistent"'
@@ -58,7 +58,7 @@
     notify:
       - restart memcache
 
-  - name: Comment out default ip in memcache conf
+  - name: Memcache | Comment out default ip in memcache conf
     lineinfile:
       dest=/etc/memcached.conf
       line='#-l 127.0.0.1'
