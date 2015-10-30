@@ -1,6 +1,6 @@
 ---
   - name: Express code | Create initial directory structure
-    file: path={{ items }} state=directory
+    file: path={{ item }} state=directory
     with_items:
       - ~/data/web/custom
       - ~/data/web/express
