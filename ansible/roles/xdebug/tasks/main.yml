@@ -1,15 +1,24 @@
 ---
-- name: Xdebug |  Install Xdebug PHP component
-  apt: pkg=php5-xdebug state=installed
-  register: xdebug_installed
-  tags: xdebug
-  sudo: true
+  - name: Install additional OS packages
+    yum: pkg={{ item }} state=installed
+    sudo: true
+    with_items:
+      - gcc
+      - gcc-c++
+      - autoconf
+      - automake
 
-- name: Copy xdebug INI into php.d folder.
-  template:
-    src: xdebug.ini.j2
-    dest: /etc/php5/conf.d/xdebug.ini
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart apache
+  - name: Install PECL memcache
+    shell: yes | pecl install xdebug-2.2.7
+    sudo: true
+    register: pecl_result
+    failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
+
+  - name: Copy xdebug INI into php.d folder.
+    template:
+      src: xdebug.ini.j2
+      dest: /etc/php.d/xdebug.ini
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart apache
