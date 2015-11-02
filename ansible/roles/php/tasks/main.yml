@@ -1,103 +1,103 @@
 ---
-  - name: PHP | Install php packages
-    apt: pkg={{ item }} state=present update_cache=yes
+  - name: Install php packages
+    yum: pkg={{ item }} state=present update_cache=yes
     with_items:
-     - php5=5.3.3
-     - php-apc
+     - php-5.3.3
+     - php-cli
+     - php-common
+     - php-devel
+     - php-gd
+     - php-ldap
+     - php-mcrypt
+     - php-mysql
+     - php-pdo
      - php-pear
-     - php5-cli
-     - php5-common
-     - php5-dev
-     - php5-gd
-     - php5-memcached
-     - php5-mysql
-     - php5-xmlrpc
+     - php-pecl-apc
+     - php-pecl-memcache
      - php-soap
-     - php5-curl
-     - php5-ldap
-     - php5-mcrypt
+     - php-xmlrpc
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php apache2 memory_limit
+  - name: Change php apache2 memory_limit
     lineinfile: dest=/etc/php5/apache2/php.ini regexp="^[#|;]?memory_limit =" insertafter="^[#|;]?memory_limit =" line="memory_limit = 256M"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php cli memory_limit
+  - name: Change php cli memory_limit
     lineinfile: dest=/etc/php5/cli/php.ini regexp="^[#|;]?memory_limit =" insertafter="^[#|;]?memory_limit =" line="memory_limit = 256M"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php apache2 display_errors
+  - name: Change php apache2 display_errors
     lineinfile: dest=/etc/php5/apache2/php.ini regexp="^[#|;]?display_errors =" insertafter="^[#|;]?display_errors =" line="display_errors = 1"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php cli display_errors
+  - name: Change php cli display_errors
     lineinfile: dest=/etc/php5/cli/php.ini regexp="^[#|;]?display_errors =" insertafter="^[#|;]?display_errors =" line="display_errors = 1"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php apache2 display_startup_errors
+  - name: Change php apache2 display_startup_errors
     lineinfile: dest=/etc/php5/apache2/php.ini regexp="^[#|;]?display_startup_errors =" insertafter="^[#|;]?display_startup_errors =" line="display_startup_errors = 1"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php cli display_startup_errors
+  - name: Change php cli display_startup_errors
     lineinfile: dest=/etc/php5/cli/php.ini regexp="^[#|;]?display_startup_errors =" insertafter="^[#|;]?display_startup_errors =" line="display_startup_errors = 1"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php apache2 html_errors
+  - name: Change php apache2 html_errors
     lineinfile: dest=/etc/php5/apache2/php.ini regexp="^[#|;]?html_errors =" insertafter="^[#|;]?html_errors =" line="html_errors = 1"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php cli html_errors
+  - name: Change php cli html_errors
     lineinfile: dest=/etc/php5/cli/php.ini regexp="^[#|;]?html_errors =" insertafter="^[#|;]?html_errors =" line="html_errors = 1"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php apache2 date_timezone
+  - name: Change php apache2 date_timezone
     lineinfile: dest=/etc/php5/apache2/php.ini regexp="^[#|;]?date_timezone =" insertafter="^[#|;]?date_timezone =" line="date_timezone = 'America/Denver'"
     sudo: true
     notify:
       - restart apache
 
-  - name: PHP | Change php cli date_timezone
+  - name: Change php cli date_timezone
     lineinfile: dest=/etc/php5/cli/php.ini regexp="^[#|;]?date_timezone =" insertafter="^[#|;]?date_timezone =" line="date_timezone = 'America/Denver'"
     sudo: true
     notify:
       - restart apache
 
-  # - name: PHP | change php apache2 date.timezone (php 5.4+)
+  # - name: change php apache2 date.timezone (php 5.4+)
   #   lineinfile: dest=/etc/php5/apache2/php.ini regexp="^[#|;]?date.timezone =" insertafter="^[#|;]?date.timezone =" line="date.timezone = 'America/Denver'"
   #   sudo: true
   #   notify:
   #     - restart apache
   #
-  # - name: PHP | change php cli date.timezone (php 5.4+)
+  # - name: change php cli date.timezone (php 5.4+)
   #   lineinfile: dest=/etc/php5/cli/php.ini regexp="^[#|;]?date.timezone =" insertafter="^[#|;]?date.timezone =" line="date.timezone = 'America/Denver'"
   #   sudo: true
   #   notify:
   #     - restart apache
 
-  - name: PHP | Install PECL uploadprogress
+  - name: Install PECL uploadprogress
     command: pecl install uploadprogress creates=/usr/lib/php5/20100525/uploadprogress.so
     sudo: true
     when: php_pecl_uploadprogress is defined and php_pecl_uploadprogress == "y"
 
-  - name: PHP | Add PECL uploadprogress apache php.ini setting
+  - name: Add PECL uploadprogress apache php.ini setting
     lineinfile: dest=/etc/php5/apache2/php.ini state=present line="extension=uploadprogress.so"
     sudo: true
     when: php_pecl_uploadprogress is defined and php_pecl_uploadprogress == "y"
