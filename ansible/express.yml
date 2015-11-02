@@ -4,7 +4,6 @@
   # Need to set up ssh first
   - hosts: web
     sudo: yes
-    remote_user: vagrant
 
     tasks:
       # This should work too / #2372
@@ -13,6 +12,11 @@
       #   first_available_file:
       #     - ~/.ssh/id_dsa.pub
       #     - ~/.ssh/id_rsa.pub
+
+      - name: Install necessary OS packages
+        yum: name={{ item }} state=present
+        with_items:
+          - libselinux-python
 
       - name: Creates destination directory
         # Workaround for #2372
@@ -33,6 +37,7 @@
 
   # Now we install all the applications we need to run Express
   - hosts: web
+    sudo: yes
     roles:
       - server_base
       - apache
