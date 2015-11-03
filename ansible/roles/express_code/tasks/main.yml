@@ -2,12 +2,12 @@
   - name: Express code | Create initial directory structure
     file: path={{ item }} state=directory
     with_items:
-      - ~/data/web/custom
-      - ~/data/web/express
-      - ~/data/web/homepage
-      - ~/data/releases
-      - ~/data/code
-      - ~/data/files
+      - /data/web/custom
+      - /data/web/express
+      - /data/web/homepage
+      - /data/releases
+      - /data/code
+      - /data/files
 
 
   - name: Express code | Clone dslm_base repository

@@ -51,9 +51,4 @@
       # - include: ../tasks/behat.yml
       # - include: ../tasks/logstash_forwarder.yml
       - drush
-
-  # Finally we clone all the necessary repos
-  - hosts: 127.0.0.1
-    connection: local
-    roles:
       - express_code
