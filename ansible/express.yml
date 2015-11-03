@@ -44,7 +44,7 @@
       - php
       - mysql
       # - include: ../tasks/varnish.yml
-      # - include: ../tasks/apc.yml
+      - apc
       - memcache
       - xdebug
       # - include: ../tasks/rvm.yml
