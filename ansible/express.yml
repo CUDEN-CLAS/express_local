@@ -36,6 +36,7 @@
         when: rsa|failed
 
   # Now we install all the applications we need to run Express
+  # Drush includes the Composer install, so needs to be before Behat.
   - hosts: web
     sudo: yes
     roles:
@@ -48,7 +49,7 @@
       - memcache
       - xdebug
       # - include: ../tasks/rvm.yml
-      # - include: ../tasks/behat.yml
-      # - include: ../tasks/logstash_forwarder.yml
       - drush
+      - behat
+      # - include: ../tasks/logstash_forwarder.yml
       - express_code
