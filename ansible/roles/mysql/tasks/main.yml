@@ -6,6 +6,9 @@
   yum: pkg=mysql-server state=present
   sudo: true
 
+- name: Ensure MySQL is started and enabled on boot.
+  service: name=mysqld state=started enabled=yes
+
 # Set root mysql user's pw to root
 # This will fail if this isn't the first time running..no biggie because it is already done
 - name: Set the root password
