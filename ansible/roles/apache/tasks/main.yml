@@ -4,15 +4,18 @@
     with_items:
       - httpd-2.2.15
 
-  - name:  Replace virtual host configuration
-    template: src=express.conf.j2 dest=/etc/httpd/conf/express.conf mode=0640
+  - name: Ensure Apache (httpd) is started and enabled on boot.
+    service: name=httpd state=started enabled=yes
+
+  - name:  Add virtual host configuration
+    template: src=express.conf.j2 dest=/etc/httpd/conf.d/express.conf mode=0650 owner=apache group=apache
 
   - name:  Check that our config is valid
     command: apachectl configtest
     register: result
     ignore_errors: True
 
-  - name:  Rolling back - Ending playbook
+  - name:  Bad Config - Ending playbook
     fail: msg="Configuration file is not valid. Please check that before re-running the playbook."
     when: result|failed
 

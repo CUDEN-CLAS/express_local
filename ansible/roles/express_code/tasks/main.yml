@@ -1,16 +1,13 @@
 ---
-  - name: Express code | Create initial directory structure
-    file: path={{ item }} state=directory
+  - name: Create initial directory structure
+    file: path={{ item }} state=directory mode=0754 owner=vagrant group=apache
     with_items:
-      - /data/web/custom
       - /data/web/express
-      - /data/web/homepage
       - /data/releases
       - /data/code
       - /data/files
 
-
-  - name: Express code | Clone dslm_base repository
+  - name: Clone dslm_base repository
     git:
       repo=git@github.com:CuBoulder/dslm_base.git
       dest=~/data/code/dslm_base
@@ -18,7 +15,7 @@
       recursive=yes
       accept_hostkey=yes
 
-  - name: Express code | Clone package_base repository
+  - name: Clone package_base repository
     git:
       repo=git@github.com:CuBoulder/packages_base.git
       dest=~/data/code/packages_base

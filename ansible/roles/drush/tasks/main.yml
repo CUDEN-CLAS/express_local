@@ -21,7 +21,7 @@
     git: >
       repo=https://github.com/drush-ops/drush.git
       dest=/usr/local/share/drush
-      version=7.x
+      version=6.x
 
   - name: Install Drush dependencies with Composer
     shell: >
