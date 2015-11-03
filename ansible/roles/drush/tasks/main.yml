@@ -1,50 +1,52 @@
 ---
-  - name: Drush | Install required packages
+  - name: Install additional OS packages
     yum: name={{ item }} state=present
     with_items:
       - curl
+      - php-posix
+      - php-xml
     sudo: yes
 
-  - name: Drush | Install Composer
+  - name: Install Composer
     shell: >
       curl -sS https://getcomposer.org/installer | php
       creates=/usr/local/bin/composer
 
-  - name: Drush | Move Composer into globally-accessible location
+  - name: Move Composer into globally-accessible location
     shell: >
       mv composer.phar /usr/local/bin/composer
       creates=/usr/local/bin/composer
 
-  - name: Drush | Clone Drush from GitHub
+  - name: Clone Drush from GitHub
     git: >
       repo=https://github.com/drush-ops/drush.git
       dest=/usr/local/share/drush
       version=7.x
 
-  - name: Drush | Install Drush dependencies with Composer
+  - name: Install Drush dependencies with Composer
     shell: >
       /usr/local/bin/composer install --prefer-source --no-interaction
       chdir=/usr/local/share/drush
       creates=/usr/local/share/drush/vendor/autoload.php
 
-  - name: Drush | Create drush symlink
+  - name: Create drush symlink
     file: >
       src=/usr/local/share/drush/drush
       dest=/usr/local/bin/drush
       state=link
 
-  - name: Drush | Run drush to finish setting it up
+  - name: Run drush to finish setting it up
     command: "/usr/local/bin/drush"
     register: drush_result
     changed_when: "'Execute a drush command' not in drush_result.stdout"
 
-  - name: Drush | Clone DSLM from drupal.org
+  - name: Clone DSLM from drupal.org
     git: >
         repo=http://git.drupal.org/project/dslm.git
         dest=/usr/local/share/drush/commands/dslm
         version=7.x-2.x
 
-  - name: Drush | Add DSLM_BASE variable to .profile
+  - name: Add DSLM_BASE variable to .profile
     lineinfile:
       dest=/home/dplagnt/.profile
       line="export DSLM_BASE=/data/code/dslm_base"
@@ -53,7 +55,7 @@
       insertafter=EOF
       create=True
 
-  - name: Drush | Add PACKAGES_BASE variable to .profile
+  - name: Add PACKAGES_BASE variable to .profile
     lineinfile:
       dest=/home/dplagnt/.profile
       line="export PACKAGES_BASE=/data/code/packages_base"
@@ -62,13 +64,13 @@
       insertafter=EOF
       create=True
 
-  - name: Drush | Create ~/.drush
+  - name: Create ~/.drush
     file: >
       path=/home/dplagnt/.drush
       state=directory
       owner=dplagnt
 
-  - name: Drush | Install Drush-patchfile with Composer
+  - name: Install Drush-patchfile with Composer
     shell: >
       /usr/local/bin/composer require davereid/drush-patchfile:dev-master
       chdir=/home/dplagnt/.drush
@@ -76,7 +78,7 @@
 
   - file: path=/home/dplagnt/.drush owner=dplagnt group=lapurd state=directory recurse=yes
 
-  - name: Drush | Copy drushrc.php to VM
+  - name: Copy drushrc.php to VM
     template:
       src: drushrc.php.j2
       dest: /home/dplagnt/.drush/drushrc.php

@@ -2,6 +2,7 @@
   # Install some basics
   - name: Add repo for Extra Packages for Enterprise Linux (EPEL)
     yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm state=present
+    yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm  state=present
 
   - name: Install necessary OS packages
     yum: name={{ item }} state=present update_cache=yes

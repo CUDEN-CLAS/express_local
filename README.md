@@ -1,6 +1,16 @@
 # Express Local
 A local development environment for Cu Boulder's Web Express Platform.
 
+# You will need
+* Vagrant
+* VirtualBox
+* Python
+  * python-yaml
+  * python-jinja
+
+# Run these commands first
+
+# Includes
 * VMs
   * Vagrant 2
   * Ansible 1.9.4
@@ -12,7 +22,7 @@ A local development environment for Cu Boulder's Web Express Platform.
   * PHP 5.3.3
   * APC 3.1.9
   * Memcache 3.0.6
-  * xdebug
+  * xdebug 2.2.7
   * RVM
   * Behat
   * Logstash Forwarder
