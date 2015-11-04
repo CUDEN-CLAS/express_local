@@ -9,6 +9,12 @@
   - name: Install PECL memcache
     shell: yes | pecl install memcache creates=/usr/lib/php5/20090626+lfs/memcache.so
     sudo: true
+    register: pecl_memcache_result
+    ignore_errors: True
+
+  - name:  Bad Config - Ending playbook
+    fail: msg="PECL memcache did not install properly"
+    when: "'already installed and is the same as the released version' not in pecl_memcache_result.stdout"
 
   - name: Add memcache lines to apache php.ini
     lineinfile:
