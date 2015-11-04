@@ -29,6 +29,7 @@ Vagrant.configure(2) do |config|
 
         if name.include? "express.local"
           v.customize ["modifyvm", :id, "--memory", 2048]
+          v.customize ["modifyvm", :id, "--cpus", "2"]
         else
           v.customize ["modifyvm", :id, "--memory", 1024]
         end
@@ -41,7 +42,7 @@ Vagrant.configure(2) do |config|
 
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/express.yml"
+        ansible.playbook = "ansible/vm_express.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.ask_vault_pass = true
         ansible.extra_vars = {
