@@ -12,6 +12,7 @@
     with_items:
       - git-1.7.1
       - epel-release
+      - python-mysqldb
 
   # Setup the dplagnt user
   - name: Create lapurd group
