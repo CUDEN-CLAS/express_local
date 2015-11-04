@@ -1,0 +1,66 @@
+---
+- hosts: express.local
+  vars_prompt:
+    - name: "path"
+      prompt: "Enter the path for the desired express site"
+      private: no
+
+    - name: "install"
+      prompt: "Do you want to install the site as well? (Y/N)"
+      private: no
+
+  vars:
+      database: "express_{{path}}"
+
+  tasks:
+      - name: Create mysql database.
+        mysql_db: name={{database}} state=present
+
+      - name: Clear drush cache
+        action: command drush cc drush
+        args:
+            chdir: /data/web/express/
+
+      - name: Create dslm entry for site
+        action: command drush dslm-new {{path}} --current
+        become: yes
+        become_user: dplagnt
+        args:
+            chdir: /data/web/express/
+            creates: /data/web/express/{{path}}/install.php
+
+      - name: Add CU Fit
+        command: drush dslm-add-profile cu_fit --current
+        become: yes
+        become_user: dplagnt
+        args:
+            chdir: /data/web/express/{{path}}/
+            creates: /data/web/express/{{path}}/profiles/cu_fit/cu_fit.info
+
+      - name: Set sites/default permissions
+        file: >
+            path=/data/web/express/{{path}}/sites/default
+            state=directory
+            mode=0755
+            recurse=yes
+
+      - name: Create settings.php file.
+        template: >
+            src=templates/express_settings.j2
+            dest=/data/web/express/{{path}}/sites/default/settings.php
+
+      - name: Create settings.local.php file.
+        template: >
+            src=templates/express_settings_local.j2
+            dest=/data/web/express/{{path}}/sites/default/settings.local.php
+
+      - name: Install site
+        when: install == "Y"
+        command: drush si cu_fit -y
+        become: yes
+        become_user: dplagnt
+        register: install_output
+        args:
+            chdir: /data/web/express/{{path}}/
+
+      - debug: var=install_output.stdout_lines
