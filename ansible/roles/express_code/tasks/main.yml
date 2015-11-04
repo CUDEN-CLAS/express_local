@@ -1,38 +1,4 @@
 ---
-  - name: Create initial directory structure
-    file: path={{ item }} state=directory mode=0754 owner=vagrant group=apache
-    with_items:
-      - /data/web/express
-      - /data/releases
-      - /data/code
-      - /data/files
-
-  - name: Clone dslm_base repository
-    git:
-      repo=git@github.com:CuBoulder/dslm_base.git
-      dest=/data/code/dslm_base
-      version=poolb-dev
-      recursive=yes
-      accept_hostkey=yes
-
-  - name: Clone package_base repository
-    git:
-      repo=git@github.com:CuBoulder/packages_base.git
-      dest=/data/code/packages_base
-      version=dev
-      recursive=yes
-      accept_hostkey=yes
-
-  - name: Clone Varnish VCL
-    git:
-      repo=git@github.com:CuBoulder/varnish.git
-      dest=/data/code/varnish
-      version=master
-      accept_hostkey=yes
-      force=yes
-      key_file=/home/dplagnt/.ssh/id_rsa
-    notify: restart varnish
-
   - name: Get rid of default files
     file: path={{ item }} state=absent
     with_items:
@@ -40,3 +6,4 @@
 
   - name: Symlink in default.vcl
     file: src=/data/code/varnish/default.vcl dest=/etc/varnish/default.vcl state=link
+    notify: restart varnish

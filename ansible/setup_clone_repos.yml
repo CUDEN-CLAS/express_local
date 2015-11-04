@@ -1,0 +1,38 @@
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: Create initial directory structure
+      file: path={{ item }} state=directory mode=0755
+      with_items:
+        - ~/data/web/express
+        - ~/data/releases
+        - ~/data/code
+        - ~/data/files
+
+    - name: Clone dslm_base repository
+      git:>
+        repo=git@github.com:CuBoulder/dslm_base.git
+        dest=/data/code/dslm_base
+        version=poolb-dev
+        recursive=yes
+        accept_hostkey=yes
+
+    - name: Clone package_base repository
+      git:>
+        repo=git@github.com:CuBoulder/packages_base.git
+        dest=/data/code/packages_base
+        version=dev
+        recursive=yes
+        accept_hostkey=yes
+
+    - name: Clone Varnish VCL
+      git:>
+        repo=git@github.com:CuBoulder/varnish.git
+        dest=/data/code/varnish
+        version=master
+        accept_hostkey=yes
+
+    - name: Clone Inventory
+      git:>
+        repo=git@github.com:CuBoulder/inventory.git
+        dest=~/data/code/inventory
