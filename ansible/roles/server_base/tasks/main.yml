@@ -7,7 +7,6 @@
     yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm state=present
     yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm  state=present
 
-
   - name: Install necessary OS packages
     yum: name={{ item }} state=present update_cache=yes
     with_items:
@@ -22,7 +21,7 @@
     user: name=dplagnt group=lapurd shell=/bin/bash
 
   - name: Update user dplagnt groups
-    user: name=dplagnt groups=adm,wheel,apache append=yes
+    user: name=dplagnt groups=adm,wheel append=yes
 
   # Get the user's SSH keys to dplagnt
   - name: Create destination directory for SSH keys
