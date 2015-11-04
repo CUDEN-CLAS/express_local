@@ -1,0 +1,9 @@
+---
+  - name: Setup public key
+    shell: "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
+
+  - name: Install RVM stable with ruby
+    shell: "curl -sSL https://get.rvm.io | bash -s stable --ruby"
+
+  - name: Create .bashrc
+    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt

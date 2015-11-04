@@ -48,7 +48,7 @@
       - apc
       - memcache
       - xdebug
-      # - include: ../tasks/rvm.yml
+      - rvm
       - drush
       - behat
       # - include: ../tasks/logstash_forwarder.yml
