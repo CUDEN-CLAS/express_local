@@ -4,6 +4,7 @@
     with_items:
      - memcached
      - libmemcached
+     - zlib-devel
     sudo: true
 
   - name: Install PECL memcache
@@ -13,8 +14,8 @@
     ignore_errors: True
 
   - name:  Bad Config - Ending playbook
-    fail: msg="PECL memcache did not install properly"
-    when: "'already installed and is the same as the released version' not in pecl_memcache_result.stdout"
+    fail: msg="{{ pecl_memcache_result.stdout}}"
+    when: "pecl_memcache_result.stdout.find('failed') == -1 and pecl_memcache_result.stdout.find('already installed and is the same as the released version') == -1"
 
   - name: Add memcache lines to apache php.ini
     lineinfile:
