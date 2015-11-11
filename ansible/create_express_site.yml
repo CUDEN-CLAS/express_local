@@ -10,7 +10,7 @@
       private: no
 
     - name: "remove"
-      prompt: "Do you want to remove any old site files and databases? (Y/N)"
+      prompt: "Do you want to remove the old files and database? (Y/N)"
       private: no
 
   vars:
@@ -23,8 +23,11 @@
 
       - name: Remove previous site files
         become: yes
+        become_user: dplagnt
         when: remove == "Y" or remove == "y"
-        file: "path=/data/web/express/{{ path }} state=absent"
+        file:
+            path: "/data/web/express/{{ path }}"
+            state: absent
 
       - name: Create mysql database.
         mysql_db: name={{database}} state=present
@@ -50,32 +53,42 @@
             chdir: "/data/web/express/{{path}}/"
             creates: "/data/web/express/{{path}}/profiles/cu_fit/cu_fit.info"
 
-      - name: Set sites/default permissions
-        file: >
-            path=/data/web/express/{{path}}/sites/default
-            state=directory
-            mode=0755
-            recurse=yes
+      - name: Set file permissions
+        file:
+            path: "/data/web/express/{{path}}"
+            state: directory
+            mode: 0775
+            owner: dplagnt
+            group: apache
+            recurse: yes
 
       - name: Create settings.php file.
-        template: >
-            src=templates/express_settings.j2
-            dest="/data/web/express/{{path}}/sites/default/settings.php"
-            mode=0774
+        become: yes
+        become_user: dplagnt
+        template:
+            src: templates/express_settings.j2
+            dest: "/data/web/express/{{path}}/sites/default/settings.php"
+            mode: 0774
 
       - name: Create settings.local_pre.php file.
-        template: >
-            src=templates/express_settings_local_pre.j2
-            dest="/data/web/express/{{path}}/sites/default/settings.local_pre.php"
-            mode=0774
+        become: yes
+        become_user: dplagnt
+        template:
+            src: templates/express_settings_local_pre.j2
+            dest: "/data/web/express/{{path}}/sites/default/settings.local_pre.php"
+            mode: 0774
 
       - name: Create settings.local_post.php file.
-        template: >
-            src=templates/express_settings_local_post.j2
-            dest="/data/web/express/{{path}}/sites/default/settings.local_post.php"
-            mode=0774
+        become: yes
+        become_user: dplagnt
+        template:
+            src: templates/express_settings_local_post.j2
+            dest: "/data/web/express/{{path}}/sites/default/settings.local_post.php"
+            mode: 0774
 
       - name: Create temp files directory
+        become: yes
+        become_user: dplagnt
         file: path={{ item }} state=directory
         with_items:
           - "/data/files/{{path}}/tmp"
