@@ -48,13 +48,13 @@ Vagrant.configure(2) do |config|
         ansible.extra_vars = {
           ansible_ssh_user: 'vagrant',
           ansible_connection: 'ssh'}
-        #ansible.verbose = "vvv"
+        ansible.verbose = "vvv"
       end
     end
 
     #sync folders
-    config.vm.synced_folder "~/data", "/data", type: "nfs"
-    config.vm.synced_folder "~/data/files", "/wwwng/sitefiles", type: "nfs"
+    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs"
+    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
 
   end
 end
