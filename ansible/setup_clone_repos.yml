@@ -4,35 +4,19 @@
     - name: Create initial directory structure
       file: path={{ item }} state=directory mode=0755
       with_items:
-        - ~/data/web/express
-        - ~/data/releases
-        - ~/data/code
-        - ~/data/files
+        - "~/express_local/data/web/express"
+        - "~/express_local/data/releases"
+        - "~/express_local/data/code"
+        - "~/express_local/data/files"
 
     - name: Clone dslm_base repository
-      git:>
-        repo=git@github.com:CuBoulder/dslm_base.git
-        dest=/data/code/dslm_base
-        version=poolb-dev
-        recursive=yes
-        accept_hostkey=yes
+      git: "repo=git@github.com:CuBoulder/dslm_base.git dest=~/express_local/data/code/dslm_base version=poolb-dev recursive=yes accept_hostkey=yes"
 
     - name: Clone package_base repository
-      git:>
-        repo=git@github.com:CuBoulder/packages_base.git
-        dest=/data/code/packages_base
-        version=dev
-        recursive=yes
-        accept_hostkey=yes
+      git: "repo=git@github.com:CuBoulder/packages_base.git dest=~/express_local/data/code/packages_base version=dev recursive=yes accept_hostkey=yes"
 
     - name: Clone Varnish VCL
-      git:>
-        repo=git@github.com:CuBoulder/varnish.git
-        dest=/data/code/varnish
-        version=master
-        accept_hostkey=yes
+      git: "repo=git@github.com:CuBoulder/varnish.git dest=~/express_local/data/code/varnish version=master accept_hostkey=yes"
 
     - name: Clone Inventory
-      git:>
-        repo=git@github.com:CuBoulder/inventory.git
-        dest=~/data/code/inventory
+      git: "repo=git@github.com:CuBoulder/inventory.git dest=~/express_local/data/code/inventory version=dev accept_hostkey=yes"
