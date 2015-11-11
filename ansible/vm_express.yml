@@ -52,4 +52,3 @@
       - drush
       - behat
       # - include: ../tasks/logstash_forwarder.yml
-      - express_code
