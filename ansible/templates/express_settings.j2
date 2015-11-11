@@ -2,13 +2,24 @@
 /**
  * @file
  * Drupal site-specific configuration file.
+ *
+ * We include a pre and post local file so that we can set variables for the
+ * main file and override config as needed.
  */
+
+ /**
+  * Include a pre local settings file if it exists.
+  */
+ $local_pre_settings = dirname(__FILE__) . '/settings.local_pre.php';
+ if (file_exists($local_pre_settings)) {
+   include $local_pre_settings;
+ }
+
 
 $conf['install_profile'] = 'cu_fit';
 
-if ($launched) {
+if (isset($launched) && $launched) {
    if (isset($_SERVER['WWWNG_ENV'])) {
-   $path = 'PATH_PLACEHOLDER';
      if ($_SERVER['HTTP_HOST'] == 'www-dev.colorado.edu' &&
        strpos($_SERVER['REQUEST_URI'], $conf['cu_sid']) !== false) {
        header('HTTP/1.0 301 Moved Permanently');
@@ -138,9 +149,9 @@ $conf['reverse_proxy_header'] = 'X-Forwarded-For';
 $conf['varnish_version'] = 3;
 
 /**
- * Include a local settings file if it exists.
+ * Include a post local settings file if it exists.
  */
-$local_settings = dirname(__FILE__) . '/settings.local.php';
-if (file_exists($local_settings)) {
-  include $local_settings;
+$local_post_settings = dirname(__FILE__) . '/settings.local_post.php';
+if (file_exists($local_post_settings)) {
+  include $local_post_settings;
 }
