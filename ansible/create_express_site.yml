@@ -61,16 +61,19 @@
         template: >
             src=templates/express_settings.j2
             dest="/data/web/express/{{path}}/sites/default/settings.php"
+            mode=0774
 
       - name: Create settings.local_pre.php file.
         template: >
             src=templates/express_settings_local_pre.j2
             dest="/data/web/express/{{path}}/sites/default/settings.local_pre.php"
+            mode=0774
 
       - name: Create settings.local_post.php file.
         template: >
             src=templates/express_settings_local_post.j2
             dest="/data/web/express/{{path}}/sites/default/settings.local_post.php"
+            mode=0774
 
       - name: Create temp files directory
         file: path={{ item }} state=directory
