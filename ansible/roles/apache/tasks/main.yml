@@ -3,12 +3,44 @@
     yum: name={{ item }} state=present update_cache=yes
     with_items:
       - httpd-2.2.15
+      - mod_ssl
+      - openssl
 
-  - name: Ensure Apache (httpd) is started and enabled on boot.
-    service: name=httpd state=started enabled=yes
+  - name: Configure Apache to listen on 80
+    lineinfile:
+      dest: "/etc/httpd/conf/httpd.conf"
+      regexp: "^Listen "
+      line: "Listen 80"
+      state: present
+    notify: restart apache
 
-  - name:  Add virtual host configuration
-    template: src=express.conf.j2 dest=/etc/httpd/conf.d/express.conf mode=0650 owner=apache group=apache
+  - name: Name Apache vhost for :80
+    lineinfile:
+      dest: "/etc/httpd/conf/httpd.conf"
+      regexp: "^NameVirtualHost "
+      line: "NameVirtualHost *:80"
+      state: present
+    notify: restart apache
+
+  # mod_ssl will take care of listening on 443
+  - name: Name Apache vhost for :443
+    lineinfile:
+      dest: "/etc/httpd/conf/httpd.conf"
+      line: "NameVirtualHost *:443"
+      state: present
+    notify: restart apache
+
+  - name: Create directory for SSL cert
+    file: path=/etc/httpd/ssl state=directory
+
+  - name: Generate SSL cert
+    command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt"
+    args:
+      creates: /etc/httpd/ssl/apache.crt
+
+  - name:  Add vhost configuration
+    template: src=vhosts.conf.j2 dest=/etc/httpd/conf.d/vhosts.conf mode=0650 owner=apache group=apache
+    notify: restart apache
 
   - name:  Check that our config is valid
     command: apachectl configtest
@@ -19,10 +51,8 @@
     fail: msg="Configuration file is not valid. Please check that before re-running the playbook."
     when: result|failed
 
-  - name:  Push ports configuration
-    template: src=ports.conf.j2 dest=/etc/httpd/conf/ports.conf mode=0640 owner=root group=root
-    notify:
-      - restart apache
+  - name: Update user dplagnt groups
+    user: name=dplagnt groups=apache append=yes
 
   - name:  Create directory to store outgoing mail.
     file: >
@@ -38,20 +68,23 @@
 
   - name:  Add sendmail lines to cli php.ini
     lineinfile:
-      dest=/etc/php5/cli/php.ini
-      line="sendmail_path = /usr/local/bin/sendmail"
-      regexp="^sendmail_path = /usr/local/bin/sendmail"
-      state=present
-      insertafter=EOF
-      create=True
+      dest: "/etc/php5/cli/php.ini"
+      line: "sendmail_path = /usr/local/bin/sendmail"
+      regexp: "^sendmail_path = /usr/local/bin/sendmail"
+      state: present
+      insertafter: EOF
+      create: True
 
   - name:  Add sendmail lines to apache php.ini
     lineinfile:
-      dest=/etc/php5/apache2/php.ini
-      line='sendmail_path = /usr/local/bin/sendmail'
-      regexp='^sendmail_path = /usr/local/bin/sendmail'
-      state=present
-      insertafter=EOF
-      create=True
+      dest: "/etc/php5/apache2/php.ini"
+      line: "sendmail_path = /usr/local/bin/sendmail"
+      regexp: "^sendmail_path = /usr/local/bin/sendmail"
+      state: present
+      insertafter: EOF
+      create: True
     notify:
       - restart apache
+
+  - name: Ensure Apache (httpd) is started and enabled on boot.
+    service: name=httpd state=started enabled=yes

@@ -1,0 +1,296 @@
+### Section 1: Global Environment
+#
+ServerTokens Local
+# Do NOT add a slash at the end of the directory path.
+ServerRoot "/etc/httpd"
+ErrorLog /data/log/httpd/error_log
+### OIT: For servers with multiple apaches, name the
+### file <service>.httpd.pid
+PidFile run/httpd.pid
+Timeout 60
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 5
+### OIT: We must use prefork because PHP is not thread-safe
+# prefork MPM
+<IfModule prefork.c>
+StartServers      20
+MinSpareServers   20
+MaxSpareServers   50
+ServerLimit      500
+MaxClients       500
+MaxRequestsPerChild  10000
+</IfModule>
+######## OIT: ##################################################
+######## Notes about Listen and server-status/server-info ######
+### On services where a Content Switch distributes traffic to  #
+### backend servers, you may need to answer to everything so   #
+### that you can reach server1.int.colorado.edu/server-status  #
+### But don't turn on "Listen 80" without understanding your   #
+### service's configuration                                    #
+### There can also be implications for monitoring services     #
+### behind the content switch; they may need to answer to      #
+### everything as well                                         #
+################################################################
+
+### This only for server-status, server-info and can be used for sysadmintools
+Listen 80
+### This is express
+Listen 83
+
+### For LogFormat combined (to log referer)
+LoadModule log_config_module modules/mod_log_config.so
+### For logging bytes received and sent
+#LoadModule logio_module modules/mod_logio.so
+### For server-status
+LoadModule status_module modules/mod_status.so
+### For server-info
+LoadModule info_module modules/mod_info.so
+### For determining mime types; for AddType
+LoadModule mime_module modules/mod_mime.so
+LoadModule mime_magic_module modules/mod_mime_magic.so
+### For restricting access, modified logging, BrowserMatch
+LoadModule setenvif_module modules/mod_setenvif.so
+### Required by Drupal
+LoadModule rewrite_module modules/mod_rewrite.so
+LoadModule expires_module modules/mod_expires.so
+LoadModule headers_module modules/mod_headers.so
+LoadModule deflate_module modules/mod_deflate.so
+### For DirectoryIndex
+LoadModule dir_module modules/mod_dir.so
+### For Allow-Deny-Order directives
+LoadModule authz_host_module modules/mod_authz_host.so
+### For Redirect, Alias, ScriptAlias (needed for /cgi-bin to work)
+LoadModule alias_module modules/mod_alias.so
+
+### For users and passwords, groups, and host-based
+### restrictions;
+#LoadModule auth_basic_module modules/mod_auth_basic.so
+#LoadModule authn_file_module modules/mod_authn_file.so
+#LoadModule authz_user_module modules/mod_authz_user.so
+#LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
+#LoadModule auth_digest_module modules/mod_auth_digest.so
+#LoadModule authn_alias_module modules/mod_authn_alias.so
+#LoadModule authn_anon_module modules/mod_authn_anon.so
+#LoadModule authn_dbm_module modules/mod_authn_dbm.so
+#LoadModule authn_default_module modules/mod_authn_default.so
+#LoadModule authz_owner_module modules/mod_authz_owner.so
+#LoadModule authz_dbm_module modules/mod_authz_dbm.so
+#LoadModule authz_default_module modules/mod_authz_default.so
+#################################################################
+
+###### We're not using in Drupal ####################
+#      These were on in default RHEL conf
+### For ~user pages in public_html
+#LoadModule userdir_module modules/mod_userdir.so
+### Server-Side Includes
+#LoadModule include_module modules/mod_include.so
+### For SetEnv
+LoadModule env_module modules/mod_env.so
+### For Options Indexes
+#LoadModule autoindex_module modules/mod_autoindex.so
+#LoadModule ldap_module modules/mod_ldap.so
+#LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
+#LoadModule ext_filter_module modules/mod_ext_filter.so
+#LoadModule usertrack_module modules/mod_usertrack.so
+#LoadModule dav_module modules/mod_dav.so
+#LoadModule dav_fs_module modules/mod_dav_fs.so
+#LoadModule vhost_alias_module modules/mod_vhost_alias.so
+#LoadModule negotiation_module modules/mod_negotiation.so
+#LoadModule actions_module modules/mod_actions.so
+#LoadModule speling_module modules/mod_speling.so
+#LoadModule substitute_module modules/mod_substitute.so
+#LoadModule proxy_module modules/mod_proxy.so
+#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+#LoadModule proxy_http_module modules/mod_proxy_http.so
+#LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+#LoadModule proxy_connect_module modules/mod_proxy_connect.so
+#LoadModule cache_module modules/mod_cache.so
+#LoadModule suexec_module modules/mod_suexec.so
+#LoadModule disk_cache_module modules/mod_disk_cache.so
+#LoadModule cgi_module modules/mod_cgi.so
+#LoadModule version_module modules/mod_version.so
+#############################################################
+
+# The following modules are not loaded by default:
+#
+### For AddHandler directive
+#LoadModule asis_module modules/mod_asis.so
+#LoadModule authn_dbd_module modules/mod_authn_dbd.so
+#LoadModule cern_meta_module modules/mod_cern_meta.so
+#LoadModule cgid_module modules/mod_cgid.so
+#LoadModule dbd_module modules/mod_dbd.so
+#LoadModule dumpio_module modules/mod_dumpio.so
+#LoadModule filter_module modules/mod_filter.so
+#LoadModule ident_module modules/mod_ident.so
+#LoadModule log_forensic_module modules/mod_log_forensic.so
+#LoadModule unique_id_module modules/mod_unique_id.so
+#
+
+Include conf.d/*.conf
+ExtendedStatus On
+User apache
+Group apache
+
+
+### Section 2: 'Main' server configuration
+UseCanonicalName On
+
+<Directory />
+Options FollowSymLinks
+    AllowOverride None
+    Order deny,allow
+    Deny from all
+</Directory>
+
+DirectoryIndex index.html
+AccessFileName .htaccess
+
+<Files ~ "^\.ht">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</Files>
+
+<Files ~ "^\.git">
+    Order allow,deny
+    Deny from all
+</Files>
+
+TypesConfig /etc/mime.types
+DefaultType text/plain
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/css application/x-javascript application/javascript text/html text/xml
+</IfModule>
+
+<IfModule mod_mime_magic.c>
+    MIMEMagicFile conf/magic
+</IfModule>
+
+HostnameLookups Off
+EnableMMAP off
+EnableSendfile off
+
+LogLevel warn
+
+### OIT: Typically we use this to not log images but here we are using it
+###      to separate keepalive logs from normal logs.
+<IfModule setenvif_module>
+    SetEnvIf Request_URI "^/sysadmintools/keepalive/$" keepalivelog
+</IfModule>
+
+LogFormat "%{X-Forwarded-For}i %a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+#CustomLog /data/log/httpd/access_log common
+
+ServerSignature Off
+
+# Aliases: Add here as many aliases as you need (with no limit). The format is
+# Alias fakename realname
+Alias /sysadmintools/ "/usr/local/www.misc/sysadmintools/"
+
+#
+# This is used as the DocumentRoot for vhost:80 and as aliases on all other
+# vhosts
+#
+<Directory "/usr/local/www.misc/sysadmintools">
+    AllowOverride All
+    Order deny,allow
+    Allow from all
+</Directory>
+
+AddType application/x-compress .Z
+AddType application/x-gzip .gz .tgz
+AddType application/x-x509-ca-cert .crt
+AddType application/x-pkcs7-crl    .crl
+
+### OIT: NOTE!!
+# ErrorDocument 404 is included in the drupal .htaccess file
+# Do not create one here in apache config
+###
+
+BrowserMatch "Mozilla/2" nokeepalive
+BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
+BrowserMatch "RealPlayer 4\.0" force-response-1.0
+BrowserMatch "Java/1\.0" force-response-1.0
+BrowserMatch "JDK/1\.0" force-response-1.0
+
+# The following directive disables redirects on non-GET requests for
+# a directory that does not include the trailing slash.  This fixes a
+# problem with Microsoft WebFolders which does not appropriately handle
+# redirects for folders with DAV methods.
+# Same deal with Apple's DAV filesystem and Gnome VFS support for DAV.
+#
+BrowserMatch "Microsoft Data Access Internet Publishing Provider" redirect-carefully
+BrowserMatch "MS FrontPage" redirect-carefully
+BrowserMatch "^WebDrive" redirect-carefully
+BrowserMatch "^WebDAVFS/1.[0123]" redirect-carefully
+BrowserMatch "^gnome-vfs/1.0" redirect-carefully
+BrowserMatch "^XML Spy" redirect-carefully
+BrowserMatch "^Dreamweaver-WebDAV-SCM1" redirect-carefully
+
+##################################################################
+### Security fix CVE-2011-3192; schaper 8/26/11
+### A DOS exploit on the 'Range' header uses up swap
+### changes below from apache.org  This is fixed in
+### apache 2.2.21+
+#
+# Drop the Range header when more than 5 ranges.
+# CVE-2011-3192
+SetEnvIf Range (?:,.*?){5,5} bad-range=1
+RequestHeader unset Range env=bad-range
+#
+# We always drop Request-Range; as this is a legacy
+# dating back to MSIE3 and Netscape 2 and 3.
+RequestHeader unset Request-Range
+#
+# optional logging.
+CustomLog /data/log/httpd/range-CVE-2011-3192.log common env=bad-range
+##################################################################
+
+##################################################################
+### This directive overrides the behavior of TRACE for both the core server
+### and mod_proxy. The default TraceEnable on permits TRACE requests per
+### RFC 2616, which disallows any request body to accompany the request.
+### TraceEnable off causes the core server and mod_proxy to return a 405
+### (Method not allowed) error to the client.
+### goldhamm Wednesday, July  6, 2011 10:10:18 AM MDT
+###
+TraceEnable off
+##################################################################
+
+##################################################################
+### Tell the securepages module if we are an https request.
+### Because SSL is terminated on the F5, the F5 is setting the
+### X-Forwarded-Proto header to indicate SSL.
+SetEnvIf X-Forwarded-Proto https HTTPS=on
+##################################################################
+
+##################################################################
+### Environment variable for inventory/express
+SetEnv CU_CENTRAL_EVE https://{{ EVE_API_USER }}:{{ EVE_API_PW }}@eveuri/inventory/
+##################################################################
+
+### Section 3: Virtual Hosts
+
+#
+# express
+#
+<VirtualHost *:80>
+    ServerAdmin webmaster@www.colorado.edu
+    DocumentRoot "/data/web/express"
+    ServerName www.colorado.edu
+    SetEnv WWWNG_ENV local_dev
+    ErrorLog /data/log/httpd/express_error_log
+    CustomLog /data/log/httpd/express_access_log combined env=!keepalivelog
+    CustomLog /data/log/httpd/express_keepalive_log combined env=keepalivelog
+    <Directory "/data/web/express">
+       	Options FollowSymLinks
+        AllowOverride All
+       	Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>
