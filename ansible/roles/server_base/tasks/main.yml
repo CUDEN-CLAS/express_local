@@ -13,6 +13,9 @@
       - git-1.7.1
       - epel-release
       - mysql-connector-python
+      - nano
+      - nc
+      - nmap
 
   # Setup the dplagnt user
   - name: Create lapurd group
