@@ -9,33 +9,46 @@
       prompt: "Do you want to install the site as well? (Y/N)"
       private: no
 
+    - name: "remove"
+      prompt: "Do you want to remove any old site files and databases? (Y/N)"
+      private: no
+
   vars:
       database: "express_{{path}}"
 
   tasks:
+      - name: Remove mysql database.
+        when: remove == "Y" or remove == "y"
+        mysql_db: name={{database}} state=absent
+
+      - name: Remove previous site files
+        become: yes
+        when: remove == "Y" or remove == "y"
+        file: "path=/data/web/express/{{ path }} state=absent"
+
       - name: Create mysql database.
         mysql_db: name={{database}} state=present
 
       - name: Clear drush cache
         action: command drush cc drush
         args:
-            chdir: /data/web/express/
+            chdir: "/data/web/express/"
 
       - name: Create dslm entry for site
-        action: command drush dslm-new {{path}} --current
         become: yes
         become_user: dplagnt
+        command: "drush dslm-new {{path}} --current"
         args:
-            chdir: /data/web/express/
-            creates: /data/web/express/{{path}}/install.php
+            chdir: "/data/web/express/"
+            creates: "/data/web/express/{{path}}/install.php"
 
       - name: Add CU Fit
-        command: drush dslm-add-profile cu_fit --current
         become: yes
         become_user: dplagnt
+        command: drush dslm-add-profile cu_fit --current
         args:
-            chdir: /data/web/express/{{path}}/
-            creates: /data/web/express/{{path}}/profiles/cu_fit/cu_fit.info
+            chdir: "/data/web/express/{{path}}/"
+            creates: "/data/web/express/{{path}}/profiles/cu_fit/cu_fit.info"
 
       - name: Set sites/default permissions
         file: >
@@ -47,20 +60,30 @@
       - name: Create settings.php file.
         template: >
             src=templates/express_settings.j2
-            dest=/data/web/express/{{path}}/sites/default/settings.php
+            dest="/data/web/express/{{path}}/sites/default/settings.php"
 
-      - name: Create settings.local.php file.
+      - name: Create settings.local_pre.php file.
         template: >
-            src=templates/express_settings_local.j2
-            dest=/data/web/express/{{path}}/sites/default/settings.local.php
+            src=templates/express_settings_local_pre.j2
+            dest="/data/web/express/{{path}}/sites/default/settings.local_pre.php"
+
+      - name: Create settings.local_post.php file.
+        template: >
+            src=templates/express_settings_local_post.j2
+            dest="/data/web/express/{{path}}/sites/default/settings.local_post.php"
+
+      - name: Create temp files directory
+        file: path={{ item }} state=directory
+        with_items:
+          - "/data/files/{{path}}/tmp"
 
       - name: Install site
-        when: install == "Y"
+        when: install == "Y" or install == "y"
         command: drush si cu_fit -y
         become: yes
         become_user: dplagnt
         register: install_output
         args:
-            chdir: /data/web/express/{{path}}/
+            chdir: "/data/web/express/{{path}}/"
 
       - debug: var=install_output.stdout_lines
