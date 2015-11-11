@@ -4,6 +4,3 @@
 
   - name: Install RVM stable with ruby
     shell: "curl -sSL https://get.rvm.io | bash -s stable --ruby"
-
-  - name: Create .bashrc
-    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt

@@ -12,7 +12,7 @@
     with_items:
       - git-1.7.1
       - epel-release
-      - python-mysqldb
+      - mysql-connector-python
 
   # Setup the dplagnt user
   - name: Create lapurd group
@@ -55,3 +55,9 @@
 
   - name: Create host file
     template: src=server_base_hosts.j2 dest=/etc/hosts owner=root
+
+  - name: Create .bashrc for dplagnt
+    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt
+
+  - name: Create .bashrc for vagrant
+    template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant
