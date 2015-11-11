@@ -5,60 +5,25 @@
      - memcached
      - libmemcached
      - zlib-devel
-    sudo: true
+
+  # Configure Memcached.
+  - name: Copy Memcached configuration.
+    template:
+      src: memcached.conf.j2
+      dest: /etc/sysconfig/memcached
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart memcached
 
   - name: Install PECL memcache
-    shell: yes | pecl install memcache creates=/usr/lib/php5/20090626+lfs/memcache.so
-    sudo: true
+    shell: yes | pecl install memcache
     register: pecl_memcache_result
     ignore_errors: True
 
-  - name:  Bad Config - Ending playbook
+  - name:  Bad Configuration - Ending playbook
     fail: "msg={{ pecl_memcache_result.stdout}}"
     when: pecl_memcache_result.stdout.find('failed') == -1 and pecl_memcache_result.stdout.find('already installed and is the same as the released version') == -1
 
-  - name: Add memcache lines to apache php.ini
-    lineinfile:
-      dest=/etc/php5/apache2/php.ini
-      line="extension=memcache.so"
-      regexp="^extension=memcache.so"
-      state=present
-      insertafter=EOF
-      create=True
-    notify:
-      - restart apache
-      - restart memcache
-
-  - name: Add memcache lines to apache php.ini
-    lineinfile:
-      dest=/etc/php5/apache2/php.ini
-      line='memcache.hash_strategy="consistent"'
-      regexp='^memcache.hash_strategy="consistent"'
-      state=present
-      insertafter=EOF
-      create=True
-    notify:
-      - restart apache
-      - restart memcache
-
-  - name: Add memcache lines to cli php.ini
-    lineinfile:
-      dest=/etc/php5/cli/php.ini
-      line="extension=memcache.so"
-      regexp="^extension=memcache.so"
-      state=present
-      insertafter=EOF
-      create=True
-    notify:
-      - restart memcache
-
-  - name: Add memcache lines to cli php.ini
-    lineinfile:
-      dest=/etc/php5/cli/php.ini
-      line='memcache.hash_strategy="consistent"'
-      regexp='^memcache.hash_strategy="consistent"'
-      state=present
-      insertafter=EOF
-      create=True
-    notify:
-      - restart memcache
+  - name: Ensure Memcached is started and set to run on startup.
+    service: name=memcached state=started enabled=yes
