@@ -21,9 +21,5 @@
     register: pecl_memcache_result
     ignore_errors: True
 
-  - name:  Bad Configuration - Ending playbook
-    fail: "msg={{ pecl_memcache_result.stdout}}"
-    when: pecl_memcache_result.stdout.find('failed') == -1 and pecl_memcache_result.stdout.find('already installed and is the same as the released version') == -1
-
   - name: Ensure Memcached is started and set to run on startup.
     service: name=memcached state=started enabled=yes
