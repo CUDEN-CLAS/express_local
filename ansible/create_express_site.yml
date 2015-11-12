@@ -9,26 +9,10 @@
       prompt: "Do you want to install the site as well? (Y/N)"
       private: no
 
-    - name: "remove"
-      prompt: "Do you want to remove the old files and database? (Y/N)"
-      private: no
-
   vars:
       database: "express_{{path}}"
 
   tasks:
-      - name: Remove mysql database.
-        when: remove == "Y" or remove == "y"
-        mysql_db: name={{database}} state=absent
-
-      - name: Remove previous site files
-        become: yes
-        become_user: dplagnt
-        when: remove == "Y" or remove == "y"
-        file:
-            path: "/data/web/express/{{ path }}"
-            state: absent
-
       - name: Create mysql database.
         mysql_db: name={{database}} state=present
 
@@ -54,41 +38,32 @@
             creates: "/data/web/express/{{path}}/profiles/cu_fit/cu_fit.info"
 
       - name: Set file permissions
+        become: yes
         file:
             path: "/data/web/express/{{path}}"
             state: directory
             mode: 0775
-            owner: dplagnt
-            group: apache
             recurse: yes
 
       - name: Create settings.php file.
-        become: yes
-        become_user: dplagnt
         template:
             src: templates/express_settings.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.php"
             mode: 0774
 
       - name: Create settings.local_pre.php file.
-        become: yes
-        become_user: dplagnt
         template:
             src: templates/express_settings_local_pre.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_pre.php"
             mode: 0774
 
       - name: Create settings.local_post.php file.
-        become: yes
-        become_user: dplagnt
         template:
             src: templates/express_settings_local_post.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_post.php"
             mode: 0774
 
       - name: Create temp files directory
-        become: yes
-        become_user: dplagnt
         file: path={{ item }} state=directory
         with_items:
           - "/data/files/{{path}}/tmp"

@@ -22,21 +22,23 @@
       state: present
     notify: restart apache
 
+  # TODO: Support SSL properly. See also settings.local_post.php
+  #
   # mod_ssl will take care of listening on 443
-  - name: Name Apache vhost for :443
-    lineinfile:
-      dest: "/etc/httpd/conf/httpd.conf"
-      line: "NameVirtualHost *:443"
-      state: present
-    notify: restart apache
-
-  - name: Create directory for SSL cert
-    file: path=/etc/httpd/ssl state=directory
-
-  - name: Generate SSL cert
-    command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt"
-    args:
-      creates: /etc/httpd/ssl/apache.crt
+  # - name: Name Apache vhost for :443
+  #   lineinfile:
+  #     dest: "/etc/httpd/conf/httpd.conf"
+  #     line: "NameVirtualHost *:443"
+  #     state: present
+  #   notify: restart apache
+  #
+  # - name: Create directory for SSL cert
+  #   file: path=/etc/httpd/ssl state=directory
+  #
+  # - name: Generate SSL cert
+  #   command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt"
+  #   args:
+  #     creates: /etc/httpd/ssl/apache.crt
 
   - name:  Add vhost configuration
     template: src=vhosts.conf.j2 dest=/etc/httpd/conf.d/vhosts.conf mode=0650 owner=apache group=apache
