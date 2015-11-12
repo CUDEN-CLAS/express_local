@@ -48,13 +48,11 @@ Vagrant.configure(2) do |config|
         ansible.extra_vars = {
           ansible_ssh_user: 'vagrant',
           ansible_connection: 'ssh'}
-        ansible.verbose = "vvv"
       end
     end
 
     #sync folders
-    config.vm.synced_folder "~/express_local/data", "/data", type: "rsync", owner: "dplagnt", rsync__auto: "true", rsync__args: ["--verbose", "--archive", "--delete", "-z", "--chmod=ugo=rwX"], mount_options: ["dmode=775,fmode=664"]
-    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "rsync" , owner: "dplagnt", rsync__auto: "true", rsync__args: ["--verbose", "--archive", "--delete", "-z", "--chmod=ugo=rwX"], mount_options: ["dmode=775,fmode=664"]
-
+    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs", mount_options: ['fsc']
+    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
   end
 end
