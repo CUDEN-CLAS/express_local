@@ -16,6 +16,7 @@
       - nano
       - nc
       - nmap
+      - mlocate
 
   # Setup the dplagnt user
   - name: Create lapurd group

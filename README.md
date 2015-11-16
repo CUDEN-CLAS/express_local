@@ -35,7 +35,9 @@ A local development environment for Cu Boulder's Web Express Platform.
     * packages_base
     * express_webcentral
 * Webserver - Inventory
-  * Python 2.7
+  * Additional OS packages
+    * Development tools # Allows us to compile Python 2.7
+  * Python 2.7.1 # CentOS 6 ships with 2.6 and relies on it for yum to work
     * Flask
     * Eve
     * Celery
@@ -45,3 +47,8 @@ A local development environment for Cu Boulder's Web Express Platform.
   * Elasticsearch
   * Logstash
   * Kibana
+
+# To Dos:
+* xprof
+* Support SSL properly
+* Make sure every package has a version
