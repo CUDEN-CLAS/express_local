@@ -55,6 +55,6 @@
       git:
         repo: "git@github.com:CuBoulder/logstash.git"
         dest: "~/express_local/data/code/logstash"
-        version: dev
+        version: master
         accept_hostkey: yes
         key_file: "{{ key_file }}"
