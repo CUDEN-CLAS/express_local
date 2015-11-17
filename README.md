@@ -52,3 +52,4 @@ A local development environment for Cu Boulder's Web Express Platform.
 * xprof
 * Support SSL properly
 * Make sure every package has a version
+* Drush rr
