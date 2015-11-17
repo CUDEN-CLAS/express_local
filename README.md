@@ -37,7 +37,8 @@ A local development environment for Cu Boulder's Web Express Platform.
 * Webserver - Inventory
   * Additional OS packages
     * Development tools # Allows us to compile Python 2.7
-  * Python 2.7.1 # CentOS 6 ships with 2.6 and relies on it for yum to work
+    * Apache # Specific role for the inventory
+  * Python 2.7.1
     * Flask
     * Eve
     * Celery
@@ -52,3 +53,8 @@ A local development environment for Cu Boulder's Web Express Platform.
 * xprof
 * Support SSL properly
 * Make sure every package has a version
+* Combine apache roles
+
+# Notes (and debugging)
+* CentOS 6 ships with Python 2.6 and relies on it for yum to work. So we are running Python 2.7 in a virtualenv. [Nice Intro to virtualenv](http://www.dabapps.com/blog/introduction-to-pip-and-virtualenv-python/)
+* If you are having trouble compiling python packages with errors like `Failed building wheel for [package]` or `Modules/errors.h:8:18: error: [filename].h: No such file or directory` make sure that you have the '-devel' version of the yum package dependency.

@@ -1,20 +1,58 @@
 ---
+  # Also includes some packages to compile the additional version of python
   - name: Installs necessary OS packages
+    become: yes
     yum: pkg={{ item }} state=latest
     with_items:
-      - openssl
-      - python-pip
-      - python-devel
+      - "@development"
       - gcc
       - gcc-c++
-      - libffi-devel
-      - openldap
-      - cyrus-sasl-lib
-      - mongodb
+      - libffi-devel-3.0.5
+      - openssl-1.0.1e
+      - openssl-devel-1.0.1e
+      - openldap-devel
+      - cyrus-sasl-lib-2.1.23
+      - mongodb-2.4.14
+      - python-pip
+      - python-setuptools-0.6.10
+      - zlib-devel-1.2.3
 
+  - name: Download Python 2.7
+    get_url: dest=/home/vagrant url=http://www.python.org/ftp/python/2.7.1/Python-2.7.1.tgz
+    become: yes
 
-  - name: Install Python packages
-    pip: name={{ item.name }} version={{ item.version }}
+  - name: Extract Python 2.7
+    shell: chdir=/home/vagrant tar xzf ./Python-2.7.1.tgz -C /opt creates=/opt/Python-2.7.1
+    become: yes
+
+  - name: Configure Python 2.7
+    shell: chdir=/opt/Python-2.7.1 ./configure --prefix=/usr/local
+    become: yes
+
+  - name: Make Python 2.7
+    shell: chdir=/opt/Python-2.7.1 make
+    become: yes
+
+  - name: Install Python 2.7
+    shell: chdir=/opt/Python-2.7.1 make altinstall  # Need to add a 'creates=' flag here
+    become: yes
+
+  - name: Install Python packages to allow virtual environments
+    pip: name={{ item }}
+    with_items:
+      - virtualenv
+
+    # Setup a Python 2.7 virtual environment to run the inventory
+  - name: Setup an environment for the tracker using Python 2.7
+    shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/inventory-python27-environment
+    args:
+      creates:  /home/dplagnt/inventory-python27-environment/bin/python2.7
+
+  - name: Install Python packages in the Python 2.7 environment
+    pip:
+      name: "{{ item.name }}"
+      version: "{{ item.version }}"
+      virtualenv: "/home/dplagnt/inventory-python27-environment"
     with_items:
       - { name: 'requests', version: '2.7.0' }
       - { name: 'flask', version: '0.10.1' }
@@ -23,13 +61,15 @@
       - { name: 'pymongo', version: '2.8.1' }
       - { name: 'cerberus', version: '0.9.1' }
       - { name: 'events', version: '0.2.1' }
-      #- { name: 'pycrypto', version: '2.6.1' }
+      - { name: 'pycrypto', version: '2.6.1' }
       - { name: 'pyopenssl', version: '0.15.1' }
       - { name: 'paramiko', version: '1.12.0'}
+      - { name: 'python-ldap', version: '2.3.13' }
       - { name: 'eve', version: '0.5.3' }
       - { name: 'celery', version: '3.1.12' }
 
 
+  # Celery and CeleryBeat
   - name: Push celeryd init script
     copy: src=celeryd dest=/etc/init.d/ mode=0777 owner=root group=root
 
@@ -47,3 +87,24 @@
 
   - name: Update user vagrant groups
     user: name=vagrant groups=celery append=yes
+
+  - name: Ensure Celery is started and enabled on boot.
+    service: name=celeryd state=started enabled=yes
+
+  - name: Ensure CeleryBeat is started and enabled on boot.
+    service: name=celerybeat state=started enabled=yes
+
+  # Eve
+  - name: Copy Eve local configuration
+    become: yes
+    template: src=local_settings_eve.py.j2 dest=/data/code/inventory/local_settings.py mode=0664
+
+  # MongoDB
+  - name: Copy MongoDB configuration
+    template: src=mongodb.conf.j2 dest=/etc/mongodb.conf mode=0644 owner=root group=root
+
+  - name: Create the mongodb startup file
+    template: src=mongod.j2 dest=/etc/init.d/mongod mode=0655
+
+  - name: Ensure MongoDB is started and enabled on boot.
+    service: name=mongod state=started enabled=yes
