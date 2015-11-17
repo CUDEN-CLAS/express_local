@@ -101,10 +101,22 @@
 
   # MongoDB
   - name: Copy MongoDB configuration
-    template: src=mongodb.conf.j2 dest=/etc/mongodb.conf mode=0644 owner=root group=root
+    template: src=mongodb.conf.j2 dest=/etc/mongod.conf mode=0644 owner=root group=root
 
   - name: Create the mongodb startup file
     template: src=mongod.j2 dest=/etc/init.d/mongod mode=0655
+
+  - name: Create mongod group
+    group: name=mongod state=present
+
+  - name: Create mongod user
+    user: name=mongod group=mongod
+
+  - name: create data directory for mongodb
+    file: path=/var/log/mongodb state=directory owner=mongod group=mongod
+
+  - name: create data directory for mongodb
+    file: path=/var/run/mongodb state=directory owner=mongod group=mongod
 
   - name: Ensure MongoDB is started and enabled on boot.
     service: name=mongod state=started enabled=yes
