@@ -1,5 +1,5 @@
 # Express Local
-A local development environment for Cu Boulder's Web Express Platform.
+A local development environment for Cu Boulder's Web Express Platform. **The playbooks require a vault password to run properly.**
 
 # You will need
 * Vagrant
