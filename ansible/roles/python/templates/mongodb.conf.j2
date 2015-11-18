@@ -6,7 +6,7 @@ port = 27017
 fork = true
 pidfilepath = /var/run/mongodb/mongodb.pid
 logpath = /var/log/mongodb/mongodb.log
-dbpath = /data/mongodb
+dbpath = /data_local/mongodb
 journal = true
 
 # Enables periodic logging of CPU utilization and I/O wait
@@ -68,8 +68,6 @@ nohttpinterface = true
 # Replication Options
 
 # in replicated mongo databases, specify here whether this is a slave or master
-#slave = true
-#source = master.example.com
 #slave = true
 #source = master.example.com
 # Slave only: specify a single database to replicate

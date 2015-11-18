@@ -16,7 +16,6 @@
         - "~/express_local/data/releases"
         - "~/express_local/data/code"
         - "~/express_local/data/files"
-        - "~/express_local/data/mongodb"
 
     - name: Clone dslm_base repository
       git:

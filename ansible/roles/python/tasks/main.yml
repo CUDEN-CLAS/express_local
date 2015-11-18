@@ -13,6 +13,7 @@
       - openldap-devel
       - cyrus-sasl-lib-2.1.23
       - mongodb-2.4.14
+      - mongodb-server-2.4.14
       - python-pip
       - python-setuptools-0.6.10
       - zlib-devel-1.2.3
@@ -101,22 +102,25 @@
 
   # MongoDB
   - name: Copy MongoDB configuration
-    template: src=mongodb.conf.j2 dest=/etc/mongod.conf mode=0644 owner=root group=root
+    template: src=mongodb.conf.j2 dest=/etc/mongodb.conf mode=0644 owner=root group=root
 
   - name: Create the mongodb startup file
     template: src=mongod.j2 dest=/etc/init.d/mongod mode=0655
 
   - name: Create mongod group
-    group: name=mongod state=present
+    group: name=mongodb state=present
 
   - name: Create mongod user
-    user: name=mongod group=mongod
+    user: name=mongodb group=mongodb
 
-  - name: create data directory for mongodb
-    file: path=/var/log/mongodb state=directory owner=mongod group=mongod
+  - name: Create data directory for mongodb
+    file: path=/data_local/mongodb state=directory owner=mongodb group=mongodb
 
-  - name: create data directory for mongodb
-    file: path=/var/run/mongodb state=directory owner=mongod group=mongod
+  - name: Create logging directory for mongodb
+    file: path=/var/log/mongodb state=directory owner=mongodb group=mongodb
+
+  - name: Create run directory for mongodb
+    file: path=/var/run/mongodb state=directory owner=mongodb group=mongodb
 
   - name: Ensure MongoDB is started and enabled on boot.
     service: name=mongod state=started enabled=yes
