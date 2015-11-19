@@ -46,7 +46,7 @@
     - name: Clone Inventory
       git:
         repo: "git@github.com:CuBoulder/inventory.git"
-        dest: "~/express_local/data/code/inventory"
+        dest: "~/express_local/"
         version: dev
         accept_hostkey: yes
         key_file: "{{ key_file }}"

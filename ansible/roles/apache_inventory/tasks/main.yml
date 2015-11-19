@@ -1,10 +1,62 @@
 ---
+  - name: Add repo for Apache 2.4
+    get_url:
+      url: "http://repos.fedorapeople.org/repos/jkaluza/httpd24/epel-httpd24.repo"
+      dest: "/etc/yum.repos.d/epel-httpd24.repo"
+      mode: 0644
+
   - name:  Install necessary packages
     yum: name={{ item }} state=present update_cache=yes
     with_items:
-      - httpd-2.2.15
-      - mod_ssl
-      - openssl
+      - httpd24
+      #- httpd24-mod_ssl
+      #- openssl
 
-  - name: Ensure Apache (httpd) is started and enabled on boot.
-    service: name=httpd state=started enabled=yes
+  - name: Configure Apache to listen on 80
+    lineinfile:
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
+      regexp: "^Listen "
+      line: "Listen 80"
+      state: present
+    notify: restart apache
+
+  - name: Name Apache vhost for :80
+    lineinfile:
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
+      regexp: "^NameVirtualHost "
+      line: "NameVirtualHost *:80"
+      state: present
+    notify: restart apache
+
+  # TODO: Support SSL properly. See also settings.local_post.php
+  #
+  # mod_ssl will take care of listening on 443
+  # - name: Name Apache vhost for :443
+  #   lineinfile:
+  #     dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
+  #     line: "NameVirtualHost *:443"
+  #     state: present
+  #   notify: restart apache
+  #
+  # - name: Create directory for SSL cert
+  #   file: path=/opt/rh/httpd24/root/etc/httpd/ssl state=directory
+  #
+  # - name: Generate SSL cert
+  #   command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /opt/rh/httpd24/root/etc/httpd/ssl/apache.key -out /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt"
+  #   args:
+  #     creates: /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt
+
+  - name: Update user apache groups
+    user: name=apache groups=lapurd append=yes
+
+  - name: Update user dplagnt groups
+    user: name=dplagnt groups=apache append=yes
+
+  - name: Apache should own it's logs
+    file:
+      path:  /opt/rh/httpd24/root/var/log/httpd
+      owner: apache
+      group: apache
+
+  - name: Ensure Apache 2.4 (httpd24-httpd) is started and enabled on boot.
+    service: name=httpd24-httpd state=started enabled=yes

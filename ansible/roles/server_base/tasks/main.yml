@@ -1,6 +1,9 @@
 ---
-  - name: Update files owned by vagrant
-    shell: chown -Rhc --from=1000 vagrant /home/vagrant
+  # - name: fix vagrant uid
+  #   user: name=vagrant uid=5000
+  #
+  # - name: update files owned by vagrant
+  #   shell: chown -Rhc --from=1000 5000 /home/vagrant
 
   # Install some basics
   - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
@@ -17,6 +20,7 @@
       - nc
       - nmap
       - mlocate
+      - man
 
   # Setup the dplagnt user
   - name: Create lapurd group
@@ -27,6 +31,15 @@
 
   - name: Update user dplagnt groups
     user: name=dplagnt groups=adm,wheel append=yes
+
+  - name: Update user vagrant groups
+    user: name=vagrant groups=lapurd append=yes
+
+  - name: Update dplagnt home directory group permissions
+    file:
+      state: directory
+      mode: 0770
+      path: /home/dplagnt
 
   # Get the user's SSH keys to dplagnt
   - name: Create destination directory for SSH keys

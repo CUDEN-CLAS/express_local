@@ -40,17 +40,31 @@ Vagrant.configure(2) do |config|
 
     end
 
+    # config.ssh.username = 'vagrant'
+    # config.ssh.password = 'vagrant'
+    # config.ssh.insert_key = 'true'
+
+    ### Begin Webserver specific configuration ###
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_express.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.ask_vault_pass = true
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
       end
-    end
 
+      # mount_options - See https://www.jverdeyen.be/vagrant/speedup-vagrant-nfs/
+      #  rw specifies that this is a read/write mount
+      #  vers=3 specifies version 3 of the NFS protocol to use
+      #  tcp specifies for the NFS mount to use the TCP protocol
+      #  fsc will make NFS use FS-Cache
+      #  actimeo=2 absolute time in seconds for which file and directory entries are kept in the file-attribute cache after an update
+      config.vm.synced_folder "~/express_local/data", "/data", type: "nfs",  mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+      config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs",  mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+
+    end
+    ### End Webserver specific configuration ###
+
+    ### Begin Inventory specific configuration ###
     if name.include? "inventory.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_inventory.yml"
@@ -61,10 +75,11 @@ Vagrant.configure(2) do |config|
           ansible_connection: 'ssh'}
         ansible.verbose = "vvv"
       end
-    end
 
-    #sync folders
-    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs", mount_options: ['fsc']
-    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
+      config.vm.synced_folder "~/express_local/inventory", "/data/code/inventory", type: "nfs",  mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+
+    end
+    ### End Inventory specific configuration ###
+
   end
 end
