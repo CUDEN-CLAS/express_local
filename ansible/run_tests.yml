@@ -1,10 +1,10 @@
 ---
 - hosts: express.local
   vars_prompt:
-    - name: "path"
-      prompt: "Enter the path of the site you would like to test. Leave blank for"
-      private: no
-      default: "testing"
+    # - name: "path"
+    #   prompt: "Enter the path of the site you would like to test. Leave blank for"
+    #   private: no
+    #   default: "testing"
 
     - name: "tags"
       prompt: "Enter an argument for the 'tags' parameter. Comma seperated list => OR, && => AND, ~ => NOT. Leave blank for"
@@ -16,40 +16,34 @@
       private: no
 
   vars:
-      database: "express_{{path}}"
+      database: "express_testing"
 
   tasks:
-      - name: Check if the testing site exists.
-        file:
-            path: "/data/web/express/{{path}}/index.php"
-            state: file
-        fail: msg="Please create a site at {{path}} before running tests."
+    - name: Install site
+      when: install == "Y" or install == "y"
+      command: drush si cu_fit -y
+      become: yes
+      become_user: dplagnt
+      register: install_output
+      args:
+          chdir: "/data/web/express/testing/"
 
-      - name: Install site
-        when: install == "Y" or install == "y"
-        command: drush si cu_fit -y
-        become: yes
-        become_user: dplagnt
-        register: install_output
-        args:
-            chdir: "/data/web/express/{{path}}/"
+    - name: Run the tests
+      become: yes
+      become_user: dplagnt
+      command: behat
+      register: behat
+      args:
+          chdir: /data/web/express/testing/profiles/cu_fit/tests
+      when: tags == "all"
 
-      - name: Run the tests
-        command: behat
-        become: yes
-        become_user: dplagnt
-        register: behat
-        args:
-            chdir: /data/web/express/{{path}}/profiles/cu_fit/tests
-        when: tags == "all"
+    - name: Run the tests
+      command: behat --tags {{tags}}
+      become: yes
+      become_user: dplagnt
+      register: behat
+      args:
+          chdir: /data/web/express/testing/profiles/cu_fit/tests
+      when: tags != "all"
 
-      - name: Run the tests
-        command: behat --tags {{tags}}
-        become: yes
-        become_user: dplagnt
-        register: behat
-        args:
-            chdir: /data/web/express/{{path}}/profiles/cu_fit/tests
-        when: tags != "all"
-
-      - debug: var=behat.stdout_lines
+    - debug: var=behat.stdout_lines
