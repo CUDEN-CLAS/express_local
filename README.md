@@ -1,3 +1,5 @@
+If you don't care how it works, you just want it to work now; checkout the [short version](README_SHORT.md)
+
 # Express Local
 A local development environment for Cu Boulder's Web Express Platform. **The playbooks require a vault password to run properly.**
 
