@@ -62,7 +62,7 @@ Vagrant.configure(2) do |config|
     end
 
     #sync folders
-    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs", mount_options: ['fsc']
+    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs"
     config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
   end
 end
