@@ -36,6 +36,14 @@
         args:
             chdir: "/data/web/express/{{path}}/"
             creates: "/data/web/express/{{path}}/profiles/cu_fit/cu_fit.info"
+            
+      - name: Add Express
+        become: yes
+        become_user: dplagnt
+        command: drush dslm-add-profile express --current
+        args:
+            chdir: "/data/web/express/{{path}}/"
+            creates: "/data/web/express/{{path}}/profiles/express/express.info"
 
       - name: Set file permissions
         become: yes
