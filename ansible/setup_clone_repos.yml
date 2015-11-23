@@ -21,25 +21,21 @@
       git:
         repo: "git@github.com:CuBoulder/dslm_base.git"
         dest: "~/express_local/data/code/dslm_base"
-        version: poolb-dev
+        version: "poolb-dev"
         recursive: yes
         accept_hostkey: yes
         key_file: "{{ key_file }}"
 
     - name: Check out Express 2.0 branch
-      git:
-        repo: "git@github.com:CuBoulder/cu_fit.git"
-        dest: "~/express_local/data/code/dslm_base/profiles/cu_fit"
-        version: express
-        recursive: yes
-        accept_hostkey: yes
-        key_file: "{{ key_file }}"
+      command: "git checkout express"
+      args:
+        chdir: "~/express_local/data/code/dslm_base/profiles/cu_fit-current"
 
     - name: Clone package_base repository
       git:
         repo: "git@github.com:CuBoulder/packages_base.git"
         dest: "~/express_local/data/code/packages_base"
-        version: dev
+        version: "dev"
         recursive: yes
         accept_hostkey: yes
         key_file: "{{ key_file }}"
@@ -48,7 +44,7 @@
       git:
         repo: "git@github.com:CuBoulder/varnish.git"
         dest: "~/express_local/data/code/varnish"
-        version: master
+        version: "master"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
 
@@ -56,7 +52,7 @@
       git:
         repo: "git@github.com:CuBoulder/inventory.git"
         dest: "~/express_local/data/code/inventory"
-        version: dev
+        version: "dev"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
 
@@ -64,6 +60,6 @@
       git:
         repo: "git@github.com:CuBoulder/logstash.git"
         dest: "~/express_local/data/code/logstash"
-        version: master
+        version: "master"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
