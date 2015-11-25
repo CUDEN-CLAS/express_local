@@ -12,13 +12,3 @@
   cd /data/web/express/testing/profiles/cu_fit/tests
   behat --tags=[tag_you_want_to_test]
   ```
-
-# Install OSX
-Run the following commands:
-```
-```
-
-# Install Linux
-Run the following commands:
-```
-```

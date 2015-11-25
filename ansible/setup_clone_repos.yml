@@ -10,7 +10,7 @@
 
   tasks:
     - name: Create initial directory structure
-      file: path={{ item }} state=directory mode=0755
+      file: path={{ item }} state=directory mode=0775
       with_items:
         - "~/express_local/data/web/express"
         - "~/express_local/data/releases"

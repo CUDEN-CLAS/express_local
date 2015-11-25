@@ -4,20 +4,55 @@ If you don't care how it works, you just want it to work now; checkout the [shor
 A local development environment for Cu Boulder's Web Express Platform. **The playbooks require a vault password to run properly.**
 
 # You will need
+* git
+* Ansible 1.9.x
 * Vagrant
 * VirtualBox
-* Python
-  * python-yaml
-  * python-jinja
+* Python 2.7
 
-# Run these commands first
+# Installation
+## Ubuntu Installations
+* `sudo apt-get install git ansible nfs_kernal_server`
 
-# Includes
-* VMs
+## OSX (untested)
+* Install ansible (likely with pip)
+
+## All operating systems
+* Install Vagrant (https://www.vagrantup.com/downloads.html)
+* Install VirtualBox
+* Clone this repository
+* Edit your hosts file (located at `/etc/hosts`) to include the following
+  ```
+  # express_local VMs
+  192.168.33.20 express.local
+  192.168.33.21 inventory.local
+  192.168.33.22 log.local
+
+  # Eve API URI
+  # Local
+  # 192.168.33.21 eveuri
+  # DEV
+  172.20.62.19  eveuri
+  # PROD
+  #172.20.62.87 eveuri
+  ```
+* Edit your SSH config (`~/.ssh/config`) to include the following
+  ```
+  Host 192.168.33.* express.local inventory.local logs.local
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+  User dplagnt
+  LogLevel ERROR
+  ```
+* Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
+  The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
+
+# This repo includes
+* All VMs
   * Vagrant 2
   * Ansible 1.9.4
   * CentOS 6.7
-* Webserver - Express
+* Webserver - express.local
   * Varnish 3.0.3
   * Apache 2.2.15
   * MySQL 5.6.20
@@ -36,7 +71,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
     * dslm_base
     * packages_base
     * express_webcentral
-* Webserver - Inventory
+* Webserver - inventory.local
   * Additional OS packages
     * Development tools # Allows us to compile Python 2.7
   * Python 2.7.1 # CentOS 6 ships with 2.6 and relies on it for yum to work
@@ -45,7 +80,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
     * Celery
     * Fabric
   * Logstash Forwarder
-* Webserver - Logging
+* Webserver - logs.local
   * Elasticsearch
   * Logstash
   * Kibana
@@ -55,3 +90,4 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * Support SSL properly
 * Make sure every package has a version
 * Drush rr
+* Allow dplagnt to sudo w/o a password
