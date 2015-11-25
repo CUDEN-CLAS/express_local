@@ -12,7 +12,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 
 # Installation
 ## Ubuntu Installations
-* `sudo apt-get install git ansible nfs_kernal_server`
+* `sudo apt-get install git ansible nfs-kernel-server`
 
 ## OSX (untested)
 * Install ansible (likely with pip)
