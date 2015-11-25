@@ -18,6 +18,13 @@
       - nmap
       - mlocate
 
+  - name: Allow wheel group to sudo without a password
+    become: yes
+    lineinfile:
+      dest: "/etc/sudoers"
+      regexp: "^# %wheel        ALL=(ALL)  NOPASSWD: ALL"
+      line: "%wheel        ALL=(ALL)  NOPASSWD: ALL"
+
   # Setup the dplagnt user
   - name: Create lapurd group
     group: name=lapurd state=present
