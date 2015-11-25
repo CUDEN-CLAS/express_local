@@ -51,8 +51,18 @@ Vagrant.configure(2) do |config|
       end
     end
 
+    if name.include? "inventory.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/vm_inventory.yml"
+        ansible.inventory_path = "ansible/hosts"
+        ansible.extra_vars = {
+          ansible_ssh_user: 'vagrant',
+          ansible_connection: 'ssh'}
+      end
+    end
+
     #sync folders
-    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs", mount_options: ['fsc']
+    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs"
     config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
   end
 end

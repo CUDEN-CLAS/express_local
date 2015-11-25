@@ -24,7 +24,7 @@
     sudo: yes
 
   - name: Link behat command
-    file: src=/opt/behat/bin/behat dest=/usr/local/bin/behat state=link
+    file: src=/opt/behat/bin/behat dest=/usr/bin/behat state=link
     sudo: yes
 
   - name: Create selenium directory
