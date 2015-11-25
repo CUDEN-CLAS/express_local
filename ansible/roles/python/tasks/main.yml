@@ -37,7 +37,7 @@
     copy: src=celerybeat dest=/etc/init.d/ mode=0777
 
   - name: Pushes celeryd configuration
-    template: src=celeryd.j2 dest=/etc/default/celeryd mode=0640 owner=root group=root
+    template: src=celeryd.j2 dest=/etc/default/celeryd mode=0640 owner=root group=root force=yes
 
   - name: Create celery group
     group: name=celery state=present
