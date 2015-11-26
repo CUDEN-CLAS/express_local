@@ -44,11 +44,6 @@
     register: drush_result
     changed_when: "'Execute a drush command' not in drush_result.stdout"
 
-  - name: Install regirstry_rebuild
-    become: yes
-    become_user: dplagnt
-    command: "drush dl registry_rebuild -y"
-
   - name: Clone DSLM from drupal.org
     git: >
         repo=http://git.drupal.org/project/dslm.git
@@ -92,3 +87,9 @@
       src: drushrc.php.j2
       dest: /home/dplagnt/.drush/drushrc.php
       owner: dplagnt
+      force: yes
+
+  - name: Install registry_rebuild
+    become: yes
+    become_user: dplagnt
+    command: "drush dl registry_rebuild -y"

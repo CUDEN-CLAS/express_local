@@ -65,10 +65,10 @@
   #   ignore_errors: yes
 
   - name: Create host file
-    template: src=server_base_hosts.j2 dest=/etc/hosts owner=root
+    template: src=server_base_hosts.j2 dest=/etc/hosts owner=root force=yes
 
   - name: Create .bashrc for dplagnt
-    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt
+    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt force=yes
 
   - name: Create .bashrc for vagrant
-    template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant
+    template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant force=yes

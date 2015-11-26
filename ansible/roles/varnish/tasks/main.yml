@@ -15,6 +15,7 @@
       owner: root
       group: root
       mode: 0644
+      force: yes
 
   - name: Ensure Varnish config path exists
     file:
@@ -33,6 +34,7 @@
       owner: root
       group: root
       mode: 0644
+      force: yes
     notify: restart varnish
 
   - name: Check Varnish configuration

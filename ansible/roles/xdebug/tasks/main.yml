@@ -21,4 +21,5 @@
       owner: root
       group: root
       mode: 0644
+      force: yes
     notify: restart apache

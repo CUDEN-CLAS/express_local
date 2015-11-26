@@ -17,11 +17,11 @@
   register: result
 
 - name: Config for easy access as root user
-  template: src=mysql_root.my.cnf.j2 dest=/root/.my.cnf
+  template: src=mysql_root.my.cnf.j2 dest=/root/.my.cnf force=yes
   when: result|success
 
 - name: Config for easy access as dplagnt user
-  template: src=mysql_root.my.cnf.j2 dest=/home/dplagnt/.my.cnf owner=dplagnt
+  template: src=mysql_root.my.cnf.j2 dest=/home/dplagnt/.my.cnf owner=dplagnt force=yes
   when: result|success
 
 - name: create application database user
