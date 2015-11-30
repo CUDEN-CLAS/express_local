@@ -7,6 +7,6 @@
   - hosts: inventory
     sudo: yes
     roles:
-      - ../../roles/server_base
-      - ../../roles/python
+      - server_base
+      - python
       # - logstash_forwarder

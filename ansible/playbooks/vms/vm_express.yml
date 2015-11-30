@@ -9,16 +9,16 @@
   - hosts: web
     sudo: yes
     roles:
-      - ../../roles/server_base
-      - ../../roles/apache
-      - ../../roles/php
-      - ../../roles/mysql
-      - ../../roles/varnish
-      - ../../roles/apc
-      - ../../roles/memcache
-      - ../../roles/xdebug
-      - ../../roles/rvm
-      - ../../roles/drush
-      - ../../roles/behat
-      - ../../roles/express_code
-      # - include: ../tasks/logstash_forwarder.yml
+      - server_base
+      - apache
+      - php
+      - mysql
+      - varnish
+      - apc
+      - memcache
+      - xdebug
+      - rvm
+      - drush
+      - behat
+      - express_code
+      # - logstash_forwarder
