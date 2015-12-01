@@ -12,6 +12,12 @@
     cd ~/vms/express_local
     vagrant halt
     ```
+  * To start a share session (requires account on atlas.hashicorp.com)
+    ```
+    cd ~/vms/express_local
+    vagrant login
+    vagrant share
+    ```
 * SSH Keys
   * Follow [GitHub's instructions](https://help.github.com/articles/generating-ssh-keys/) to setup an SSH key.
   * Unlock your SSH key (_will not work if the VM hasn't been created, may be needed before updating code_):  
