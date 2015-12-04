@@ -20,8 +20,11 @@ parse_git_branch() {
      git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
-# For Drush 6
+# For Drush
 export PATH="$HOME/.composer/vendor/bin:$PATH"
+alias drush6='/usr/local/share/drush/drush6/vendor/bin/drush'
+alias drush7='/usr/local/share/drush/drush7/vendor/bin/drush'
+#alias drush8='/usr/local/share/drush/drush8/vendor/bin/drush'
 
 # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.rvm/bin"

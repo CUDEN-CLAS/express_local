@@ -5,50 +5,70 @@
       - curl
       - php-posix
       - php-xml
-    sudo: yes
+    become: yes
 
   - name: Install Composer
-    sudo: yes
+    become: yes
     shell: >
       curl -sS https://getcomposer.org/installer | php
       creates=/usr/local/bin/composer
 
   - name: Move Composer into globally-accessible location
-    sudo: yes
+    become: yes
     shell: >
       mv composer.phar /usr/local/bin/composer
       creates=/usr/local/bin/composer
 
-  - name: Clone Drush from GitHub
-    git: >
-      repo=https://github.com/drush-ops/drush.git
-      dest=/usr/local/share/drush
-      version=6.x
+  - name: Install Drush 7 globally with Composer
+    become: yes
+    command: "/usr/local/bin/composer global require drush/drush:7.*"
 
-  - name: Install Drush dependencies with Composer
-    sudo: yes
-    shell: >
-      /usr/local/bin/composer install --prefer-source --no-interaction
-      chdir=/usr/local/share/drush
-      creates=/usr/local/share/drush/vendor/autoload.php
+  - name: Create directories for additional verions of Drush
+    become: yes
+    file: path={{ item }} state=directory
+    with_items:
+      - "/usr/local/share/drush/drush6"
+      - "/usr/local/share/drush/drush7"
+      #- "/usr/local/share/drush/drush8"
 
-  - name: Create drush symlink
+  - name: Install Drush 6 locally with Composer
+    become: yes
+    command: "/usr/local/bin/composer require drush/drush:6.*"
+    args:
+      chdir: "/usr/local/share/drush/drush6"
+
+  - name: Install Drush 7 locally with Composer
+    become: yes
+    command: "/usr/local/bin/composer require drush/drush:7.*"
+    args:
+      chdir: "/usr/local/share/drush/drush7"
+
+  # Cannot do this until we bump the PHP version to >= 5.4.5
+  # See also:
+  #  Role: Drush - "Create directories for additional versions of Drush"
+  #  Role: Server base - templates/bashrc.j2
+  #
+  # - name: Install Drush 8 locally with Composer
+  #   become: yes
+  #   command: "/usr/local/bin/composer require drush/drush:8.*"
+  #   args:
+  #     chdir: "/usr/local/share/drush/drush8"
+
+  - name: Create ~/.drush
     file: >
-      src=/usr/local/share/drush/drush
-      dest=/usr/bin/drush
-      state=link
-
-  - name: Run drush to finish setting it up
-    sudo: yes
-    command: "drush"
-    register: drush_result
-    changed_when: "'Execute a drush command' not in drush_result.stdout"
+      path=/home/dplagnt/.drush
+      state=directory
+      owner=dplagnt
 
   - name: Clone DSLM from drupal.org
-    git: >
-        repo=http://git.drupal.org/project/dslm.git
-        dest=/usr/local/share/drush/commands/dslm
-        version=7.x-2.x
+    git:
+        repo: "http://git.drupal.org/project/dslm.git"
+        dest: "{{ item }}"
+        version: "7.x-2.x"
+    with_items:
+        - "/usr/local/share/drush/drush6/commands/dslm"
+        - "/usr/local/share/drush/drush7/commands/dslm"
+        #- "/usr/local/share/drush/drush8/commands/dslm"
 
   - name: Add DSLM_BASE variable to .profile
     lineinfile:
@@ -68,19 +88,11 @@
       insertafter=EOF
       create=True
 
-  - name: Create ~/.drush
-    file: >
-      path=/home/dplagnt/.drush
-      state=directory
-      owner=dplagnt
-
   - name: Install Drush-patchfile with Composer
     shell: >
       /usr/local/bin/composer require davereid/drush-patchfile:dev-master
       chdir=/home/dplagnt/.drush
       creates=/home/dplagnt/.drush/composer.json
-
-  - file: path=/home/dplagnt/.drush owner=dplagnt group=lapurd state=directory recurse=yes
 
   - name: Copy drushrc.php to VM to dplagnt
     template:
@@ -89,7 +101,23 @@
       owner: dplagnt
       force: yes
 
+  - file: path=/home/dplagnt/.drush owner=dplagnt group=lapurd state=directory recurse=yes
+
+  # Need to use the bash shell to run these commands.
+  - name: Run drush
+    become: yes
+    become_user: dplagnt
+    shell: "drush"
+    executable: "/bin/bash"
+    args:
+      chdir: "/home/dplagnt"
+
   - name: Install registry_rebuild
     become: yes
     become_user: dplagnt
-    command: "drush dl registry_rebuild -y"
+    shell: "drush dl registry_rebuild -y"
+    executable: "/bin/bash"
+    register: registry_rebuild
+    failed_when: "'Project registry_rebuild contains 0 modules' not in registry_rebuild.stdout"
+    args:
+      chdir: "/home/dplagnt"
