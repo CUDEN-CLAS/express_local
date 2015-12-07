@@ -15,11 +15,15 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * `sudo apt-get install git ansible nfs-kernel-server`
 
 ## OSX (untested)
-* Install ansible (likely with pip)
+* Install Pypthon 2.7 (Can be with [Homebrew](http://brew.sh/))
+* Install ansible
+  ```
+  sudo pip install ansible
+  ```
 
 ## All operating systems
 * Install Vagrant (https://www.vagrantup.com/downloads.html)
-* Install VirtualBox
+* Install VirtualBox (https://www.virtualbox.org/wiki/Downloads)
 * Clone this repository
 * Edit your hosts file (located at `/etc/hosts`) to include the following
   ```
