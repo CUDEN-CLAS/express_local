@@ -108,16 +108,16 @@
     become: yes
     become_user: dplagnt
     shell: "drush"
-    executable: "/bin/bash"
     args:
       chdir: "/home/dplagnt"
+      executable: "/bin/bash"
 
   - name: Install registry_rebuild
     become: yes
     become_user: dplagnt
     shell: "drush dl registry_rebuild -y"
-    executable: "/bin/bash"
     register: registry_rebuild
     failed_when: "'Project registry_rebuild contains 0 modules' not in registry_rebuild.stdout"
     args:
       chdir: "/home/dplagnt"
+      executable: "/bin/bash"
