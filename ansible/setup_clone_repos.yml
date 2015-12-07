@@ -10,7 +10,7 @@
 
   tasks:
     - name: Create initial directory structure
-      file: path={{ item }} state=directory mode=0755
+      file: path={{ item }} state=directory mode=0775
       with_items:
         - "~/express_local/data/web/express"
         - "~/express_local/data/releases"
@@ -21,16 +21,21 @@
       git:
         repo: "git@github.com:CuBoulder/dslm_base.git"
         dest: "~/express_local/data/code/dslm_base"
-        version: poolb-dev
+        version: "poolb-dev"
         recursive: yes
         accept_hostkey: yes
         key_file: "{{ key_file }}"
+
+    - name: Check out Express 2.0 branch
+      command: "git checkout express"
+      args:
+        chdir: "~/express_local/data/code/dslm_base/profiles/cu_fit-current"
 
     - name: Clone package_base repository
       git:
         repo: "git@github.com:CuBoulder/packages_base.git"
         dest: "~/express_local/data/code/packages_base"
-        version: dev
+        version: "dev"
         recursive: yes
         accept_hostkey: yes
         key_file: "{{ key_file }}"
@@ -39,15 +44,15 @@
       git:
         repo: "git@github.com:CuBoulder/varnish.git"
         dest: "~/express_local/data/code/varnish"
-        version: master
+        version: "master"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
 
     - name: Clone Inventory
       git:
         repo: "git@github.com:CuBoulder/inventory.git"
-        dest: "~/express_local/"
-        version: dev
+        dest: "~/express_local/data/code/inventory"
+        version: "dev"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
 
@@ -55,6 +60,6 @@
       git:
         repo: "git@github.com:CuBoulder/logstash.git"
         dest: "~/express_local/data/code/logstash"
-        version: dev
+        version: "master"
         accept_hostkey: yes
         key_file: "{{ key_file }}"

@@ -1,12 +1,12 @@
 ---
 - hosts: express.local
   vars_prompt:
-    - name: "path"
-      prompt: "Enter the path for the desired express site"
+    - name: "type"
+      prompt: "[C]reate an new site or [R]einstall an existing site"
       private: no
 
-    - name: "install"
-      prompt: "Do you want to install the site as well? (Y/N)"
+    - name: "path"
+      prompt: "Enter the path for the site"
       private: no
 
   vars:
@@ -15,9 +15,11 @@
   tasks:
       - name: Create mysql database.
         mysql_db: name={{database}} state=present
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
 
       - name: Clear drush cache
         action: command drush cc drush
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         args:
             chdir: "/data/web/express/"
 
@@ -25,6 +27,7 @@
         become: yes
         become_user: dplagnt
         command: "drush dslm-new {{path}} --current"
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         args:
             chdir: "/data/web/express/"
             creates: "/data/web/express/{{path}}/install.php"
@@ -33,12 +36,23 @@
         become: yes
         become_user: dplagnt
         command: drush dslm-add-profile cu_fit --current
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         args:
             chdir: "/data/web/express/{{path}}/"
             creates: "/data/web/express/{{path}}/profiles/cu_fit/cu_fit.info"
 
+      - name: Add Express
+        become: yes
+        become_user: dplagnt
+        command: drush dslm-add-profile express --current
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        args:
+            chdir: "/data/web/express/{{path}}/"
+            creates: "/data/web/express/{{path}}/profiles/express/express.info"
+
       - name: Set file permissions
         become: yes
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         file:
             path: "/data/web/express/{{path}}"
             state: directory
@@ -46,30 +60,33 @@
             recurse: yes
 
       - name: Create settings.php file.
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         template:
             src: templates/express_settings.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.php"
             mode: 0774
 
       - name: Create settings.local_pre.php file.
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         template:
             src: templates/express_settings_local_pre.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_pre.php"
             mode: 0774
 
       - name: Create settings.local_post.php file.
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         template:
             src: templates/express_settings_local_post.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_post.php"
             mode: 0774
 
       - name: Create temp files directory
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         file: path={{ item }} state=directory
         with_items:
           - "/data/files/{{path}}/tmp"
 
       - name: Install site
-        when: install == "Y" or install == "y"
         command: drush si cu_fit -y
         become: yes
         become_user: dplagnt

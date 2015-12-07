@@ -43,6 +43,18 @@
     sudo: true
     notify:
       - restart apache
+      
+  - name: Change php post_max_size
+    lineinfile: dest=/etc/php.ini regexp="^[#|;]?post_max_size =" insertafter="^[#|;]?post_max_size =" line="post_max_size = 256M"
+    sudo: true
+    notify:
+      - restart apache
+    
+  - name: Change php upload_max_filesize
+    lineinfile: dest=/etc/php.ini regexp="^[#|;]?upload_max_filesize =" insertafter="^[#|;]?upload_max_filesize =" line="upload_max_filesize = 256M"
+    sudo: true
+    notify:
+      - restart apache
 
   - name: Change php date_timezone
     lineinfile: dest=/etc/php.ini regexp="^[#|;]?date_timezone =" insertafter="^[#|;]?date_timezone =" line="date_timezone = 'America/Denver'"

@@ -15,6 +15,7 @@
       owner: root
       group: root
       mode: 0644
+      force: yes
 
   - name: Ensure Varnish config path exists
     file:
@@ -33,7 +34,17 @@
       owner: root
       group: root
       mode: 0644
+      force: yes
     notify: restart varnish
+
+  - name: Check Varnish configuration
+    command: sudo varnishd -C -f /etc/varnish/default.vcl
+    register: result
+    ignore_errors: True
+
+  - name:  Bad Config - Ending playbook
+    fail: msg="Configuration file is not valid. Please check that before re-running the playbook."
+    when: result|failed
 
   - name: Ensure Varnish is started and set to run on startup
     service: name=varnish state=started enabled=yes

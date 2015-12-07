@@ -87,3 +87,9 @@
       src: drushrc.php.j2
       dest: /home/dplagnt/.drush/drushrc.php
       owner: dplagnt
+      force: yes
+
+  - name: Install registry_rebuild
+    become: yes
+    become_user: dplagnt
+    command: "drush dl registry_rebuild -y"

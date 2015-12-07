@@ -22,6 +22,13 @@
       - mlocate
       - man
 
+  - name: Allow wheel group to sudo without a password
+    become: yes
+    lineinfile:
+      dest: "/etc/sudoers"
+      regexp: "^# %wheel        ALL=(ALL)  NOPASSWD: ALL"
+      line: "%wheel        ALL=(ALL)  NOPASSWD: ALL"
+
   # Setup the dplagnt user
   - name: Create lapurd group
     group: name=lapurd state=present
@@ -71,10 +78,10 @@
   #   ignore_errors: yes
 
   - name: Create host file
-    template: src=server_base_hosts.j2 dest=/etc/hosts owner=root
+    template: src=server_base_hosts.j2 dest=/etc/hosts owner=root force=yes
 
   - name: Create .bashrc for dplagnt
-    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt
+    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt force=yes
 
   - name: Create .bashrc for vagrant
-    template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant
+    template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant force=yes

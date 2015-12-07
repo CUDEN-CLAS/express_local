@@ -2,7 +2,7 @@
   # This playbook will be run on webservers for the Inventory.
 
   # Need to set up ssh first
-  - include: push_ssh_keys.yml
+  - include: ../utilities/push_ssh_keys.yml
 
   - hosts: inventory
     sudo: yes

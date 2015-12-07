@@ -51,16 +51,6 @@ Vagrant.configure(2) do |config|
         ansible.inventory_path = "ansible/hosts"
         ansible.ask_vault_pass = true
       end
-
-      # mount_options - See https://www.jverdeyen.be/vagrant/speedup-vagrant-nfs/
-      #  rw specifies that this is a read/write mount
-      #  vers=3 specifies version 3 of the NFS protocol to use
-      #  tcp specifies for the NFS mount to use the TCP protocol
-      #  fsc will make NFS use FS-Cache
-      #  actimeo=2 absolute time in seconds for which file and directory entries are kept in the file-attribute cache after an update
-      config.vm.synced_folder "~/express_local/data", "/data", type: "nfs",  mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
-      config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs",  mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
-
     end
     ### End Webserver specific configuration ###
 
@@ -75,11 +65,11 @@ Vagrant.configure(2) do |config|
           ansible_connection: 'ssh'}
         ansible.verbose = "vvv"
       end
-
-      config.vm.synced_folder "~/express_local/inventory", "/data/code/inventory", type: "nfs",  mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
-
     end
     ### End Inventory specific configuration ###
 
+    #sync folders
+    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs"
+    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
   end
 end

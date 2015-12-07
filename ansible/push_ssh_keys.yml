@@ -11,7 +11,7 @@
     #     - ~/.ssh/id_rsa.pub
 
     - name: Install necessary OS packages
-      yum: name={{ item }} state=present
+      yum: name={{ item }} state=present update_cache=yes
       with_items:
         - libselinux-python
 
