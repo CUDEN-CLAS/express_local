@@ -28,6 +28,12 @@
       args:
           chdir: "/data/web/express/testing/"
 
+    - name: Start Selenium Server
+      command: xvfb-run -a java -jar /var/selenium2/selenium-server-standalone-2.46.0.jar
+      async: 45
+      poll: 0
+      become: yes
+
     - name: Run the tests
       become: yes
       become_user: dplagnt
