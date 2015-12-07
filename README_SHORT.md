@@ -29,17 +29,17 @@
   * Create a new express site:  
     ```
     cd ~/vms/express_local
-    ansible-playbook -i ansible/hosts ansible/playbooks/vms/express_site.yml
+    ansible-playbook -i ansible/hosts ansible/express_site.yml
     ```
   * Run tests:  
     ```
     cd ~/vms/express_local
-    ansible-playbook -i ansible/hosts ansible/playbooks/express/run_tests.yml
+    ansible-playbook -i ansible/hosts ansible/run_tests.yml
     ```
   * Update code to the latest version of Express 2.0:  
     ```
     cd ~/vms/express_local
-    ansible-playbook -i ansible/hosts ansible/playbooks/utilities/update_repos.yml
+    ansible-playbook -i ansible/hosts ansible/update_repos.yml
     ```
 * SSH onto the VM:  
   `ssh express.local`
