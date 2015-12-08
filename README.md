@@ -42,11 +42,13 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   ```
 * Edit your SSH config (`~/.ssh/config`) to include the following
   ```
+  # Connection information for express_local VMs
   Host 192.168.33.* express.local inventory.local logs.local
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
   User dplagnt
   LogLevel ERROR
+  
   ```
 * Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
   The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
