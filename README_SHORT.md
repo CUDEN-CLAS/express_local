@@ -4,19 +4,22 @@
 * Vagrant commands
   * To start the VM, open a Terminal window and type the following commands:  
     ```
-    cd ~/vms/express_local  
-    vagrant up  
+    cd ~/vms/express_local
+    vagrant up
+    
     ```
   * To stop the VM, open a Terminal window and type the following commands:  
     ```
-    cd ~/vms/express_local  
-    vagrant halt  
+    cd ~/vms/express_local
+    vagrant halt
+    
     ```
   * To start a share session (requires account on atlas.hashicorp.com)
     ```
-    cd ~/vms/express_local  
-    vagrant login  
-    vagrant share  
+    cd ~/vms/express_local
+    vagrant login
+    vagrant share
+    
     ```
 * SSH Keys
   * Follow [GitHub's instructions](https://help.github.com/articles/generating-ssh-keys/) to setup an SSH key.
@@ -24,22 +27,26 @@
     ```
     cd ~/express_local/data/code/dslm_base/profiles/cu_fit  
     git pull
+    
     ```
 * Express_local commands
   * Create a new express site:  
     ```
     cd ~/vms/express_local  
     ansible-playbook -i ansible/hosts ansible/express_site.yml
+    
     ```
   * Run tests:  
     ```
     cd ~/vms/express_local  
     ansible-playbook -i ansible/hosts ansible/run_tests.yml
+    
     ```
   * Update code to the latest version of Express 2.0:  
     ```
     cd ~/vms/express_local  
     ansible-playbook -i ansible/hosts ansible/update_repos.yml
+    
     ```
 * SSH onto the VM:  
   `ssh express.local`
@@ -47,4 +54,5 @@
   ```
   cd /data/web/express/testing/profiles/cu_fit/tests  
   behat --tags=[tag_you_want_to_test]
+  
   ```
