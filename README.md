@@ -95,5 +95,3 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * xprof
 * Support SSL properly
 * Make sure every package has a version
-* Drush rr
-* Allow dplagnt to sudo w/o a password
