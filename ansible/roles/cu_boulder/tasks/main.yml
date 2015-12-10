@@ -1,0 +1,7 @@
+---
+  - name: Re-create host file
+    template: src=cu_boulder_hosts.j2 dest=/etc/hosts owner=root force=yes
+
+  - name:  Add CU Boulder vhost configuration
+    template: src=cu_boulder_vhosts.conf.j2 dest=/etc/httpd/conf.d/vhosts.conf mode=0644 owner=apache group=apache force=yes
+    notify: restart apache
