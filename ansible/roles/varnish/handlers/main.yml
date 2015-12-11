@@ -1,3 +1,6 @@
 ---
   - name: restart varnish
-    command: service varnish restart
+    become: yes
+    service:
+        name: varnish
+        state: restarted
