@@ -12,27 +12,27 @@
 
     - name: Install necessary OS packages
       yum:
-        name: "{{ item }}"
-        state: present
-        update_cache: yes
+          name: "{{ item }}"
+          state: present
+          update_cache: yes
       with_items:
-        - libselinux-python
+          - libselinux-python
 
     - name: Creates destination directory
       # Workaround for #2372
       file:
-        dest: "/root/.ssh/"
-        state: directory
-        mode: 0700
+          dest: "/root/.ssh/"
+          state: directory
+          mode: 0700
 
     - name: Pushes user's rsa key to root's vagrant box (it's ok if this TASK fails)
       # action: authorized_key user=root key='$FILE(~/.ssh/id_rsa.pub)'
       # Workaround for #2372
       copy:
-        src: "~/.ssh/id_rsa.pub"
-        dest: "/root/.ssh/authorized_keys"
-        owner: root
-        mode: 0600
+          src: "~/.ssh/id_rsa.pub"
+          dest: "/root/.ssh/authorized_keys"
+          owner: root
+          mode: 0600
       register: rsa
       ignore_errors: yes
 
@@ -40,8 +40,8 @@
       # action: authorized_key user=root key='$FILE(~/.ssh/id_dsa.pub)'
       # Workaround for #2372
       copy:
-        src: "~/.ssh/id_dsa.pub"
-        dest: "/root/.ssh/authorized_keys"
-        owner: root
-        mode: 0600
+          src: "~/.ssh/id_dsa.pub"
+          dest: "/root/.ssh/authorized_keys"
+          owner: root
+          mode: 0600
       when: rsa|failed
