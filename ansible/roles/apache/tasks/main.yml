@@ -1,48 +1,63 @@
 ---
   - name:  Install necessary packages
-    yum: name={{ item }} state=present update_cache=yes
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
-      - httpd-2.2.15
-      - mod_ssl
-      - openssl
+        - httpd-2.2.15
+        - mod_ssl
+        - openssl
 
   - name: Configure Apache to listen on 80
     lineinfile:
-      dest: "/etc/httpd/conf/httpd.conf"
-      regexp: "^Listen "
-      line: "Listen 80"
-      state: present
-    notify: restart apache
+        dest: "/etc/httpd/conf/httpd.conf"
+        regexp: "^Listen "
+        line: "Listen 80"
+        state: present
+    notify:
+        - restart apache
 
   - name: Name Apache vhost for :80
     lineinfile:
-      dest: "/etc/httpd/conf/httpd.conf"
-      regexp: "^NameVirtualHost "
-      line: "NameVirtualHost *:80"
-      state: present
-    notify: restart apache
+        dest: "/etc/httpd/conf/httpd.conf"
+        regexp: "^NameVirtualHost "
+        line: "NameVirtualHost *:80"
+        state: present
+    notify:
+        - restart apache
 
   # TODO: Support SSL properly. See also settings.local_post.php
   #
   # mod_ssl will take care of listening on 443
   # - name: Name Apache vhost for :443
   #   lineinfile:
-  #     dest: "/etc/httpd/conf/httpd.conf"
-  #     line: "NameVirtualHost *:443"
-  #     state: present
-  #   notify: restart apache
+  #       dest: "/etc/httpd/conf/httpd.conf"
+  #       line: "NameVirtualHost *:443"
+  #       state: present
+  #   notify:
+  #       - restart apache
   #
   # - name: Create directory for SSL cert
-  #   file: path=/etc/httpd/ssl state=directory
+  #   file:
+  #       path: "/etc/httpd/ssl"
+  #       state: directory
   #
   # - name: Generate SSL cert
   #   command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt"
   #   args:
-  #     creates: /etc/httpd/ssl/apache.crt
+  #       creates: /etc/httpd/ssl/apache.crt
 
   - name:  Add vhost configuration
-    template: src=vhosts.conf.j2 dest=/etc/httpd/conf.d/vhosts.conf mode=0650 owner=apache group=apache force=yes
-    notify: restart apache
+    template:
+        src: "vhosts.conf.j2"
+        dest: "/etc/httpd/conf.d/vhosts.conf"
+        owner: apache
+        group: apache
+        mode: 0650
+        force: yes
+    notify:
+        - restart apache
 
   - name:  Check that our config is valid
     command: apachectl configtest
@@ -54,39 +69,56 @@
     when: result|failed
 
   - name: Update user dplagnt groups
-    user: name=dplagnt groups=apache append=yes
+    user:
+        name: "dplagnt"
+        groups: "apache"
+        append: yes
 
   - name:  Create directory to store outgoing mail.
-    file: >
-        path=~/var/log/mail
-        state=directory
-        mode=777
+    file:
+        path: "~/var/log/mail"
+        state: directory
+        mode: 777
 
   - name:  Create directory to store outgoing mail.
-    file: dest=/var/log/mail mode=777 owner=root state=directory
+    file:
+        dest: "/var/log/mail"
+        owner: root
+        mode: 777
+        state: directory
 
   - name:  Copy sendmail php code to server
-    copy: src=sendmail dest=/usr/local/bin/sendmail owner=root group=root mode=0755
+    copy:
+        src: "sendmail"
+        dest: "/usr/local/bin/sendmail"
+        owner: "root"
+        group: "root"
+        mode: 0755
 
   - name:  Add sendmail lines to cli php.ini
     lineinfile:
-      dest: "/etc/php5/cli/php.ini"
-      line: "sendmail_path = /usr/local/bin/sendmail"
-      regexp: "^sendmail_path = /usr/local/bin/sendmail"
-      state: present
-      insertafter: EOF
-      create: True
+        dest: "/etc/php5/cli/php.ini"
+        line: "sendmail_path = /usr/local/bin/sendmail"
+        regexp: "^sendmail_path = /usr/local/bin/sendmail"
+        state: present
+        insertafter: EOF
+        create: True
+    notify:
+        - restart apache
 
   - name:  Add sendmail lines to apache php.ini
     lineinfile:
-      dest: "/etc/php5/apache2/php.ini"
-      line: "sendmail_path = /usr/local/bin/sendmail"
-      regexp: "^sendmail_path = /usr/local/bin/sendmail"
-      state: present
-      insertafter: EOF
-      create: True
+        dest: "/etc/php5/apache2/php.ini"
+        line: "sendmail_path = /usr/local/bin/sendmail"
+        regexp: "^sendmail_path = /usr/local/bin/sendmail"
+        state: present
+        insertafter: EOF
+        create: True
     notify:
-      - restart apache
+        - restart apache
 
   - name: Ensure Apache (httpd) is started and enabled on boot.
-    service: name=httpd state=started enabled=yes
+    service:
+        name: httpd
+        state: started
+        enabled: yes

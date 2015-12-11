@@ -7,18 +7,18 @@
   # Now we install all the applications we need to run Express
   # Drush includes the Composer install, so needs to be before Behat.
   - hosts: web
-    sudo: yes
+    become: yes
     roles:
-      - server_base
-      - apache
-      - php
-      - mysql
-      - varnish
-      - apc
-      - memcache
-      - xdebug
-      - rvm
-      - drush
-      - behat
-      - express_code
-      # - logstash_forwarder
+        - server_base
+        - apache
+        - php
+        - mysql
+        - varnish
+        - apc
+        - memcache
+        - xdebug
+        - rvm
+        - drush
+        - behat
+        - express_code
+        # - logstash_forwarder

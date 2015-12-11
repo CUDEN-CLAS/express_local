@@ -5,8 +5,8 @@
   - include: push_ssh_keys.yml
 
   - hosts: inventory
-    sudo: yes
+    become: yes
     roles:
-      - server_base
-      - python
-      # - logstash_forwarder
+        - server_base
+        - python
+        # - logstash_forwarder

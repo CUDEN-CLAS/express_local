@@ -1,21 +1,25 @@
 ---
   - name: Install memcached
-    yum: pkg={{ item }} state=installed update_cache=yes
+    yum:
+        pkg: "{{ item }}"
+        state: installed
+        update_cache: yes
     with_items:
-     - memcached
-     - libmemcached
-     - zlib-devel
+        - memcached
+        - libmemcached
+        - zlib-devel
 
   # Configure Memcached.
   - name: Copy Memcached configuration.
     template:
-      src: memcached.conf.j2
-      dest: /etc/sysconfig/memcached
-      owner: root
-      group: root
-      mode: 0644
-      force: yes
-    notify: restart memcached
+        src: "memcached.conf.j2"
+        dest: "/etc/sysconfig/memcached"
+        owner: root
+        group: root
+        mode: 0644
+        force: yes
+    notify:
+        - restart memcached
 
   - name: Install PECL memcache
     shell: yes | pecl install memcache
@@ -23,4 +27,7 @@
     ignore_errors: True
 
   - name: Ensure Memcached is started and set to run on startup.
-    service: name=memcached state=started enabled=yes
+    service:
+        name: memcached
+        state: started
+        enabled: yes

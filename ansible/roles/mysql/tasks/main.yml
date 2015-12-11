@@ -1,34 +1,64 @@
 ---
 - name: Ensure MySQL Python libraries are installed
-  yum: name=MySQL-python state=installed
+  yum:
+      name: "MySQL-python"
+      state: installed
 
 - name: Install mysql packages
-  yum: pkg=mysql-server state=present
-  sudo: true
+  become: yes
+  yum:
+      pkg: "mysql-server"
+      state: present
 
 - name: Ensure MySQL is started and enabled on boot.
-  service: name=mysqld state=started enabled=yes
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
 
 # Set root mysql user's pw to root
 # This will fail if this isn't the first time running..no biggie because it is already done
 - name: Set the root password
-  mysql_user: name=root password=root host=localhost login_user=root login_password=
+  mysql_user:
+      name: "root"
+      password: "root"
+      host: "localhost"
+      login_user: "root"
+      login_password: ""
   ignore_errors: True
   register: result
 
-- name: Config for easy access as root user
-  template: src=mysql_root.my.cnf.j2 dest=/root/.my.cnf force=yes
+- name: Configure for easy access as root user
+  template:
+      src: "mysql_root.my.cnf.j2"
+      dest: "/root/.my.cnf"
+      force: yes
   when: result|success
 
-- name: Config for easy access as dplagnt user
-  template: src=mysql_root.my.cnf.j2 dest=/home/dplagnt/.my.cnf owner=dplagnt force=yes
+- name: Configure for easy access as dplagnt user
+  template:
+      src: "mysql_root.my.cnf.j2"
+      dest: "/home/dplagnt/.my.cnf"
+      owner: "dplagnt"
+      force: yes
   when: result|success
 
-- name: create application database user
-  mysql_user: name=dplagnt password=dplagnt priv=*.*:ALL host='%' state=present login_password=root login_user=root
+- name: Create application database user
+  mysql_user:
+      name: "dplagnt"
+      password: "dplagnt"
+      priv: "*.*:ALL"
+      host: "'%'"
+      state: present
+      login_password: "root"
+      login_user: "root"
   when: result|success
 
 - name: Comment out bind line
-  lineinfile: dest=/etc/my.cnf state=present regexp='bind-address\s+=\s+127.0.0.1' line='#bind-address = 127.0.0.1'
+  lineinfile:
+      dest: "/etc/my.cnf"
+      regexp: "'bind-address = 127.0.0.1'"
+      line: "''#bind-address = 127.0.0.1'"
+      state: present
   notify:
-    - restart mysql
+      - restart mysql
