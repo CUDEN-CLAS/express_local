@@ -1,9 +1,15 @@
 ---
   - name: Get rid of default files
-    file: path={{ item }} state=absent
+    file:
+        path: "{{ item }}"
+        state: absent
     with_items:
-      - /etc/varnish/default.vcl
+        - /etc/varnish/default.vcl
 
   - name: Symlink in default.vcl
-    file: src=/data/code/varnish/default.vcl dest=/etc/varnish/default.vcl state=link
-    notify: restart varnish
+    file:
+        src: "/data/code/varnish/default.vcl"
+        dest: "/etc/varnish/default.vcl"
+        state: link
+    notify:
+        - restart varnish

@@ -42,7 +42,7 @@ Vagrant.configure(2) do |config|
 
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/playbooks/vms/vm_express.yml"
+        ansible.playbook = "ansible/vm_express.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.ask_vault_pass = true
         ansible.extra_vars = {
@@ -53,7 +53,7 @@ Vagrant.configure(2) do |config|
 
     if name.include? "inventory.local"
       config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/playbooks/vms/vm_inventory.yml"
+        ansible.playbook = "ansible/vm_inventory.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.extra_vars = {
           ansible_ssh_user: 'vagrant',

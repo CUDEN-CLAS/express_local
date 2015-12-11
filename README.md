@@ -15,11 +15,15 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * `sudo apt-get install git ansible nfs-kernel-server`
 
 ## OSX (untested)
-* Install ansible (likely with pip)
+* Install Pypthon 2.7 (Can be with [Homebrew](http://brew.sh/))
+* Install ansible
+  ```
+  sudo pip install ansible
+  ```
 
 ## All operating systems
 * Install Vagrant (https://www.vagrantup.com/downloads.html)
-* Install VirtualBox
+* Install VirtualBox (https://www.virtualbox.org/wiki/Downloads)
 * Clone this repository
 * Edit your hosts file (located at `/etc/hosts`) to include the following
   ```
@@ -38,11 +42,13 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   ```
 * Edit your SSH config (`~/.ssh/config`) to include the following
   ```
+  # Connection information for express_local VMs
   Host 192.168.33.* express.local inventory.local logs.local
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
   User dplagnt
   LogLevel ERROR
+  
   ```
 * Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
   The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
@@ -89,5 +95,3 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * xprof
 * Support SSL properly
 * Make sure every package has a version
-* Drush rr
-* Allow dplagnt to sudo w/o a password

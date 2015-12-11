@@ -14,7 +14,9 @@
 
   tasks:
       - name: Create mysql database.
-        mysql_db: name={{database}} state=present
+        mysql_db:
+            name: "{{database}}"
+            state: present
         when: type == "C" or type == "c" or type == "create" or type == "Create"
 
       - name: Clear drush cache
@@ -82,9 +84,11 @@
 
       - name: Create temp files directory
         when: type == "C" or type == "c" or type == "create" or type == "Create"
-        file: path={{ item }} state=directory
+        file:
+            path: "{{ item }}"
+            state: directory
         with_items:
-          - "/data/files/{{path}}/tmp"
+            - "/data/files/{{path}}/tmp"
 
       - name: Install site
         command: drush si cu_fit -y
