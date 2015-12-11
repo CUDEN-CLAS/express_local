@@ -41,7 +41,7 @@
   #     creates: /etc/httpd/ssl/apache.crt
 
   - name:  Add vhost configuration
-    template: src=vhosts.conf.j2 dest=/etc/httpd/conf.d/vhosts.conf mode=0650 owner=apache group=apache force=yes
+    template: src=vhosts.conf.j2 dest=/etc/httpd/conf.d/vhosts.conf mode=0644 owner=root group=root force=yes
     notify: restart apache
 
   - name:  Check that our config is valid
