@@ -15,7 +15,8 @@
         regexp: "^Listen "
         line: "Listen 80"
         state: present
-    notify: restart apache
+    notify:
+        - restart apache
 
   - name: Name Apache vhost for :80
     lineinfile:
@@ -23,7 +24,8 @@
         regexp: "^NameVirtualHost "
         line: "NameVirtualHost *:80"
         state: present
-    notify: restart apache
+    notify:
+        - restart apache
 
   # TODO: Support SSL properly. See also settings.local_post.php
   #
@@ -33,7 +35,8 @@
   #       dest: "/etc/httpd/conf/httpd.conf"
   #       line: "NameVirtualHost *:443"
   #       state: present
-  #   notify: restart apache
+  #   notify:
+  #       - restart apache
   #
   # - name: Create directory for SSL cert
   #   file:
@@ -53,7 +56,8 @@
         group: apache
         mode: 0650
         force: yes
-    notify: restart apache
+    notify:
+        - restart apache
 
   - name:  Check that our config is valid
     command: apachectl configtest
