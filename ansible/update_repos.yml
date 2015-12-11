@@ -12,49 +12,49 @@
       when: force == "Y" or force == "y" or force == "Yes" or force == "yes"
       command: "git reset --hard origin/{{ item.branch }}"
       args:
-        chdir: "{{ item.path }}"
+        c hdir: "{{ item.path }}"
       with_items:
-        - { path: "~/express_local/data/code/dslm_base", branch: "poolb-dev"}
-        - { path: "~/express_local/data/code/packages_base", branch: "dev"}
-        - { path: "~/express_local/data/code/varnish", branch: "master"}
-        - { path: "~/express_local/data/code/inventory", branch: "dev"}
-        - { path: "~/express_local/data/code/logstash", branch: "master"}
+          - { path: "~/express_local/data/code/dslm_base", branch: "poolb-dev"}
+          - { path: "~/express_local/data/code/packages_base", branch: "dev"}
+          - { path: "~/express_local/data/code/varnish", branch: "master"}
+          - { path: "~/express_local/data/code/inventory", branch: "dev"}
+          - { path: "~/express_local/data/code/logstash", branch: "master"}
 
 
     - name: Reset submodules
       when: force == "Y" or force == "y" or force == "Yes" or force == "yes"
       command: "git submodule update --init"
       args:
-        chdir: "{{ item }}"
+          chdir: "{{ item }}"
       with_items:
-        - "~/express_local/data/code/dslm_base"
-        - "~/express_local/data/code/packages_base"
+          - "~/express_local/data/code/dslm_base"
+          - "~/express_local/data/code/packages_base"
 
 
     - name: Check out Express 2.0 branch
       when: force == "Y" or force == "y" or force == "Yes" or force == "yes"
       command: "git checkout express"
       args:
-        chdir: "~/express_local/data/code/dslm_base/profiles/cu_fit-current"
+          chdir: "~/express_local/data/code/dslm_base/profiles/cu_fit-current"
 
     - name: Checkout the correct branches
       command: "git checkout {{ item.branch }}"
       args:
-        chdir: "{{ item.path }}"
+          chdir: "{{ item.path }}"
       with_items:
-        - { path: "~/express_local/data/code/dslm_base", branch: "poolb-dev"}
-        - { path: "~/express_local/data/code/packages_base", branch: "dev"}
-        - { path: "~/express_local/data/code/varnish", branch: "master"}
-        - { path: "~/express_local/data/code/inventory", branch: "dev"}
-        - { path: "~/express_local/data/code/logstash", branch: "master"}
+          - { path: "~/express_local/data/code/dslm_base", branch: "poolb-dev"}
+          - { path: "~/express_local/data/code/packages_base", branch: "dev"}
+          - { path: "~/express_local/data/code/varnish", branch: "master"}
+          - { path: "~/express_local/data/code/inventory", branch: "dev"}
+          - { path: "~/express_local/data/code/logstash", branch: "master"}
 
     - name: Pull the repositories
       command: "git pull"
       args:
-        chdir: "{{ item.path }}"
+          chdir: "{{ item.path }}"
       with_items:
-        - { path: "~/express_local/data/code/dslm_base"}
-        - { path: "~/express_local/data/code/packages_base"}
-        - { path: "~/express_local/data/code/varnish"}
-        - { path: "~/express_local/data/code/inventory"}
-        - { path: "~/express_local/data/code/logstash"}
+          - { path: "~/express_local/data/code/dslm_base"}
+          - { path: "~/express_local/data/code/packages_base"}
+          - { path: "~/express_local/data/code/varnish"}
+          - { path: "~/express_local/data/code/inventory"}
+          - { path: "~/express_local/data/code/logstash"}
