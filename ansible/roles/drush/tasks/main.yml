@@ -77,19 +77,25 @@
         state: directory
         owner: dplagnt
 
-  - name: Install Drush-patchfile with Composer
-    shell: "/usr/local/bin/composer require davereid/drush-patchfile:dev-master"
-    args:
-        chdir: "/home/dplagnt/.drush"
-        creates: "/home/dplagnt/.drush/composer.json"
+  - name: Create composer file for Patchfile and CodeSniffer
+    become: yes
+    become_user: dplagnt
+    template:
+        src: "drush.composer.json.j2"
+        dest: "/home/dplagnt/composer.json"
+        force: yes
 
-  - name: Set owner to dplagnt
+  - name: Remove existing lock file
+    become: yes
     file:
-        path: "/home/dplagnt/.drush"
-        owner: dplagnt
-        group: lapurd
-        state: directory
-        recurse: yes
+        path: "/home/dplagnt/composer.lock"
+        state: absent
+
+  - name: Install packages via composer
+    become: yes
+    shell: "/usr/local/bin/composer install --no-interaction"
+    args:
+        chdir: "/home/dplagnt"
 
   - name: Copy drushrc.php to VM to dplagnt
     template:
@@ -103,16 +109,20 @@
     become_user: dplagnt
     command: "drush dl registry_rebuild -y"
 
-  - name: Install Coder using Composer
-    become: yes
-    shell: >
-      /usr/local/bin/composer global require drupal/coder:dev-7.x-2.x
-      chdir=/home/dplagnt/.drush
+  - name: Link phpcs command
+    file:
+        dest: "/usr/bin/phpcs"
+        src: "/home/dplagnt/bin/phpcs"
+        state: link
 
-  - name: Install PHP CodeSniffer using Composer
+  - name: Add Drupal coding standards to PHP CodeSniffer
     become: yes
-    shell: >
-      /usr/local/bin/composer global require squizlabs/php_codesniffer=1.5.6
-      chdir=/home/dplagnt/.drush
+    command: "phpcs --config-set installed_paths /home/dplagnt/modules/coder/coder_sniffer"
 
-  - file: path=/home/dplagnt/.drush owner=dplagnt group=lapurd state=directory recurse=yes
+  - name: Set owner to dplagnt
+    file:
+        path: "/home/dplagnt/.drush"
+        owner: dplagnt
+        group: lapurd
+        state: directory
+        recurse: yes
