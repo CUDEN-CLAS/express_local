@@ -53,8 +53,6 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
   The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
 
-#
-
 # This repo includes
 * All VMs
   * Vagrant 2
