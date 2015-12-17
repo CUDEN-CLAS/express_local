@@ -1,4 +1,4 @@
-If you don't care how it works, you just want it to work now; checkout the [short version](README_SHORT.md)
+If you don't care how it works, you just want it to work now; checkout the [short version](README_COMMANDS.md)
 
 # Express Local
 A local development environment for Cu Boulder's Web Express Platform. **The playbooks require a vault password to run properly.**
@@ -14,7 +14,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 ## Ubuntu Installations
 * `sudo apt-get install git ansible nfs-kernel-server`
 
-## OSX (untested)
+## OSX
 * Install Pypthon 2.7 (Can be with [Homebrew](http://brew.sh/))
 * Install ansible
   ```
@@ -48,10 +48,12 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   UserKnownHostsFile=/dev/null
   User dplagnt
   LogLevel ERROR
-  
+
   ```
 * Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
   The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
+
+#
 
 # This repo includes
 * All VMs
@@ -63,6 +65,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   * Apache 2.2.15
   * MySQL 5.6.20
   * PHP 5.3.3
+    * CodeSniffer 1.5.6 (with Drupal coding standards)
   * APC 3.1.9
   * Memcache 3.0.6
   * xdebug 2.2.7

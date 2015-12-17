@@ -50,9 +50,18 @@
     ```
 * SSH onto the VM:  
   `ssh express.local`
-* Run tests on the VM (_SSH onto the VM first_):
-  ```
-  cd /data/web/express/testing/profiles/cu_fit/tests  
-  behat --tags=[tag_you_want_to_test]
+* Commands that run on the VM (_SSH onto the VM first_):
+  * Run tests:
+    ```
+    cd /data/web/express/testing/profiles/cu_fit/tests  
+    behat --tags=[tag_you_want_to_test]
 
-  ```
+    ```
+  * Use CodeSniffer.
+
+    `drupalcs` is an alias to phpcs with the Code Standard and types of file extensions to scan predefined. The extensions are `php, module, inc, install, test, profile, theme, js, css, info, txt`
+    ```
+    phpcs --standard=Drupal /path/to/example.module
+    drupalcs /path/to/example.module
+
+    ```
