@@ -61,6 +61,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   Cmnd_Alias VAGRANT_NFSD = /sbin/nfsd restart
   Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /usr/bin/sed -E -e /*/ d -ibak /etc/exports
   %admin ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD, VAGRANT_EXPORTS_REMOVE
+  
   ```
 
 # This repo includes
