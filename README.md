@@ -53,6 +53,16 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
   The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
 
+# Notes
+* If are on OSX you don't like typing your password each time you start the VMs add the following to `/etc/sudoers`. See https://docs.vagrantup.com/v2/synced-folders/nfs.html for other OSs.
+  ```
+  ## Allows us to run Vagrant (using NFS mount) without having to enter a password.
+  Cmnd_Alias VAGRANT_EXPORTS_ADD = /usr/bin/tee -a /etc/exports
+  Cmnd_Alias VAGRANT_NFSD = /sbin/nfsd restart
+  Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /usr/bin/sed -E -e /*/ d -ibak /etc/exports
+  %admin ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD, VAGRANT_EXPORTS_REMOVE
+  ```
+
 # This repo includes
 * All VMs
   * Vagrant 2
