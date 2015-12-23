@@ -34,3 +34,5 @@
     with_items:
         - { src: "/data/code/elasticsearch_config/elasticsearch.yml", dest:"/etc/elasticsearch/elasticsearch.yml"}
         - { src: "/data/code/elasticsearch_config/logging.yml", dest:"/etc/elasticsearch/logging.yml"}
+    notify:
+        - restart elasticsearch
