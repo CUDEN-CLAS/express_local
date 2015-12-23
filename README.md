@@ -61,7 +61,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   Cmnd_Alias VAGRANT_NFSD = /sbin/nfsd restart
   Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /usr/bin/sed -E -e /*/ d -ibak /etc/exports
   %admin ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD, VAGRANT_EXPORTS_REMOVE
-  
+
   ```
 
 # This repo includes
@@ -99,7 +99,8 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
     * Fabric
   * Logstash Forwarder
 * Webserver - logs.local
-  * Elasticsearch
+  * Java - 1.7.0
+  * Elasticsearch - 1.6.2
   * Logstash
   * Kibana
 

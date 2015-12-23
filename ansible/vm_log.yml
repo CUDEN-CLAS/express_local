@@ -1,0 +1,16 @@
+---
+  # This playbook will be run on the logging server for Express.
+
+  # Need to set up ssh first
+  - include: push_ssh_keys.yml
+
+  - hosts: logging
+    become: yes
+    # Copy in the ELK configuration
+    vars:
+        express_code_elk: true
+    roles:
+        - server_base
+        - elasticsearch
+        #- logstash
+        #- kibana

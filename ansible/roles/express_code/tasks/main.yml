@@ -1,5 +1,6 @@
 ---
-  - name: Get rid of default files
+  - name: Get rid of default Varnish files
+    when: express_code_varnish
     file:
         path: "{{ item }}"
         state: absent
@@ -7,9 +8,29 @@
         - /etc/varnish/default.vcl
 
   - name: Symlink in default.vcl
+    when: express_code_varnish
     file:
         src: "/data/code/varnish/default.vcl"
         dest: "/etc/varnish/default.vcl"
         state: link
     notify:
         - restart varnish
+
+  - name: Get rid of ELK files
+    when: express_code_elk
+    file:
+        path: "{{ item }}"
+        state: absent
+    with_items:
+        - /etc/elasticsearch/elasticsearch.yml
+        - /etc/elasticsearch/logging.yml
+
+  - name: Symlink in our ELK configuration
+    when: express_code_elk
+    file:
+        src: {{ item.src }}
+        dest: {{ item.dest }}
+        state: link
+    with_items:
+        - { src: "/data/code/elasticsearch_config/elasticsearch.yml", dest:"/etc/elasticsearch/elasticsearch.yml"}
+        - { src: "/data/code/elasticsearch_config/logging.yml", dest:"/etc/elasticsearch/logging.yml"}
