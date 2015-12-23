@@ -24,15 +24,18 @@
     with_items:
         - /etc/elasticsearch/elasticsearch.yml
         - /etc/elasticsearch/logging.yml
+        - /etc/logstash/conf.d
 
   - name: Symlink in our ELK configuration
     when: express_code_elk
     file:
-        src: {{ item.src }}
-        dest: {{ item.dest }}
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         state: link
     with_items:
-        - { src: "/data/code/elasticsearch_config/elasticsearch.yml", dest:"/etc/elasticsearch/elasticsearch.yml"}
-        - { src: "/data/code/elasticsearch_config/logging.yml", dest:"/etc/elasticsearch/logging.yml"}
+        - { src: "/data/code/elasticsearch_config/elasticsearch.yml", dest: "/etc/elasticsearch/elasticsearch.yml"}
+        - { src: "/data/code/elasticsearch_config/logging.yml", dest: "/etc/elasticsearch/logging.yml"}
+        - { src: "/data/code/logstash/conf.d", dest: "/etc/logstash/conf.d"}
     notify:
         - restart elasticsearch
+        - restart logstash
