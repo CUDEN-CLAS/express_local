@@ -6,6 +6,9 @@
 
   - hosts: inventory
     become: yes
+    vars:
+        express_code_varnish: false
+        express_code_elk: false
     roles:
         - server_base
         - python

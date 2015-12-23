@@ -8,9 +8,10 @@
   # Drush includes the Composer install, so needs to be before Behat.
   - hosts: web
     become: yes
-    # Copy in the varnish configuration
+    # Pick which configuration files we want to swap in
     vars:
         express_code_varnish: true
+        express_code_elk: false
     roles:
         - server_base
         - apache
