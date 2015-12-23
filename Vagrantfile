@@ -65,7 +65,6 @@ Vagrant.configure(2) do |config|
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_log.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.verbose = "vvv"
         ansible.extra_vars = {
           ansible_ssh_user: 'vagrant',
           ansible_connection: 'ssh'}

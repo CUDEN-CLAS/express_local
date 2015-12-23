@@ -14,5 +14,5 @@
         - server_base
         - elasticsearch
         - logstash
-        #- kibana
+        - kibana
         - express_code

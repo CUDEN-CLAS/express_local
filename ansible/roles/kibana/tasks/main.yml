@@ -1,0 +1,65 @@
+---
+  # Setup the kibana user
+  - name: Create kibana group
+    group:
+        name: "kibana"
+        state: present
+
+  - name: Create kibana user
+    user:
+        name: "kibana"
+        group: "kibana"
+        shell: "/bin/bash"
+
+  - name: Update user kibana groups
+    user:
+        name: "kibana"
+        groups: "adm,wheel"
+        append: yes
+
+  - name: Get Kibana
+    become: yes
+    shell: "wget https://download.elastic.co/kibana/kibana/{{ kibana_version }}.tar.gz"
+    args:
+        chdir: "~"
+
+  - name: Extract Kibana
+    become: yes
+    shell: "tar xf {{ kibana_version }}.tar.gz -C /opt"
+    args:
+        chdir: "~"
+
+  - name: Link kibana
+    file:
+        src: "/opt/{{ kibana_version }}"
+        dest: "/opt/kibana"
+        state: link
+
+
+  - name: Change set kibana user as owner of files
+    become: yes
+    file:
+        path: "/opt/{{ kibana_version }}"
+        owner: "kibana"
+        group: "kibana"
+        recurse: yes
+        state: directory
+
+  - name: Setup Kibana as a service
+    become: yes
+    copy:
+        src: "init"
+        dest: "/etc/init.d/kibana"
+        mode: "u+x,g+x,o+x"
+
+  - become: yes
+    copy:
+        src: "default"
+        dest: "/etc/default/kibana"
+
+
+  - name: Ensure Kibana is started and set to run on startup
+    service:
+        name: kibana
+        state: started
+        enabled: yes
