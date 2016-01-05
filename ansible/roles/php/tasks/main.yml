@@ -119,3 +119,30 @@
     when: php_pecl_uploadprogress is defined and php_pecl_uploadprogress == "y"
     notify:
         - restart apache
+
+  - name:  Create directory to store outgoing mail.
+    become: yes
+    file:
+        dest: "/var/log/mail"
+        owner: root
+        mode: 0777
+        state: directory
+
+  - name:  Copy sendmail php code to server
+    copy:
+        src: "sendmail"
+        dest: "/usr/local/bin/sendmail"
+        owner: "root"
+        group: "root"
+        mode: 0755
+
+  - name:  Add sendmail lines to cli php.ini
+    lineinfile:
+        dest: "/etc/php.ini"
+        line: "sendmail_path = /usr/local/bin/sendmail"
+        regexp: "^sendmail_path = /usr/local/bin/sendmail"
+        state: present
+        insertafter: EOF
+        create: True
+    notify:
+        - restart apache
