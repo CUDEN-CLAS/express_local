@@ -74,49 +74,6 @@
         groups: "apache"
         append: yes
 
-  - name:  Create directory to store outgoing mail.
-    file:
-        path: "~/var/log/mail"
-        state: directory
-        mode: 777
-
-  - name:  Create directory to store outgoing mail.
-    file:
-        dest: "/var/log/mail"
-        owner: root
-        mode: 777
-        state: directory
-
-  - name:  Copy sendmail php code to server
-    copy:
-        src: "sendmail"
-        dest: "/usr/local/bin/sendmail"
-        owner: "root"
-        group: "root"
-        mode: 0755
-
-  - name:  Add sendmail lines to cli php.ini
-    lineinfile:
-        dest: "/etc/php5/cli/php.ini"
-        line: "sendmail_path = /usr/local/bin/sendmail"
-        regexp: "^sendmail_path = /usr/local/bin/sendmail"
-        state: present
-        insertafter: EOF
-        create: True
-    notify:
-        - restart apache
-
-  - name:  Add sendmail lines to apache php.ini
-    lineinfile:
-        dest: "/etc/php5/apache2/php.ini"
-        line: "sendmail_path = /usr/local/bin/sendmail"
-        regexp: "^sendmail_path = /usr/local/bin/sendmail"
-        state: present
-        insertafter: EOF
-        create: True
-    notify:
-        - restart apache
-
   - name: Ensure Apache (httpd) is started and enabled on boot.
     service:
         name: httpd
