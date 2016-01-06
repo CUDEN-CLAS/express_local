@@ -75,7 +75,7 @@
       - name: Create settings.php file for Express.
         when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
         template:
-            src: templates/express_settings.j2
+            src: templates/express_settings.express.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.php"
             mode: 0774
 
