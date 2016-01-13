@@ -28,7 +28,7 @@ Vagrant.configure(2) do |config|
         v.name = name
 
         if name.include? "express.local"
-          v.customize ["modifyvm", :id, "--memory", 2048]
+          v.customize ["modifyvm", :id, "--memory", 4096]
           v.customize ["modifyvm", :id, "--cpus", "2"]
         else
           v.customize ["modifyvm", :id, "--memory", 1024]
