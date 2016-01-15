@@ -1,42 +1,62 @@
 ---
   - name: Install additional OS packages
-    yum: name={{ item }} state=present
+    become: yes
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
       - php-mbstring
-    sudo: yes
+      - java-1.8.0-openjdk-headless
+      - xorg-x11-server-Xvfb
+      - firefox
 
   - name: Create behat install directory
-    file: path=/opt/behat owner=root group=root state=directory follow=yes
-    sudo: yes
+    become: yes
+    file:
+        path: "/opt/behat"
+        owner: root
+        group: root
+        state: directory
+        follow: yes
 
   - name: Create composer file for behat installation
-    template: src=behat.composer.json.j2 dest=/opt/behat/composer.json force=yes
-    sudo: yes
+    become: yes
+    template:
+        src: "behat.composer.json.j2"
+        dest: "/opt/behat/composer.json"
+        force: yes
 
   - name: Remove existing lock file
-    file: path=/opt/behat/composer.lock state=absent
-    sudo: yes
+    become: yes
+    file:
+        path: "/opt/behat/composer.lock"
+        state: absent
 
   - name: Install behat via composer
-    shell: >
-      /usr/local/bin/composer install --no-interaction
-      chdir=/opt/behat
-    sudo: yes
+    become: yes
+    shell: "/usr/local/bin/composer install --no-interaction"
+    args:
+        chdir: "/opt/behat"
 
   - name: Link behat command
-    file: src=/opt/behat/bin/behat dest=/usr/bin/behat state=link
-    sudo: yes
+    become: yes
+    file:
+        src: "/opt/behat/bin/behat"
+        dest: "/usr/bin/behat"
+        state: link
+
 
   - name: Create selenium directory
-    file: path=/var/selenium2 owner=root group=root state=directory follow=yes
+    file:
+        path: "/var/selenium2"
+        owner: root
+        group: root
+        state: directory
+        follow: yes
 
   - name: Download selenium
-    get_url: url=http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar  dest=/var/selenium2/selenium-server-standalone-2.46.0.jar force=no
-
-  - name: Install additional applications for browser testing
-    yum: pkg={{ item }} state=latest update_cache=yes
-    with_items:
-     - java-1.8.0-openjdk-headless
-     - xorg-x11-server-Xvfb
-     - firefox
-    sudo: yes
+    get_url:
+      url: "http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar"
+      dest: "/var/selenium2/selenium-server-standalone-2.46.0.jar"
+      force: no

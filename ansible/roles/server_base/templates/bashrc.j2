@@ -23,6 +23,9 @@ parse_git_branch() {
 # For Drush 6
 export PATH="$HOME/.composer/vendor/bin:$PATH"
 
+# Added alias to support code sniffer
+alias drupalcs="phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,js,css,info,txt'"
+
 # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.rvm/bin"
 [[ -r $rvm_path/scripts/completion ]] && . $rvm_path/scripts/completion

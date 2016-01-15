@@ -29,7 +29,7 @@
     - name: Check out Express 2.0 branch
       command: "git checkout express"
       args:
-        chdir: "~/express_local/data/code/dslm_base/profiles/cu_fit-current"
+        chdir: "~/express_local/data/code/dslm_base/profiles/express-current"
 
     - name: Clone package_base repository
       git:

@@ -94,28 +94,55 @@
 
   # Celery and CeleryBeat
   - name: Push celeryd init script
-    copy: src=celeryd dest=/etc/init.d/ mode=0777 owner=root group=root
+    copy:
+        src: "celeryd"
+        dest: "/etc/init.d/"
+        owner: root
+        group: root
+        mode: 0777
 
   - name: Push celerybeat init script
-    copy: src=celerybeat dest=/etc/init.d/ mode=0777
+    copy:
+        src: "celerybeat"
+        dest: "/etc/init.d/"
+        mode: 0777
 
   - name: Pushes celeryd configuration
-    template: src=celeryd.j2 dest=/etc/default/celeryd mode=0640 owner=root group=root force=yes
+    template:
+        src: "celeryd.j2"
+        dest: "/etc/default/celeryd"
+        owner: root
+        group: root
+        mode: 0640
+        force: yes
 
   - name: Create celery group
-    group: name=celery state=present
+    group:
+        name: celery
+        state: present
 
   - name: Create celery user
-    user: name=celery group=celery
+    user:
+        name: "celery"
+        group: "celery"
 
   - name: Update user vagrant groups
-    user: name=vagrant groups=celery append=yes
+    user:
+        name: "vagrant"
+        groups: "celery"
+        append: yes
 
   - name: Ensure Celery is started and enabled on boot.
-    service: name=celeryd state=started enabled=yes
+    service:
+        name: celeryd
+        state: started 
+        enabled: yes
 
   - name: Ensure CeleryBeat is started and enabled on boot.
-    service: name=celerybeat state=started enabled=yes
+    service:
+        name: celerybeat
+        state: started
+        enabled: yes
 
   # Eve
   - name: Copy Eve local configuration
@@ -140,25 +167,52 @@
 
   # MongoDB
   - name: Copy MongoDB configuration
-    template: src=mongodb.conf.j2 dest=/etc/mongodb.conf mode=0644 owner=root group=root
+    template:
+        src: "mongodb.conf.j2"
+        dest: "/etc/mongodb.conf"
+        mode: 0644
+        owner: root
+        group: root
 
   - name: Create the mongodb startup file
-    template: src=mongod.j2 dest=/etc/init.d/mongod mode=0655
+    template:
+        src: "mongod.j2"
+        dest: "/etc/init.d/mongod"
+        mode: 0655
 
   - name: Create mongod group
-    group: name=mongodb state=present
+    group:
+        name: mongodb
+        state: present
 
   - name: Create mongod user
-    user: name=mongodb group=mongodb
+    user:
+        name: "mongodb"
+        group: "mongodb"
 
   - name: Create data directory for mongodb
-    file: path=/data_local/mongodb state=directory owner=mongodb group=mongodb
+    file:
+        path: "/data_local/mongodb"
+        state: directory
+        owner: mongodb
+        group: mongodb
 
   - name: Create logging directory for mongodb
-    file: path=/var/log/mongodb state=directory owner=mongodb group=mongodb
+    file:
+        path: "/var/log/mongodb"
+        state: directory
+        owner: mongodb
+        group: mongodb
 
   - name: Create run directory for mongodb
-    file: path=/var/run/mongodb state=directory owner=mongodb group=mongodb
+    file:
+        path: "/var/run/mongodb"
+        state: directory
+        owner: mongodb
+        group: mongodb
 
   - name: Ensure MongoDB is started and enabled on boot.
-    service: name=mongod state=started enabled=yes
+    service:
+        name: mongod
+        state: started
+        enabled: yes

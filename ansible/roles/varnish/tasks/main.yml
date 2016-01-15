@@ -1,44 +1,51 @@
 ---
   - name: Add Varnish repository
-    yum: name=https://repo.varnish-cache.org/redhat/varnish-3.0.el6.rpm  state=present
+    yum:
+      name: "https://repo.varnish-cache.org/redhat/varnish-3.0.el6.rpm"
+      state: present
 
   - name: Install OS packages
-    yum: name={{ item }} state=present update_cache=yes
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
-      - gcc
-      - varnish
+        - gcc
+        - varnish
 
   - name: Copy Varnish configuration
     template:
-      src: varnish.j2
-      dest: /etc/sysconfig/varnish
-      owner: root
-      group: root
-      mode: 0644
-      force: yes
+        src: "varnish.j2"
+        dest: "/etc/sysconfig/varnish"
+        owner: "root"
+        group: "root"
+        mode: 0644
+        force: yes
 
   - name: Ensure Varnish config path exists
     file:
-      path: /etc/varnish
-      state: directory
+        path: "/etc/varnish"
+        state: directory
 
   - name: Get rid of default files
-    file: path={{ item }} state=absent
+    file:
+        path: "{{ item }}"
+        state: absent
     with_items:
-      - /etc/varnish/secret
+        - /etc/varnish/secret
 
   - name: Copy varnish secret
     template:
-      src: secret.j2
-      dest: /etc/varnish/secret
-      owner: root
-      group: root
-      mode: 0644
-      force: yes
+        src: "secret.j2"
+        dest: "/etc/varnish/secret"
+        owner: "root"
+        group: "root"
+        mode: 0644
+        force: yes
     notify: restart varnish
 
   - name: Check Varnish configuration
-    command: sudo varnishd -C -f /etc/varnish/default.vcl
+    command: "sudo varnishd -C -f /etc/varnish/default.vcl"
     register: result
     ignore_errors: True
 
@@ -47,4 +54,7 @@
     when: result|failed
 
   - name: Ensure Varnish is started and set to run on startup
-    service: name=varnish state=started enabled=yes
+    service:
+        name: varnish
+        state: started
+        enabled: yes

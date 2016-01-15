@@ -28,7 +28,7 @@ Vagrant.configure(2) do |config|
         v.name = name
 
         if name.include? "express.local"
-          v.customize ["modifyvm", :id, "--memory", 2048]
+          v.customize ["modifyvm", :id, "--memory", 4096]
           v.customize ["modifyvm", :id, "--cpus", "2"]
         else
           v.customize ["modifyvm", :id, "--memory", 1024]
@@ -68,8 +68,12 @@ Vagrant.configure(2) do |config|
     end
     ### End Inventory specific configuration ###
 
-    #sync folders
-    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs"
-    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
+    # Sync folders
+    # We are using NFS because it is faster than rsync. The mount_options tell the VM to use:
+    # NFS protocol version 3.
+    # Absolute time for which file and directory entries are kept in the file-attribute cache after an update is 2 seconds.
+    # Use the UDP protocol because it is faster than TCP
+    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs", mount_options: ["vers=3", "actimeo=2", "udp"]
+    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs", mount_options: ["vers=3", "actimeo=2","udp"]
   end
 end
