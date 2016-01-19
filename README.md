@@ -74,10 +74,12 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
     sudo ln -s /usr/local/bin/VBoxManage /usr/bin/VBoxManage
     # Also may need to use this line while SSHing into your VM
     # set VBOX_INSTALL_PATH=%VBOX_MSI_INSTALL_PATH%
+    
     ```
 7. Now that PHPStorm is connected to your VM, you need to setup XDebug. The Xdebug extension is already loaded on your machine, but you need to add it to the php.ini settings in order for Apache to load it. To find out where your extension is, you can type the following into your terminal:
     ```
     find / -name 'xdebug.so' 2> /dev/null
+    
     ```
 8. You will now need to add the extension to your php.ini settings. On a local Drupal installation, you can go to "/admin/reports/status/php" to see where the php.ini file is being loaded. You should also see a section for other .ini files being parsed and loaded. Look for "xdbug.ini" and open that file in a text editor.
 9. Your file will have options already declared in it, but you need to add a line to the top of where your Xdebug extension is located. My xdebug.ini file looks like this:
