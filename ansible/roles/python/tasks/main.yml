@@ -61,7 +61,6 @@
       - { name: 'pycrypto', version: '2.6.1' }
       - { name: 'requests', version: '2.7.0' }
       - { name: 'flask', version: '0.10.1' }
-      - { name: 'importlib', version: '1.0.3'}
       - { name: 'jinja2', version: '2.7.3' }
       - { name: 'fabric', version: '1.8.0' }
       - { name: 'pymongo', version: '2.8.1' }
@@ -74,23 +73,22 @@
       - { name: 'eve', version: '0.5.3' }
       - { name: 'celery', version: '3.1.12' }
 
-  # # Configure Apache 2.4 to use mod_wsgi
-  # - name: Install mod_wsgi
-  #   pip:
-  #     name: mod_wsgi
-  #     virtualenv: "/home/dplagnt/inventory-python27-environment"
-  #
-  # - name: Configure Apache 2.4 to use mod_wsgi
-  #   lineinfile:
-  #     dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
-  #     regexp: "^LoadModule wsgi_module /usr/local/adm/config/apache/modules/mod_wsgi.so"
-  #     line: "LoadModule wsgi_module /usr/local/adm/config/apache/modules/mod_wsgi.so"
-  #     state: present
-  #   notify: restart apache
-  #
-  # - name:  Add vhost configuration
-  #   template: src=vhosts.conf.j2 dest=/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf mode=0650 owner=apache group=apache
-  #   notify: restart apache
+  - name: Configure Apache 2.4 to use mod_wsgi
+    lineinfile:
+        dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
+        regexp: "^LoadModule wsgi_module /usr/local/adm/config/apache/modules/mod_wsgi.so"
+        line: "LoadModule wsgi_module /usr/local/adm/config/apache/modules/mod_wsgi.so"
+        state: present
+    notify: restart apache
+
+  - name:  Add vhost configuration
+    template:
+        src: "vhosts.conf.j2"
+        dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf"
+        mode: 0650
+        owner: apache
+        group: apache
+    notify: restart apache
 
   # Celery and CeleryBeat
   - name: Push celeryd init script
@@ -135,7 +133,7 @@
   - name: Ensure Celery is started and enabled on boot.
     service:
         name: celeryd
-        state: started 
+        state: started
         enabled: yes
 
   - name: Ensure CeleryBeat is started and enabled on boot.

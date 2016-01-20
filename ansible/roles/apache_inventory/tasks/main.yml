@@ -9,6 +9,7 @@
     yum: name={{ item }} state=present update_cache=yes
     with_items:
       - httpd24
+      - httpd24-mod_wsgi
       #- httpd24-mod_ssl
       #- openssl
 
@@ -47,10 +48,16 @@
   #     creates: /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt
 
   - name: Update user apache groups
-    user: name=apache groups=lapurd append=yes
+    user:
+        name: "apache"
+        groups: "lapurd"
+        append: yes
 
   - name: Update user dplagnt groups
-    user: name=dplagnt groups=apache append=yes
+    user:
+        name: "dplagnt"
+        groups: "apache"
+        append: yes
 
   - name: Apache should own it's logs
     file:
@@ -59,4 +66,7 @@
       group: apache
 
   - name: Ensure Apache 2.4 (httpd24-httpd) is started and enabled on boot.
-    service: name=httpd24-httpd state=started enabled=yes
+    service:
+        name: httpd24-httpd
+        state: started
+        enabled: yes
