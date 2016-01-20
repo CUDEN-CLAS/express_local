@@ -11,6 +11,10 @@
       private: no
       default: "all"
 
+    - name: "profile"
+      prompt: "Which profile are you using? [E]xpress or [F]it"
+      private: no
+
     - name: "install"
       prompt: "Do you want to do a clean install of the site first? (Y/N)"
       private: no
@@ -19,8 +23,8 @@
       database: "express_testing"
 
   tasks:
-    - name: Install site
-      when: install == "Y" or install == "y"
+    - name: Install site with Fit.
+      when: (install == "y" or install == "Y" or install == "Yes" ) and (profile == "F" or profile == "f" or profile == "fit" or profile == "Fit" or profile == "FIT")
       command: drush si cu_fit -y
       become: yes
       become_user: dplagnt
@@ -28,28 +32,55 @@
       args:
           chdir: "/data/web/express/testing/"
 
+    - name: Install site with Express.
+      when: (install == "y" or install == "Y" or install == "Yes" ) and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
+      command: drush si express -y
+      become: yes
+      become_user: dplagnt
+      register: install_output
+      args:
+          chdir: "/data/web/express/{{path}}/"
+
     - name: Start Selenium Server
       command: xvfb-run -a java -jar /var/selenium2/selenium-server-standalone-2.46.0.jar
       async: 45
       poll: 0
       become: yes
 
-    - name: Run the tests
+    - name: Run the tests with FIT - All tests
       become: yes
       become_user: dplagnt
       command: behat
       register: behat
       args:
           chdir: /data/web/express/testing/profiles/cu_fit/tests
-      when: tags == "all"
+      when: (tags == "all") and (profile == "F" or profile == "f" or profile == "fit" or profile == "Fit")
 
-    - name: Run the tests
+    - name: Run the tests with Express - All tests
+      become: yes
+      become_user: dplagnt
+      command: behat
+      register: behat
+      args:
+          chdir: /data/web/express/testing/profiles/express/tests
+      when: (tags == "all") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
+
+    - name: Run the tests with FIT - Some tests
       command: behat --tags {{tags}}
       become: yes
       become_user: dplagnt
       register: behat
       args:
           chdir: /data/web/express/testing/profiles/cu_fit/tests
-      when: tags != "all"
+      when: (tags != "all") and (profile == "F" or profile == "f" or profile == "fit" or profile == "Fit")
+
+    - name: Run the tests with Express - Some tests
+      command: behat --tags {{tags}}
+      become: yes
+      become_user: dplagnt
+      register: behat
+      args:
+          chdir: /data/web/express/testing/profiles/express/tests
+      when: (tags != "all") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
 
     - debug: var=behat.stdout_lines
