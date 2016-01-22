@@ -52,7 +52,7 @@
           - { path: "~/express_local/data/code/varnish", branch: "master"}
           - { path: "~/express_local/data/code/inventory", branch: "dev"}
           - { path: "~/express_local/data/code/logstash", branch: "master"}
-          - { path: "~/express_local/data/code/dslm_base/profiles/express-current", branch: "express2"}
+          - { path: "~/express_local/data/code/dslm_base/profiles/express-current", branch: "dev"}
 
     - name: Pull the repositories
       command: "git pull"
