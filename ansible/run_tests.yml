@@ -39,7 +39,7 @@
       become_user: dplagnt
       register: install_output
       args:
-          chdir: "/data/web/express/{{path}}/"
+          chdir: "/data/web/express/testing/"
 
     - name: Start Selenium Server
       command: xvfb-run -a java -jar /var/selenium2/selenium-server-standalone-2.46.0.jar
