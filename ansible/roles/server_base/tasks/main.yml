@@ -24,6 +24,7 @@
         - nc
         - nmap
         - mlocate
+        - htop
 
   - name: Allow wheel group to sudo without a password
     become: yes
