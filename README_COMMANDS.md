@@ -32,8 +32,13 @@
 * Express_local commands
   * Create a new express site:  
     ```
-    cd ~/vms/express_local  
+    cd ~/vms/express_local
     ansible-playbook -i ansible/hosts ansible/express_site.yml
+
+    ```
+    ```
+    cd ~/vms/express_local
+    ansible-playbook -i ansible/hosts ansible/express_site.yml --extra-vars "type=[r,reinstall,c,create] profile=[e,express,f,fit] path=[anything-you-want]"
 
     ```
   * Run tests:  
