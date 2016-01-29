@@ -75,7 +75,7 @@
       - name: Create settings.php file for Express.
         when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
         template:
-            src: templates/express_settings.j2
+            src: templates/express_settings.express.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.php"
             mode: 0774
 
@@ -101,8 +101,16 @@
         with_items:
             - "/data/files/{{path}}/tmp"
 
+      - name: Remove files directory
+        when: type == "R" or type == "r" or type == "reinstall" or type == "Reinstall"
+        file:
+            path: "{{ item }}"
+            state: absent
+        with_items:
+            - "/data/files/{{path}}/files"
+
       - name: Install site with Fit.
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "F" or profile == "f" or profile == "fit" or profile == "Fit" or profile == "FIT")
+        when: profile == "F" or profile == "f" or profile == "fit" or profile == "Fit" or profile == "FIT"
         command: drush si cu_fit -y
         become: yes
         become_user: dplagnt
@@ -111,7 +119,7 @@
             chdir: "/data/web/express/{{path}}/"
 
       - name: Install site with Express.
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
+        when: profile == "E" or profile == "e" or profile == "express" or profile == "Express"
         command: drush si express -y
         become: yes
         become_user: dplagnt
