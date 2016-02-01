@@ -12,6 +12,8 @@
     vars:
         express_code_varnish: true
         express_code_elk: false
+        express_code_logstash: false
+        express_code_logstash_shipper: true
     roles:
         - server_base
         - apache
@@ -24,5 +26,5 @@
         - rvm
         - drush
         - behat
+        - logstash
         - express_code
-        # - logstash_forwarder

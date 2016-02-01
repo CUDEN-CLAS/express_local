@@ -39,3 +39,41 @@
     notify:
         - restart elasticsearch
         - restart logstash
+
+    - name: Remove logstash output
+      when: express_code_logstash
+      file:
+          path: "{{ item }}"
+          state: absent
+      with_items:
+        - /etc/logstash/conf.d/90-output-indicies.conf
+
+    - name: Add localized logstash output
+      when: express_code_logstash
+      template:
+          src: "logstash-90-output-indicies.conf.j2"
+          dest: "/etc/logstash/conf.d/90-output-indicies.conf"
+          owner: "root"
+          group: "root"
+          mode: 0644
+          force: yes
+      notify: restart logstash
+
+    - name: Remove logstash_shipper output
+      when: express_code_logstash_shipper
+      file:
+          path: "{{ item }}"
+          state: absent
+      with_items:
+        - /etc/logstash/conf.d/90-output-redis.conf
+
+    - name: Add localized logstash_shipper output
+      when: express_code_logstash_shipper
+      template:
+          src: "logstash-90-output-redis.conf.j2"
+          dest: "/etc/logstash/conf.d/90-output-redis.conf"
+          owner: "root"
+          group: "root"
+          mode: 0644
+          force: yes
+      notify: restart logstash
