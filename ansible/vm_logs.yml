@@ -8,8 +8,10 @@
     become: yes
     # Copy in the ELK configuration
     vars:
-         express_code_varnish: false
-         express_code_elk: true
+        express_code_varnish: false
+        express_code_elk: true
+        express_code_logstash: true
+        express_code_logstash_shipper: false
     roles:
         - server_base
         - elasticsearch

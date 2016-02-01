@@ -9,7 +9,7 @@
 hosts = {
   "express.local" => "192.168.33.20",
   #"inventory.local" => "192.168.33.21",
-  "log.local" => "192.168.33.22",
+  "logs.local" => "192.168.33.22",
 }
 
 # All Vagrant configuration is done below.
@@ -61,9 +61,9 @@ Vagrant.configure(2) do |config|
       end
     end
 
-    if name.include? "log.local"
+    if name.include? "logs.local"
       config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/vm_log.yml"
+        ansible.playbook = "ansible/vm_logs.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.extra_vars = {
           ansible_ssh_user: 'vagrant',
