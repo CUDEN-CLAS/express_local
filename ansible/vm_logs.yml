@@ -17,4 +17,5 @@
         - elasticsearch
         - logstash
         - kibana
+        - redis
         - express_code
