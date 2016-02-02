@@ -41,9 +41,9 @@
 
   - name: Create dplagnt user
     user:
-      name: "dplagnt"
-      group: "lapurd"
-      shell: "/bin/bash"
+        name: "dplagnt"
+        group: "lapurd"
+        shell: "/bin/bash"
 
   - name: Update user dplagnt groups
     user:
