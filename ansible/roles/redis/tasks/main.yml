@@ -1,0 +1,14 @@
+---
+  - name: Install necessary OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - redis-2.4.10
+
+  - name: Ensure Logstash is started and set to run on startup
+    service:
+        name: redis
+        state: started
+        enabled: yes

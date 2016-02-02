@@ -117,7 +117,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   * xdebug 2.2.7
   * RVM
   * Behat
-  * Logstash Forwarder
+  * Logstash
   * Drush
     * DSLM
     * Composer
@@ -140,6 +140,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   * Elasticsearch - 1.6.2
   * Logstash
   * Kibana
+  * Redis - 2.4.10
 
 # To Dos:
 * xprof
