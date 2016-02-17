@@ -35,7 +35,6 @@
         dest: "/opt/kibana"
         state: link
 
-
   - name: Change set kibana user as owner of files
     become: yes
     file:

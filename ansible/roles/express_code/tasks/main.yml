@@ -38,12 +38,19 @@
     notify:
         - restart elasticsearch
 
+  - name: Create directory for Logstash configuration
+    when: express_code_logstash
+    file:
+        path: "/etc/logstash/conf.d"
+        state: directory
+
   - name: Symlink in our Logstash configuration
     when: express_code_logstash
     file:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         state: link
+        force: yes
     with_items:
         # This should symlink in the individual files rather than the whole directory.
         # We need to do this so we can replace individual config files later.
