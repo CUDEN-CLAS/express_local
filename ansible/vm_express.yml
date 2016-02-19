@@ -28,3 +28,4 @@
         - behat
         - logstash
         - express_code
+        - logging

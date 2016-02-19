@@ -124,28 +124,3 @@
         dest: "/home/vagrant/.bashrc"
         owner: vagrant
         force: yes
-
-  - name: Create directory for drupal logs
-    become: yes
-    file:
-        path: "/var/log/drupal"
-        state: directory
-        mode: 0774
-        group: logstash
-        recurse: yes
-
-  - name: Push rsyslog configuration
-    become: yes
-    copy:
-        src: "rsyslog.drupal.conf"
-        dest: "/etc/rsyslog.d/drupal.conf"
-        force: yes
-    notify:
-      - restart rsyslog
-
-  - name: Push logrotate configuration
-    become: yes
-    copy:
-        src: "logrotate.drupal"
-        dest: "/etc/logrotate.d/drupal"
-        force: yes
