@@ -1,0 +1,16 @@
+# Rotate daily
+# Keep the last 7
+# Truncate the original log file in place after creating a copy
+# Compress old logs
+# Don't compress a file until the next rotation
+# Skip w/o an error if the file is missing
+# Don't rotate empty files
+/var/log/drupal/*.log {
+  daily
+  rotate 7
+  copytruncate
+  compress
+  delaycompress
+  missingok
+  notifempty
+}

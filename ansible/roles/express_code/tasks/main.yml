@@ -68,21 +68,6 @@
     notify:
         - restart logstash
 
-  - name: Symlink in our Logstash Shipper
-    when: express_code_logstash_shipper
-    file:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        state: link
-    with_items:
-        # This should symlink in the individual files rather than the whole directory.
-        # We need to do this so we can replace individual config files later.
-        - { src: "/data/code/logstash_shipper/conf.d/10-input.conf", dest: "/etc/logstash/conf.d/10-input.conf"}
-        - { src: "/data/code/logstash_shipper/conf.d/90-output-redis.conf", dest: "/etc/logstash/conf.d/90-output-redis.conf"}
-    notify:
-        - restart elasticsearch
-        - restart logstash
-
   - name: Remove logstash output
     when: express_code_logstash
     file:
@@ -102,21 +87,16 @@
         force: yes
     notify: restart logstash
 
-  - name: Remove logstash_shipper output
-    when: express_code_logstash_shipper
-    file:
-        path: "{{ item }}"
-        state: absent
-    with_items:
-      - /etc/logstash/conf.d/90-output-redis.conf
-
-  - name: Add localized logstash_shipper output
+  - name: Add local versions of the logstash_shipper files
     when: express_code_logstash_shipper
     template:
-        src: "logstash-90-output-redis.conf.j2"
-        dest: "/etc/logstash/conf.d/90-output-redis.conf"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         owner: "root"
         group: "root"
         mode: 0644
         force: yes
+    with_items:
+       - { src: "logstash_shipper-10-input.conf.j2", dest: "/etc/logstash/conf.d/10-input.conf"}
+       - { src: "logstash_shipper-90-output-redis.conf.j2", dest: "/etc/logstash/conf.d/90-output-redis.conf"}
     notify: restart logstash
