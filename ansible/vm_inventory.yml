@@ -6,7 +6,12 @@
 
   - hosts: inventory
     become: yes
+    vars:
+        express_code_varnish: false
+        express_code_elk: false
+        express_code_logstash: false
+        express_code_logstash_shipper: true
     roles:
         - server_base
         - python
-        # - logstash_forwarder
+        - logstash

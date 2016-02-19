@@ -1,0 +1,14 @@
+---
+  - name: Install OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - https://download.elastic.co/logstash/logstash/packages/centos/logstash-1.5.6-1.noarch.rpm
+
+  - name: Ensure Logstash is started and set to run on startup
+    service:
+        name: logstash
+        state: started
+        enabled: yes

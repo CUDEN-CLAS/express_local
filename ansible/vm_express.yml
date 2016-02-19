@@ -8,6 +8,12 @@
   # Drush includes the Composer install, so needs to be before Behat.
   - hosts: web
     become: yes
+    # Pick which configuration files we want to swap in
+    vars:
+        express_code_varnish: true
+        express_code_elk: false
+        express_code_logstash: false
+        express_code_logstash_shipper: true
     roles:
         - server_base
         - apache
@@ -20,5 +26,6 @@
         - rvm
         - drush
         - behat
+        - logstash
         - express_code
-        # - logstash_forwarder
+        - logging

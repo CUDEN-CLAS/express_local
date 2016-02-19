@@ -41,9 +41,9 @@
 
   - name: Create dplagnt user
     user:
-      name: "dplagnt"
-      group: "lapurd"
-      shell: "/bin/bash"
+        name: "dplagnt"
+        group: "lapurd"
+        shell: "/bin/bash"
 
   - name: Update user dplagnt groups
     user:
@@ -106,10 +106,10 @@
 
   - name: Create host file
     template:
-        src=server_base_hosts.j2
-        dest=/etc/hosts
-        owner=root
-        force=yes
+        src: "server_base_hosts.j2"
+        dest: "/etc/hosts"
+        owner: root
+        force: yes
 
   - name: Create .bashrc for dplagnt
     template:

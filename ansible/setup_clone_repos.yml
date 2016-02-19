@@ -56,10 +56,18 @@
         accept_hostkey: yes
         key_file: "{{ key_file }}"
 
-    - name: Clone logstash
+    - name: Clone logstash configuration
       git:
         repo: "git@github.com:CuBoulder/logstash.git"
         dest: "~/express_local/data/code/logstash"
+        version: "master"
+        accept_hostkey: yes
+        key_file: "{{ key_file }}"
+
+    - name: Clone elasticsearch configuration
+      git:
+        repo: "git@github.com:CuBoulder/elasticsearch.git"
+        dest: "~/express_local/data/code/elasticsearch_config"
         version: "master"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
