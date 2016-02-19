@@ -106,10 +106,10 @@
 
   - name: Create host file
     template:
-        src=server_base_hosts.j2
-        dest=/etc/hosts
-        owner=root
-        force=yes
+        src: "server_base_hosts.j2"
+        dest: "/etc/hosts"
+        owner: root
+        force: yes
 
   - name: Create .bashrc for dplagnt
     template:
@@ -130,6 +130,9 @@
     file:
         path: "/var/log/drupal"
         state: directory
+        mode: 0774
+        group: logstash
+        recurse: yes
 
   - name: Push rsyslog configuration
     become: yes
