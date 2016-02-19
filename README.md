@@ -122,7 +122,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
     * DSLM
     * Composer
   * Express code
-    * cu_fit
+    * express
     * dslm_base
     * packages_base
     * express_webcentral
