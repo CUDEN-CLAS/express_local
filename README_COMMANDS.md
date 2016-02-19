@@ -25,7 +25,7 @@
   * Follow [GitHub's instructions](https://help.github.com/articles/generating-ssh-keys/) to setup an SSH key.
   * Unlock your SSH key (_will not work if the VM hasn't been created, may be needed before updating code_):  
     ```
-    cd ~/express_local/data/code/dslm_base/profiles/cu_fit  
+    cd ~/express_local/data/code/dslm_base/profiles/express  
     git pull
 
     ```
@@ -38,7 +38,7 @@
     ```
     ```
     cd ~/vms/express_local
-    ansible-playbook -i ansible/hosts ansible/express_site.yml --extra-vars "type=[r,reinstall,c,create] profile=[e,express,f,fit] path=[anything-you-want]"
+    ansible-playbook -i ansible/hosts ansible/express_site.yml --extra-vars "type=[r,reinstall,c,create] profile=[e,express] path=[anything-you-want]"
 
     ```
   * Run tests:  

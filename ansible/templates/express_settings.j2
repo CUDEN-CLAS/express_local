@@ -63,8 +63,8 @@ if (isset($_SERVER["WWWNG_ENV"]) || PHP_SAPI === "cli") {
 
   // Memcache and Varnish Backends.
   $conf['cache_backends'] = array(
-    'profiles/cu_fit/modules/contrib/varnish/varnish.cache.inc',
-    'profiles/cu_fit/modules/contrib/memcache/memcache.inc',
+    'profiles/express/modules/contrib/varnish/varnish.cache.inc',
+    'profiles/express/modules/contrib/memcache/memcache.inc',
   );
 
   // Setup cache_form bin.
