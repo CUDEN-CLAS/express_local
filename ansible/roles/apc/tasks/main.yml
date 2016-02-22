@@ -9,3 +9,12 @@
       - php-pecl-apc
     notify:
         - restart apache
+
+  - name: Change apc shm_size
+    become: yes
+    lineinfile:
+        dest: "/etc/php.d/apc.ini"
+        regexp: "^[#|;]?apc.shm_size="
+        line: "apc.shm_size=256M"
+    notify:
+        - restart apache
