@@ -65,6 +65,15 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   %admin ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD, VAGRANT_EXPORTS_REMOVE
 
   ```
+# Logging
+* Logs are viewable from [logs.local:5601](http://logs.local:5601)
+* After each time the VM is provisioned you will need to setup index patterns.
+  1. Choose 'Use event times to create index names'
+  2. Index Pattern Interval: `Daily`
+  3. Index name or pattern: `[logstash-drupal_syslog]-YYYY.MM.DD`
+* Create a similar index pattern for [logstash-parsefailure]-YYYY.MM.DD. This pattern will catch log entries that fail to parse correctly.
+* Create an index pattern for `logstash*`, do not choose 'Use event times to create index names'. This pattern will match all incoming logs.
+
 # XDebug via PHPStorm
 1. Once you have PHPStorm installed, go to PHPStorm > Preferences > PHP and click on the ellipsis in the "Interpreter" section.
 2. This will bring up another screen where your PHP interpreters are listed. You want to click the "+" icon to add a "remote" interpreter.
