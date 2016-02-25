@@ -25,7 +25,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * Install Vagrant (https://www.vagrantup.com/downloads.html)
 * Install VirtualBox (https://www.virtualbox.org/wiki/Downloads)
 * Clone this repository
-* Edit your hosts file (located at `/etc/hosts`) to include the following
+* Edit your hosts file (located at `/etc/hosts`) to include the following (_DEV, TEST, and PROD eveuri values are only applicable to CU Boulder_):
   ```
   # express_local VMs
   192.168.33.20 express.local
@@ -37,6 +37,8 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   # 192.168.33.21 eveuri
   # DEV
   172.20.62.19  eveuri
+  # TEST
+  #172.20.62.49 eveuri
   # PROD
   #172.20.62.87 eveuri
   ```
