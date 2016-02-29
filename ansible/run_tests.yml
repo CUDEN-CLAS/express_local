@@ -6,8 +6,8 @@
     #   private: no
     #   default: "testing"
 
-    - name: "bundles"
-      prompt: "Enter the machine name(s) of the bundles you would like to enable (comma seperated). Leave blank for"
+    - name: "bundle"
+      prompt: "Enter the machine name of the bundle you would like to enable and test. Leave blank for"
       private: no
       default: "express"
 
@@ -36,8 +36,8 @@
           chdir: "/data/web/express/{{path}}/"
 
     - name: Enable bundles
-      when: bundles != "express"
-      command: "drush en {{ bundles | join(' ') }} -y"
+      when: bundle != "express"
+      command: "drush en {{ bundle }} -y"
       become: yes
       become_user: dplagnt
       register: enable_output
@@ -57,14 +57,14 @@
 
     - name: Run the tests - All tests
       become: yes
-      command: "behat --suite={{bundles}}"
+      command: "behat --suite={{bundle}}"
       register: behat
       args:
           chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
       when: tags == "all"
 
     - name: Run the tests - Some tests
-      command: "behat --tags {{tags}} --suite={{bundles}}"
+      command: "behat --tags {{tags}} --suite={{bundle}}"
       become: yes
       register: behat
       args:
