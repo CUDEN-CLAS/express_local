@@ -7,7 +7,7 @@
     #   default: "testing"
 
     - name: "bundle"
-      prompt: "Enter the machine name of the bundle you would like to enable and test. Leave blank for"
+      prompt: "Enter 'all' or the machine name of the bundle you would like to enable and test. Leave blank for"
       private: no
       default: "express"
 
@@ -36,8 +36,17 @@
           chdir: "/data/web/express/{{path}}/"
 
     - name: Enable bundles
-      when: bundle != "express"
+      when: bundle != "express" and bundle != "all"
       command: "drush en {{ bundle }} -y"
+      become: yes
+      become_user: dplagnt
+      register: enable_output
+      args:
+          chdir: "/data/web/express/{{path}}/"
+
+    - name: Enable all the bundles
+      when: bundle == "all"
+      command: "drush en cu_advanced_content_bundle cu_advanced_design_bundle cu_advanced_layout_bundle cu_debug_admin_bundle cu_events_bundle cu_forms_bundle cu_news_bundle cu_people_bundle cu_photo_gallery_bundle cu_seo_bundle cu_social_media_bundle -y"
       become: yes
       become_user: dplagnt
       register: enable_output
@@ -55,20 +64,36 @@
     #   become: yes
     #   script: roles/behat/scripts/behat_params.sh
 
-    - name: Run the tests - All tests
+    - name: Run the tests - Bundle - All tests
       become: yes
       command: "behat --suite={{bundle}}"
       register: behat
       args:
           chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
-      when: tags == "all"
+      when: tags == "all" and bundle != "all"
 
-    - name: Run the tests - Some tests
+    - name: Run the tests - Bundle - Some tests
       command: "behat --tags {{tags}} --suite={{bundle}}"
       become: yes
       register: behat
       args:
           chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
-      when: tags != "all"
+      when: tags != "all" and bundle != "all"
+
+    - name: Run the tests - All the Things - All tests
+      command: "behat"
+      become: yes
+      register: behat
+      args:
+          chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
+      when: tags == "all" and bundle == "all"
+
+    - name: Run the tests - All the Things - Some tests
+      command: "behat --tags {{tags}}"
+      become: yes
+      register: behat
+      args:
+          chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
+      when: tags != "all" and bundle == "all"
 
     - debug: var=behat.stdout_lines
