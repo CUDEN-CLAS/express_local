@@ -20,14 +20,15 @@
         state: present
         update_cache: yes
     with_items:
-      - git-1.7.1
-      - epel-release
-      - mysql-connector-python
-      - nano
-      - nc
-      - nmap
-      - mlocate
-      - man
+        - git-1.7.1
+        - epel-release
+        - mysql-connector-python
+        - nano
+        - nc
+        - nmap
+        - mlocate
+        - htop
+        - man
 
   - name: Allow wheel group to sudo without a password
     become: yes
@@ -44,9 +45,9 @@
 
   - name: Create dplagnt user
     user:
-      name: "dplagnt"
-      group: "lapurd"
-      shell: "/bin/bash"
+        name: "dplagnt"
+        group: "lapurd"
+        shell: "/bin/bash"
 
   - name: Update user dplagnt groups
     user:
@@ -118,10 +119,10 @@
 
   - name: Create host file
     template:
-        src=server_base_hosts.j2
-        dest=/etc/hosts
-        owner=root
-        force=yes
+        src: "server_base_hosts.j2"
+        dest: "/etc/hosts"
+        owner: root
+        force: yes
 
   - name: Create .bashrc for dplagnt
     template:

@@ -29,7 +29,7 @@
         dest: "/etc/php.ini"
         regexp: "^[#|;]?memory_limit ="
         insertafter: "^[#|;]?memory_limit ="
-        line: "memory_limit = 256M"
+        line: "memory_limit = 512M"
     notify:
         - restart apache
 

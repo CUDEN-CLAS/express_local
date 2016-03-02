@@ -7,9 +7,9 @@
 # TODO:
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
-  #{}"express.local" => "192.168.33.20",
+  "express.local" => "192.168.33.20",
   "inventory.local" => "192.168.33.21",
-  #"logs.local" => "192.168.33.22",
+  "logs.local" => "192.168.33.22",
 }
 
 # All Vagrant configuration is done below.
@@ -67,6 +67,16 @@ Vagrant.configure(2) do |config|
       end
     end
     ### End Inventory specific configuration ###
+
+    if name.include? "logs.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/vm_logs.yml"
+        ansible.inventory_path = "ansible/hosts"
+        ansible.extra_vars = {
+          ansible_ssh_user: 'vagrant',
+          ansible_connection: 'ssh'}
+      end
+    end
 
     # Sync folders
     # We are using NFS because it is faster than rsync. The mount_options tell the VM to use:

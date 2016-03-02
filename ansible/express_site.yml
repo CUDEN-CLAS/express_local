@@ -5,10 +5,6 @@
       prompt: "[C]reate an new site or [R]einstall an existing site"
       private: no
 
-    - name: "profile"
-      prompt: "Which profile would you like to use? [E]xpress or [F]it"
-      private: no
-
     - name: "path"
       prompt: "Enter the path for the site"
       private: no
@@ -17,7 +13,7 @@
       database: "express_{{path}}"
 
   tasks:
-      - name: Create mysql database.
+      - name: Create mysql database
         mysql_db:
             name: "{{database}}"
             state: present
@@ -38,20 +34,12 @@
             chdir: "/data/web/express/"
             creates: "/data/web/express/{{path}}/install.php"
 
-      - name: Add CU Fit
-        become: yes
-        become_user: dplagnt
-        command: drush dslm-add-profile cu_fit --current
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "F" or profile == "f" or profile == "fit" or profile == "Fit" or profile == "FIT")
-        args:
-            chdir: "/data/web/express/{{path}}/"
-            creates: "/data/web/express/{{path}}/profiles/cu_fit/cu_fit.info"
 
       - name: Add Express
         become: yes
         become_user: dplagnt
         command: drush dslm-add-profile express --current
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         args:
             chdir: "/data/web/express/{{path}}/"
             creates: "/data/web/express/{{path}}/profiles/express/express.info"
@@ -65,28 +53,21 @@
             mode: 0775
             recurse: yes
 
-      - name: Create settings.php file for Fit.
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "F" or profile == "f" or profile == "fit" or profile == "Fit" or profile == "FIT")
+      - name: Create settings.php file
+        when: type == "C" or type == "c" or type == "create" or type == "Create"
         template:
             src: templates/express_settings.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.php"
             mode: 0774
 
-      - name: Create settings.php file for Express.
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
-        template:
-            src: templates/express_settings.express.j2
-            dest: "/data/web/express/{{path}}/sites/default/settings.php"
-            mode: 0774
-
-      - name: Create settings.local_pre.php file.
+      - name: Create settings.local_pre.php file
         when: type == "C" or type == "c" or type == "create" or type == "Create"
         template:
             src: templates/express_settings_local_pre.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_pre.php"
             mode: 0774
 
-      - name: Create settings.local_post.php file.
+      - name: Create settings.local_post.php file
         when: type == "C" or type == "c" or type == "create" or type == "Create"
         template:
             src: templates/express_settings_local_post.j2
@@ -101,17 +82,15 @@
         with_items:
             - "/data/files/{{path}}/tmp"
 
-      - name: Install site with Fit.
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "F" or profile == "f" or profile == "fit" or profile == "Fit" or profile == "FIT")
-        command: drush si cu_fit -y
-        become: yes
-        become_user: dplagnt
-        register: install_output
-        args:
-            chdir: "/data/web/express/{{path}}/"
+      - name: Remove files directory
+        when: type == "R" or type == "r" or type == "reinstall" or type == "Reinstall"
+        file:
+            path: "{{ item }}"
+            state: absent
+        with_items:
+            - "/data/files/{{path}}/files"
 
-      - name: Install site with Express.
-        when: (type == "C" or type == "c" or type == "create" or type == "Create") and (profile == "E" or profile == "e" or profile == "express" or profile == "Express")
+      - name: Install site
         command: drush si express -y
         become: yes
         become_user: dplagnt
