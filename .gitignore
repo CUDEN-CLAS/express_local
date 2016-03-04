@@ -1,4 +1,7 @@
-#Custom
+# Custom
 *.vagrant
 *.DS_Store
 *.pyc
+
+# PHPStorm
+*.idea
