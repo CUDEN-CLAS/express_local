@@ -27,7 +27,7 @@
         key_file: "{{ key_file }}"
 
     - name: Check out Express 2.0 branch
-      command: "git checkout express"
+      command: "git checkout dev"
       args:
         chdir: "~/express_local/data/code/dslm_base/profiles/express-current"
 
