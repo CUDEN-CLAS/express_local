@@ -1,5 +1,5 @@
 ---
-  # Also includes some packages to compile the additional version of python
+  # Also includes some packages to compile the additional version of python.
   - name: Installs necessary OS packages
     become: yes
     yum: pkg={{ item }} state=latest
@@ -19,24 +19,35 @@
       - zlib-devel-1.2.3
 
   - name: Download Python 2.7
-    get_url: dest=/home/vagrant url=http://www.python.org/ftp/python/2.7.1/Python-2.7.1.tgz
+    get_url:
+      dest: /home/vagrant
+      url: http://www.python.org/ftp/python/2.7.1/Python-2.7.1.tgz
     become: yes
 
   - name: Extract Python 2.7
-    shell: chdir=/home/vagrant tar xzf ./Python-2.7.1.tgz -C /opt creates=/opt/Python-2.7.1
+    shell: tar xzf ./Python-2.7.1.tgz -C /opt
     become: yes
+    args:
+      chdir: /home/vagrant
+      creates: /opt/Python-2.7.1
 
   - name: Configure Python 2.7
-    shell: chdir=/opt/Python-2.7.1 ./configure --prefix=/usr/local
+    shell: ./configure --prefix=/usr/local
     become: yes
+    args:
+      chdir: /opt/Python-2.7.1
 
   - name: Make Python 2.7
-    shell: chdir=/opt/Python-2.7.1 make
+    shell: make
     become: yes
+    args:
+      chdir: /opt/Python-2.7.1
 
   - name: Install Python 2.7
-    shell: chdir=/opt/Python-2.7.1 make altinstall  # Need to add a 'creates=' flag here
+    shell: make altinstall
     become: yes
+    args:
+      chdir: /opt/Python-2.7.1 # Need to add a 'creates=' flag here
 
   - name: Install Python packages to allow virtual environments
     pip: name={{ item }}
