@@ -60,10 +60,6 @@ Vagrant.configure(2) do |config|
         ansible.playbook = "ansible/vm_inventory.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.ask_vault_pass = true
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
-        ansible.verbose = "vvv"
       end
     end
     ### End Inventory specific configuration ###
@@ -72,9 +68,6 @@ Vagrant.configure(2) do |config|
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_logs.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
       end
     end
 
