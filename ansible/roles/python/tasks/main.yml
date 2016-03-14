@@ -199,6 +199,9 @@
   - name: Copy Eve local configuration
     become: yes
     template: src=local_settings_eve.py.j2 dest=/data/code/inventory/local_settings.py mode=0664
+    notify:
+      - restart celeryd
+      - restart celerybeat
 
   - name:  Add lines for the python virtualenv to inventory.wsgi
     lineinfile:
@@ -207,6 +210,9 @@
       regexp: "^activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
       state: present
       insertbefore: BOF
+    notify:
+      - restart celeryd
+      - restart celerybeat
 
   - name:  Add lines for the python virtualenv to inventory.wsgi
     lineinfile:
@@ -215,6 +221,9 @@
       regexp: "^execfile(activate_this, dict(__file__=activate_this))"
       state: present
       insertafter: "^activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
+    notify:
+      - restart celeryd
+      - restart celerybeat
 
   # MongoDB
   - name: Copy MongoDB configuration
@@ -267,3 +276,6 @@
         name: mongod
         state: started
         enabled: yes
+    notify:
+      - restart celeryd
+      - restart celerybeat
