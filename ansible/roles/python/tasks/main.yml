@@ -126,20 +126,22 @@
 
   - name: Configure Apache 2.4 to use mod_wsgi
     lineinfile:
-        dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
-        regexp: "^LoadModule wsgi_module modules/mod_wsgi.so"
-        line: "LoadModule wsgi_module modules/mod_wsgi.so"
-        state: present
-    notify: restart apache
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
+      regexp: "^LoadModule wsgi_module modules/mod_wsgi.so"
+      line: "LoadModule wsgi_module modules/mod_wsgi.so"
+      state: present
+    notify:
+      - restart httpd24-httpd
 
   - name:  Add vhost configuration
     template:
-        src: "vhosts.conf.j2"
-        dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf"
-        mode: 0650
-        owner: apache
-        group: apache
-    notify: restart apache
+      src: "vhosts.conf.j2"
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf"
+      mode: 0650
+      owner: apache
+      group: apache
+    notify:
+      -restart httpd24-httpd
 
   # Celery and CeleryBeat
   - name: Push celeryd init script
