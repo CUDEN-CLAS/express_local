@@ -8,7 +8,7 @@
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
   "express.local" => "192.168.33.20",
-  #"inventory.local" => "192.168.33.21",
+  "inventory.local" => "192.168.33.21",
   "logs.local" => "192.168.33.22",
 }
 
@@ -40,34 +40,34 @@ Vagrant.configure(2) do |config|
 
     end
 
+    # config.ssh.username = 'vagrant'
+    # config.ssh.password = 'vagrant'
+    # config.ssh.insert_key = 'true'
+
+    ### Begin Webserver specific configuration ###
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_express.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.ask_vault_pass = true
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
       end
     end
+    ### End Webserver specific configuration ###
 
+    ### Begin Inventory specific configuration ###
     if name.include? "inventory.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_inventory.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
+        ansible.ask_vault_pass = true
       end
     end
+    ### End Inventory specific configuration ###
 
     if name.include? "logs.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_logs.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
       end
     end
 
