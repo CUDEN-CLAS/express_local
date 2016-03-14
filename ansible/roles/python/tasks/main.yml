@@ -32,7 +32,7 @@
       creates: /opt/Python-2.7.1
 
   - name: Configure Python 2.7
-    shell: ./configure --prefix=/usr/local
+    shell: ./configure --prefix=/usr/local --enable-shared
     become: yes
     args:
       chdir: /opt/Python-2.7.1
@@ -50,14 +50,26 @@
       chdir: /opt/Python-2.7.1 # Need to add a 'creates=' flag here
 
   - name: Install Python packages to allow virtual environments
-    pip: name={{ item }}
-    with_items:
-      - virtualenv
+    shell: pip install virtualenv
+    become: yes
+    args:
+      chdir: /opt/Python-2.7.1
+
+  - name: Add location of LD_LIBRARY_PATH
+    become: yes
+    copy:
+      src: "python2.7.conf"
+      dest: "/etc/ld.so.conf.d/"
+
+  - name: Run ldconfig
+    become: yes
+    shell: ldconfig
 
     # Setup a Python 2.7 virtual environment to run the inventory
   - name: Setup an environment for the tracker using Python 2.7
     shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/inventory-python27-environment
     args:
+      chdir: /opt/Python-2.7.1
       creates:  /home/dplagnt/inventory-python27-environment/bin/python2.7
 
   - name: Install Python packages in the Python 2.7 environment
@@ -84,11 +96,39 @@
       - { name: 'eve', version: '0.5.3' }
       - { name: 'celery', version: '3.1.12' }
 
+  - name: Get mod_wsgi
+    get_url:
+      url: https://github.com/GrahamDumpleton/mod_wsgi/archive/3.5.tar.gz
+      dest: /opt
+      mode: 0440
+
+  - name: Unpack mod_wsgi
+    unarchive:
+      src: /opt/mod_wsgi-3.5.tar.gz
+      dest: /opt
+      copy: no
+
+  - name: Install mod_wsgi for Python 2.7
+    become: yes
+    shell: ./configure --with-apxs=/opt/rh/httpd24/root/usr/bin/apxs --with-python=/home/dplagnt/inventory-python27-environment/bin/python2.7
+    args:
+      chdir: /opt/mod_wsgi-3.5
+
+  - name: Make mod_wsgi
+    become: yes
+    shell: make
+    args:
+      chdir: /opt/mod_wsgi-3.5
+
+  - name: Link mod_wsgi in
+    become: yes
+    shell: "cp /opt/mod_wsgi-3.5/.libs/mod_wsgi.so /opt/rh/httpd24/root/usr/lib64/httpd/modules/mod_wsgi.so"
+
   - name: Configure Apache 2.4 to use mod_wsgi
     lineinfile:
         dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
-        regexp: "^LoadModule wsgi_module /usr/local/adm/config/apache/modules/mod_wsgi.so"
-        line: "LoadModule wsgi_module /usr/local/adm/config/apache/modules/mod_wsgi.so"
+        regexp: "^LoadModule wsgi_module modules/mod_wsgi.so"
+        line: "LoadModule wsgi_module modules/mod_wsgi.so"
         state: present
     notify: restart apache
 

@@ -5,12 +5,16 @@
       dest: "/etc/yum.repos.d/epel-httpd24.repo"
       mode: 0644
 
+  # httpd24-httpd-devel gives us apxs, which is used to build apache modules.
+  # We need it to build mod_wsgi by hand.
   - name:  Install necessary packages
-    yum: name={{ item }} state=present update_cache=yes
+    yum:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
     with_items:
       - httpd24
-      - httpd24-mod_wsgi
-      #- httpd24-mod_ssl
+      - httpd24-httpd-devel
       #- openssl
 
   - name: Configure Apache to listen on 80
@@ -64,6 +68,16 @@
       path:  /opt/rh/httpd24/root/var/log/httpd
       owner: apache
       group: apache
+
+  - name: Create symlinks to allow mod_wsgi to compile
+    become: yes
+    file:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      state: link
+    with_items:
+      - { src: "/opt/rh/httpd24/root/usr/lib64/httpd", dest: "/httpd"}
+      - { src: "/opt/rh/httpd24/root/usr/lib64/apr-1", dest: "/apr-1"}
 
   - name: Ensure Apache 2.4 (httpd24-httpd) is started and enabled on boot.
     service:
