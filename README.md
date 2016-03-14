@@ -130,13 +130,17 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * Webserver - inventory.local
   * Additional OS packages
     * Development tools # Allows us to compile Python 2.7
-    * Apache # Specific role for the inventory
+    * Apache 2.4 # Specific role for the inventory
+    * GCC
+    * MongoDB 2.4.14
+    * PIP
   * Python 2.7.1
-    * Flask
-    * Eve
-    * Celery
-    * Fabric
-  * Logstash Forwarder
+    * Flask 0.10.1
+    * Eve 0.5.3
+    * Celery 3.1.12
+    * Fabric 1.8.0
+    * Cerberus 0.9.1
+  * Logstash
 * Webserver - logs.local
   * Java - 1.7.0
   * Elasticsearch - 1.6.2
