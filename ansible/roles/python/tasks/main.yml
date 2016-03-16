@@ -126,20 +126,22 @@
 
   - name: Configure Apache 2.4 to use mod_wsgi
     lineinfile:
-        dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
-        regexp: "^LoadModule wsgi_module modules/mod_wsgi.so"
-        line: "LoadModule wsgi_module modules/mod_wsgi.so"
-        state: present
-    notify: restart apache
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
+      regexp: "^LoadModule wsgi_module modules/mod_wsgi.so"
+      line: "LoadModule wsgi_module modules/mod_wsgi.so"
+      state: present
+    notify:
+      - restart httpd24-httpd
 
   - name:  Add vhost configuration
     template:
-        src: "vhosts.conf.j2"
-        dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf"
-        mode: 0650
-        owner: apache
-        group: apache
-    notify: restart apache
+      src: "vhosts.conf.j2"
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf"
+      mode: 0650
+      owner: apache
+      group: apache
+    notify:
+      -restart httpd24-httpd
 
   # Celery and CeleryBeat
   - name: Push celeryd init script
@@ -197,6 +199,9 @@
   - name: Copy Eve local configuration
     become: yes
     template: src=local_settings_eve.py.j2 dest=/data/code/inventory/local_settings.py mode=0664
+    notify:
+      - restart celeryd
+      - restart celerybeat
 
   - name:  Add lines for the python virtualenv to inventory.wsgi
     lineinfile:
@@ -205,6 +210,9 @@
       regexp: "^activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
       state: present
       insertbefore: BOF
+    notify:
+      - restart celeryd
+      - restart celerybeat
 
   - name:  Add lines for the python virtualenv to inventory.wsgi
     lineinfile:
@@ -213,6 +221,9 @@
       regexp: "^execfile(activate_this, dict(__file__=activate_this))"
       state: present
       insertafter: "^activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
+    notify:
+      - restart celeryd
+      - restart celerybeat
 
   # MongoDB
   - name: Copy MongoDB configuration
@@ -265,3 +276,6 @@
         name: mongod
         state: started
         enabled: yes
+    notify:
+      - restart celeryd
+      - restart celerybeat

@@ -56,12 +56,15 @@
         append: yes
 
   - name: Update user vagrant groups
-    user: name=vagrant groups=lapurd append=yes
+    user:
+      name: vagrant
+      groups: lapurd
+      append: yes
 
   - name: Update dplagnt home directory group permissions
     file:
       state: directory
-      mode: 0770
+      mode: 0700
       path: /home/dplagnt
 
   # Get the user's SSH keys to dplagnt
@@ -71,6 +74,7 @@
         dest: "/home/dplagnt/.ssh/"
         state: directory
         owner: dplagnt
+        group: lapurd
         mode: 0700
 
   - name: Push user's rsa key to dplagnt's authorized_keys
@@ -80,6 +84,7 @@
         src: "~/.ssh/id_rsa.pub"
         dest: "/home/dplagnt/.ssh/authorized_keys"
         owner: dplagnt
+        group: lapurd
         mode: 0600
     register: rsa
     ignore_errors: yes
@@ -89,6 +94,7 @@
         src: "~/.ssh/id_rsa.pub"
         dest: "/home/dplagnt/.ssh/"
         owner: dplagnt
+        group: lapurd
         mode: 0600
     ignore_errors: yes
 
@@ -97,6 +103,7 @@
         src: "~/.ssh/id_rsa"
         dest: "/home/dplagnt/.ssh/"
         owner: dplagnt
+        group: lapurd
         mode: 0600
     ignore_errors: yes
 
@@ -105,6 +112,7 @@
         src: "config.ssh"
         dest: "/home/dplagnt/.ssh/config"
         owner: dplagnt
+        group: lapurd
         mode: 0600
     ignore_errors: yes
 

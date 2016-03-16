@@ -1,0 +1,10 @@
+---
+  - name: restart celeryd
+    service:
+        name: celeryd
+        state: restarted
+
+  - name: restart celerybeat
+    service:
+        name: celerybeat
+        state: restarted
