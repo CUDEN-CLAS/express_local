@@ -56,7 +56,10 @@
         append: yes
 
   - name: Update user vagrant groups
-    user: name=vagrant groups=lapurd append=yes
+    user:
+      name: vagrant
+      groups: lapurd
+      append: yes
 
   - name: Update dplagnt home directory group permissions
     file:
