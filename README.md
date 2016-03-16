@@ -1,7 +1,7 @@
 If you don't care how it works, you just want it to work now; checkout the [short version](README_COMMANDS.md)
 
 # Express Local
-A local development environment for Cu Boulder's Web Express Platform. **The playbooks require a vault password to run properly.**
+A local development environment for Cu Boulder's Web Express Platform. **The playbooks require a vault password file to run properly.**
 
 # You will need
 * git
@@ -54,6 +54,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   ```
 * Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
   The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
+* Create `~/.ansible_vault.txt` and enter the vault password. Make sure that only your user has access to the file `chmod 600 ~/.ansible_vault.txt`.
 
 # Logging
 * Logs are viewable from [logs.local:5601](http://logs.local:5601)

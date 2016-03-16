@@ -44,7 +44,7 @@ Vagrant.configure(2) do |config|
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_express.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.ask_vault_pass = true
+        ansible.vault_password_file = "~/.ansible_vault.txt"
       end
     end
 
@@ -52,7 +52,7 @@ Vagrant.configure(2) do |config|
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_inventory.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.ask_vault_pass = true
+        ansible.vault_password_file = "~/.ansible_vault.txt"
       end
     end
 
