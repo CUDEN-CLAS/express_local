@@ -155,7 +155,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * Make sure every package has a version
 * Combine apache roles
 
-# Notes (and debugging)
+# Notes
 * If are on OSX you don't like typing your password each time you start the VMs add the following to `/etc/sudoers`. See https://docs.vagrantup.com/v2/synced-folders/nfs.html for other OSs.
   ```
   ## Allows us to run Vagrant (using NFS mount) without having to enter a password.
@@ -165,6 +165,3 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   %admin ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD, VAGRANT_EXPORTS_REMOVE
 
   ```
-* CentOS 6 ships with Python 2.6 and relies on it for yum to work. So we are running Python 2.7 in a virtualenv. [Nice Intro to virtualenv](http://www.dabapps.com/blog/introduction-to-pip-and-virtualenv-python/).
-* CentOS 6 also ships with Apache 2.2. We need Apache 2.4 (#@TODO: Why?), so we need to add httpd24. Because we need to side load Pytohn 2.7 and Apache 2.4, we need to compile mod_wsgi by hand. Compiling by hand requires Apache Extension tool (apxs), for that we need to add a library path because of our non standard install locations. After we compile mod_wsgi, we need to move it so that Apache 2.4 can see it.
-* If you are having trouble compiling python packages with errors like `Failed building wheel for [package]` or `Modules/errors.h:8:18: error: [filename].h: No such file or directory` make sure that you have the '-devel' version of the yum package dependency.
