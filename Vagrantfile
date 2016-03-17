@@ -40,29 +40,21 @@ Vagrant.configure(2) do |config|
 
     end
 
-    # config.ssh.username = 'vagrant'
-    # config.ssh.password = 'vagrant'
-    # config.ssh.insert_key = 'true'
-
-    ### Begin Webserver specific configuration ###
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_express.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.ask_vault_pass = true
+        ansible.vault_password_file = "~/.ansible_vault.txt"
       end
     end
-    ### End Webserver specific configuration ###
 
-    ### Begin Inventory specific configuration ###
     if name.include? "inventory.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_inventory.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.ask_vault_pass = true
+        ansible.vault_password_file = "~/.ansible_vault.txt"
       end
     end
-    ### End Inventory specific configuration ###
 
     if name.include? "logs.local"
       config.vm.provision "ansible" do |ansible|

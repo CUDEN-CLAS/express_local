@@ -1,4 +1,4 @@
-**Some playbooks require a 'Vault password' to run properly.** Ask one of the developers for this password.
+**Some playbooks require a vault password file to run properly.** Ask one of the developers for this password.
 
 # Running express_local
 * Vagrant commands
