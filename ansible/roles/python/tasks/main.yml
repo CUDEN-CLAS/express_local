@@ -141,7 +141,7 @@
       owner: apache
       group: apache
     notify:
-      -restart httpd24-httpd
+      - restart httpd24-httpd
 
   # Celery and CeleryBeat
   - name: Push celeryd init script
