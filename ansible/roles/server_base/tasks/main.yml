@@ -64,7 +64,7 @@
   - name: Update dplagnt home directory group permissions
     file:
       state: directory
-      mode: 0700
+      mode: 0750
       path: /home/dplagnt
 
   # Get the user's SSH keys to dplagnt
