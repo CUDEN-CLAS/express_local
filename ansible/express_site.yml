@@ -2,7 +2,7 @@
 - hosts: express.local
   vars_prompt:
     - name: "type"
-      prompt: "[C]reate an new site or [R]einstall an existing site"
+      prompt: "[C]reate an new site, [R]einstall an existing site, or [S]keleton a site (do not run install)"
       private: no
 
     - name: "path"
@@ -17,11 +17,11 @@
         mysql_db:
             name: "{{database}}"
             state: present
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
 
       - name: Clear drush cache
         action: command drush cc drush
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         args:
             chdir: "/data/web/express/"
 
@@ -29,7 +29,7 @@
         become: yes
         become_user: dplagnt
         command: "drush dslm-new {{path}} --current"
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         args:
             chdir: "/data/web/express/"
             creates: "/data/web/express/{{path}}/install.php"
@@ -39,14 +39,14 @@
         become: yes
         become_user: dplagnt
         command: drush dslm-add-profile express --current
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         args:
             chdir: "/data/web/express/{{path}}/"
             creates: "/data/web/express/{{path}}/profiles/express/express.info"
 
       - name: Set file permissions
         become: yes
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         file:
             path: "/data/web/express/{{path}}"
             state: directory
@@ -54,28 +54,28 @@
             recurse: yes
 
       - name: Create settings.php file
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         template:
             src: templates/express_settings.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.php"
             mode: 0774
 
       - name: Create settings.local_pre.php file
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         template:
             src: templates/express_settings_local_pre.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_pre.php"
             mode: 0774
 
       - name: Create settings.local_post.php file
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         template:
             src: templates/express_settings_local_post.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_post.php"
             mode: 0774
 
       - name: Create temp files directory
-        when: type == "C" or type == "c" or type == "create" or type == "Create"
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         file:
             path: "{{ item }}"
             state: directory
@@ -95,6 +95,7 @@
         become: yes
         become_user: dplagnt
         register: install_output
+        when: type == "C" or type == "c" or type == "create" or type == "Create" or type == "R" or type == "r" or type == "reinstall" or type == "Reinstall"
         args:
             chdir: "/data/web/express/{{path}}/"
 
