@@ -19,3 +19,5 @@
         - kibana
         - redis
         - express_code
+
+  - include: dplagnt_ssh_key_dest.yml
