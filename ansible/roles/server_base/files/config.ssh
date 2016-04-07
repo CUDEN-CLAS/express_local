@@ -1,5 +1,4 @@
 HashKnownHosts no
-HashKnownHosts no
 Host 192.168.33.* express.local logs.local inventory.local
     StrictHostKeyChecking no
     UserKnownHostsFile=/dev/null
