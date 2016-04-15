@@ -18,3 +18,5 @@
       - logstash
     vars:
       python_location: /home/dplagnt/inventory-python27-environment
+
+  - include: dplagnt_ssh_key_src.yml
