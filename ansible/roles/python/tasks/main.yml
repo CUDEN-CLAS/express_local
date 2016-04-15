@@ -96,6 +96,14 @@
       - { name: 'eve', version: '0.5.3' }
       - { name: 'celery', version: '3.1.12' }
 
+  - name: Install Cerberus second since eve is dependant on a lower version
+    pip:
+      name: "{{ item.name }}"
+      version: "{{ item.version }}"
+      virtualenv: "/home/dplagnt/inventory-python27-environment"
+    with_items:
+      - { name: 'cerberus', version: '0.9.1' }
+
   - name: Get mod_wsgi
     get_url:
       url: https://github.com/GrahamDumpleton/mod_wsgi/archive/3.5.tar.gz
