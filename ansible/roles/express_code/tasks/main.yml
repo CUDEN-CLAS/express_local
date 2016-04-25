@@ -100,3 +100,12 @@
        - { src: "logstash_shipper-10-input.conf.j2", dest: "/etc/logstash/conf.d/10-input.conf"}
        - { src: "logstash_shipper-90-output-redis.conf.j2", dest: "/etc/logstash/conf.d/90-output-redis.conf"}
     notify: restart logstash
+
+  - name: Set Files directory perms
+    file:
+      path: /wwwng/sitefiles
+      state: directory
+      owner: dplagnt
+      group: apache
+      mode: 0775
+      recurse: yes
