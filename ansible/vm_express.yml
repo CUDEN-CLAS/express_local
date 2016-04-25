@@ -29,3 +29,5 @@
         - logstash
         - express_code
         - logging
+
+  - include: dplagnt_ssh_key_dest.yml
