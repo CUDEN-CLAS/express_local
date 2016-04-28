@@ -109,3 +109,4 @@
       group: apache
       mode: 0775
       recurse: yes
+    when: host == "express.local"

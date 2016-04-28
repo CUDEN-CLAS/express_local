@@ -1,9 +1,5 @@
 ---
   # This playbook will be run on webservers for the Inventory.
-
-  # Need to set up ssh first
-  - include: push_ssh_keys.yml
-
   - hosts: inventory
     become: yes
     vars:
@@ -12,11 +8,11 @@
         express_code_logstash: false
         express_code_logstash_shipper: true
     roles:
-      - server_base
-      - apache_inventory
-      - python
-      - logstash
+      - {role: ssh_keys, key_set: 'user' }
+      - {role: server_base }
+      - {role: apache_inventory }
+      - {role: python }
+      - {role: logstash }
+      - {role: ssh_keys, key_set: 'dplagnt_src' }
     vars:
       python_location: /home/dplagnt/inventory-python27-environment
-
-  - include: dplagnt_ssh_key_src.yml

@@ -1,13 +1,9 @@
 ---
   # This playbook will be run on webservers for Express.
-
-  # Need to set up ssh first
-  - include: push_ssh_keys.yml
-
-  # Now we install all the applications we need to run Express
   # Drush includes the Composer install, so needs to be before Behat.
   - hosts: web
     become: yes
+
     # Pick which configuration files we want to swap in
     vars:
         express_code_varnish: true
@@ -15,19 +11,19 @@
         express_code_logstash: false
         express_code_logstash_shipper: true
     roles:
-        - server_base
-        - apache
-        - php
-        - mysql
-        - varnish
-        - apc
-        - memcache
-        - xdebug
-        - rvm
-        - drush
-        - behat
-        - logstash
-        - express_code
-        - logging
-
-  - include: dplagnt_ssh_key_dest.yml
+        - {role: ssh_keys, key_set: 'user' }
+        - {role: server_base }
+        - {role: apache }
+        - {role: php }
+        - {role: mysql }
+        - {role: varnish }
+        - {role: apc }
+        - {role: memcache }
+        - {role: xdebug }
+        - {role: rvm }
+        - {role: drush }
+        - {role: behat }
+        - {role: logstash }
+        - {role: express_code }
+        - {role: logging }
+        - {role: ssh_keys, key_set: 'dplagnt_dest' }
