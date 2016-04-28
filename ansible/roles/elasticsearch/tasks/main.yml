@@ -1,0 +1,15 @@
+---
+  - name: Install OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - java-1.7.0-openjdk-devel
+        - https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.6.2.noarch.rpm
+
+  - name: Ensure Elasticsearch is started and set to run on startup
+    service:
+        name: elasticsearch
+        state: started
+        enabled: yes

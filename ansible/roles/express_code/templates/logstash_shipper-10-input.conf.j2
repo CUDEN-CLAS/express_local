@@ -1,0 +1,26 @@
+input {
+  file {
+    path => "/var/log/varnish/varnishncsa.log"
+    type => "varnishncsa"
+  }
+
+  file {
+    path => "/var/log/httpd/*access_log"
+    type =>  "access"
+  }
+
+  file {
+    path => "/var/log/httpd/*error_log"
+    type =>  "error"
+  }
+
+  file {
+    path => "/var/log/drupal/drupal-*-auth.log"
+    type =>  "drupal_authentication"
+  }
+
+  file {
+    path => "/var/log/drupal/drupal-*.log"
+    type =>  "drupal_syslog"
+  }
+}

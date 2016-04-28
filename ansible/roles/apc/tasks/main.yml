@@ -1,8 +1,20 @@
 ---
   - name: Install php packages
-    yum: pkg={{ item }} state=present update_cache=yes
+    become: yes
+    yum:
+        pkg: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
-     - php-pecl-apc
-    sudo: true
+      - php-pecl-apc
     notify:
-      - restart apache
+        - restart apache
+
+  - name: Change apc shm_size
+    become: yes
+    lineinfile:
+        dest: "/etc/php.d/apc.ini"
+        regexp: "^[#|;]?apc.shm_size="
+        line: "apc.shm_size=256M"
+    notify:
+        - restart apache

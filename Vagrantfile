@@ -7,9 +7,9 @@
 # TODO:
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
+  "inventory.local" => "192.168.33.21",
   "express.local" => "192.168.33.20",
-  #"inventory.local" => "192.168.33.21",
-  #"logs.local" => "192.168.33.22",
+  "logs.local" => "192.168.33.22",
 }
 
 # All Vagrant configuration is done below.
@@ -28,7 +28,7 @@ Vagrant.configure(2) do |config|
         v.name = name
 
         if name.include? "express.local"
-          v.customize ["modifyvm", :id, "--memory", 2048]
+          v.customize ["modifyvm", :id, "--memory", 4096]
           v.customize ["modifyvm", :id, "--cpus", "2"]
         else
           v.customize ["modifyvm", :id, "--memory", 1024]
@@ -40,28 +40,35 @@ Vagrant.configure(2) do |config|
 
     end
 
-    if name.include? "express.local"
-      config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/vm_express.yml"
-        ansible.inventory_path = "ansible/hosts"
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
-      end
-    end
-
     if name.include? "inventory.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_inventory.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.extra_vars = {
-          ansible_ssh_user: 'vagrant',
-          ansible_connection: 'ssh'}
+        ansible.vault_password_file = "~/.ansible_vault.txt"
       end
     end
 
-    #sync folders
-    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs"
-    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs"
+    if name.include? "express.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/vm_express.yml"
+        ansible.inventory_path = "ansible/hosts"
+        ansible.vault_password_file = "~/.ansible_vault.txt"
+      end
+    end
+
+    if name.include? "logs.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/vm_logs.yml"
+        ansible.inventory_path = "ansible/hosts"
+      end
+    end
+
+    # Sync folders
+    # We are using NFS because it is faster than rsync. The mount_options tell the VM to use:
+    # NFS protocol version 3.
+    # Absolute time for which file and directory entries are kept in the file-attribute cache after an update is 2 seconds.
+    # Use the UDP protocol because it is faster than TCP
+    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs", mount_options: ["vers=3", "actimeo=2", "udp"]
+    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs", mount_options: ["vers=3", "actimeo=2","udp"]
   end
 end

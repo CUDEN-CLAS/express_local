@@ -1,0 +1,22 @@
+---
+  - name: Install necessary OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - redis-2.4.10
+
+  - name: Configure Redis to accept connections from outside servers.
+    lineinfile:
+        dest: "/etc/redis.conf"
+        regexp: "bind 127.0.0.1"
+        line: "#bind 127.0.0.1"
+    notify:
+        - restart redis
+
+  - name: Ensure Logstash is started and set to run on startup
+    service:
+        name: redis
+        state: started
+        enabled: yes

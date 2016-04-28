@@ -1,0 +1,7 @@
+output {
+  redis {
+    host => "logs.local"
+    data_type => "list"
+    key => "logstash"
+  }
+}

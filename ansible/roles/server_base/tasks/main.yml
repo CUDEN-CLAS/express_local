@@ -1,74 +1,147 @@
 ---
-  - name: Update files owned by vagrant
-    shell: chown -Rhc --from=1000 vagrant /home/vagrant
+  # - name: fix vagrant uid
+  #   user: name=vagrant uid=5000
+  #
+  # - name: update files owned by vagrant
+  #   shell: chown -Rhc --from=1000 5000 /home/vagrant
 
   # Install some basics
   - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
-    yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm state=present
-    yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm  state=present
+    yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
+        state: present
+    yum:
+        name: "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
+        state: present
 
   - name: Install necessary OS packages
-    yum: name={{ item }} state=present update_cache=yes
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
-      - git-1.7.1
-      - epel-release
-      - mysql-connector-python
-      - nano
-      - nc
-      - nmap
-      - mlocate
+        - git-1.7.1
+        - epel-release
+        - mysql-connector-python
+        - nano
+        - nc
+        - nmap
+        - mlocate
+        - htop
+        - man
 
   - name: Allow wheel group to sudo without a password
     become: yes
     lineinfile:
-      dest: "/etc/sudoers"
-      regexp: "^# %wheel        ALL=(ALL)  NOPASSWD: ALL"
-      line: "%wheel        ALL=(ALL)  NOPASSWD: ALL"
+        dest: "/etc/sudoers"
+        regexp: "^# %wheel        ALL=(ALL)  NOPASSWD: ALL"
+        line: "%wheel        ALL=(ALL)  NOPASSWD: ALL"
 
   # Setup the dplagnt user
   - name: Create lapurd group
-    group: name=lapurd state=present
+    group:
+        name: "lapurd"
+        state: present
 
   - name: Create dplagnt user
-    user: name=dplagnt group=lapurd shell=/bin/bash
+    user:
+        name: "dplagnt"
+        group: "lapurd"
+        shell: "/bin/bash"
 
   - name: Update user dplagnt groups
-    user: name=dplagnt groups=adm,wheel append=yes
+    user:
+        name: "dplagnt"
+        groups: "adm,wheel"
+        append: yes
+
+  - name: Update user vagrant groups
+    user:
+      name: vagrant
+      groups: lapurd
+      append: yes
+
+  - name: Update dplagnt home directory group permissions
+    file:
+      state: directory
+      mode: 0750
+      path: /home/dplagnt
 
   # Get the user's SSH keys to dplagnt
   - name: Create destination directory for SSH keys
     # Workaround for #2372
-    file: state=directory mode=0700 dest=/home/dplagnt/.ssh/ owner=dplagnt
+    file:
+        dest: "/home/dplagnt/.ssh/"
+        state: directory
+        owner: dplagnt
+        group: lapurd
+        mode: 0700
 
   - name: Push user's rsa key to dplagnt's authorized_keys
     # action: authorized_key user=root key='$FILE(~/.ssh/id_rsa.pub)'
     # Workaround for #2372
-    copy: src=~/.ssh/id_rsa.pub dest=/home/dplagnt/.ssh/authorized_keys owner=dplagnt mode=0600
+    copy:
+        src: "~/.ssh/id_rsa.pub"
+        dest: "/home/dplagnt/.ssh/authorized_keys"
+        owner: dplagnt
+        group: lapurd
+        mode: 0600
     register: rsa
     ignore_errors: yes
 
   - name: Push user's id_rsa.pub to dplagnt's .ssh/id_rsa.pub
-    copy: src=~/.ssh/id_rsa.pub dest=/home/dplagnt/.ssh/ owner=dplagnt mode=0600
+    copy:
+        src: "~/.ssh/id_rsa.pub"
+        dest: "/home/dplagnt/.ssh/"
+        owner: dplagnt
+        group: lapurd
+        mode: 0600
     ignore_errors: yes
 
   - name: Push user's id_rsa to dplagnt's .ssh/
-    copy: src=~/.ssh/id_rsa dest=/home/dplagnt/.ssh/ owner=dplagnt mode=0600
+    copy:
+        src: "~/.ssh/id_rsa"
+        dest: "/home/dplagnt/.ssh/"
+        owner: dplagnt
+        group: lapurd
+        mode: 0600
     ignore_errors: yes
 
   - name: Push ssh config
-    copy: src=config.ssh dest=/home/dplagnt/.ssh/config owner=dplagnt mode=0600
+    copy:
+        src: "config.ssh"
+        dest: "/home/dplagnt/.ssh/config"
+        owner: dplagnt
+        group: lapurd
+        mode: 0600
     ignore_errors: yes
 
   # Push the list of known hosts
   # - name: Pushes known_hosts
-  #   copy: src=known_hosts dest=/home/dplagnt/.ssh/ owner=dplagnt mode=0600
+  #   copy:
+  #       src: "known_hosts"
+  #       dest: "/home/dplagnt/.ssh/"
+  #       owner: dplagnt
+  #       mode: 0600
   #   ignore_errors: yes
 
   - name: Create host file
-    template: src=server_base_hosts.j2 dest=/etc/hosts owner=root force=yes
+    template:
+        src: "server_base_hosts.j2"
+        dest: "/etc/hosts"
+        owner: root
+        force: yes
 
   - name: Create .bashrc for dplagnt
-    template: src=bashrc.j2 dest=/home/dplagnt/.bashrc owner=dplagnt force=yes
+    template:
+        src: "bashrc.j2"
+        dest: "/home/dplagnt/.bashrc"
+        owner: dplagnt
+        force: yes
 
   - name: Create .bashrc for vagrant
-    template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant force=yes
+    template:
+        src: "bashrc.j2"
+        dest: "/home/vagrant/.bashrc"
+        owner: vagrant
+        force: yes

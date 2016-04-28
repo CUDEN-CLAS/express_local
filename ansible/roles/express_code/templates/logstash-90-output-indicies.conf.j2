@@ -1,0 +1,44 @@
+output {
+  if "_grokparsefailure" in [tags] or "_jsonparsefailure" in [tags] or "_dateparsefailure" in [tags] {
+    elasticsearch {
+      index => "logstash-parsefailure-%{+YYYY.MM.dd}"
+      host => "localhost"
+    }
+  } else {
+    if [type] == 'access' {
+      elasticsearch {
+        index => "logstash-access-%{+YYYY.MM.dd}"
+        host => "localhost"
+      }
+    } else if [type] == 'error' {
+      elasticsearch {
+        index => "logstash-error-%{+YYYY.MM.dd}"
+        host => "localhost"
+      }
+    } else if [type] == 'drupal_syslog' {
+      elasticsearch {
+        index => "logstash-drupal_syslog-%{+YYYY.MM.dd}"
+        host => "localhost"
+      }
+    } else if [type] == 'drupal_authentication' {
+      elasticsearch {
+        index => "logstash-drupal_authentication-%{+YYYY.MM.dd}"
+        host => "localhost"
+      }
+    } else if [type] == 'varnishncsa' {
+      elasticsearch {
+        index => "logstash-varnishncsa-%{+YYYY.MM.dd}"
+        host => "localhost"
+      }
+    } else if [type] == "celery" {
+      elasticsearch {
+        index => "logstash-celery-%{+YYYY.MM.dd}"
+        host => "localhost"
+      }
+    } else {
+      elasticsearch {
+        host => "localhost"
+      }
+    }
+  }
+}

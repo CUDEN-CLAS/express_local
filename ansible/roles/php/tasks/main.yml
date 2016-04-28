@@ -1,81 +1,148 @@
 ---
   - name: Install php packages
-    yum: pkg={{ item }} state=present update_cache=yes
+    become: yes
+    yum:
+        pkg: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
-     - php-5.3.3
-     - php-cli
-     - php-common
-     - php-devel
-     - php-gd
-     - php-ldap
-     - php-mcrypt
-     - php-mysql
-     - php-pdo
-     - php-pear
-     - php-pecl-apc
-     - php-pecl-memcache
-     - php-soap
-     - php-xmlrpc
-    sudo: true
+        - php-5.3.3
+        - php-cli
+        - php-common
+        - php-devel
+        - php-gd
+        - php-ldap
+        - php-mcrypt
+        - php-mysql
+        - php-pdo
+        - php-pear
+        - php-pecl-apc
+        - php-pecl-memcache
+        - php-soap
+        - php-xmlrpc
     notify:
-      - restart apache
+        - restart apache
 
   - name: Change php memory_limit
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?memory_limit =" insertafter="^[#|;]?memory_limit =" line="memory_limit = 256M"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?memory_limit ="
+        insertafter: "^[#|;]?memory_limit ="
+        line: "memory_limit = 512M"
     notify:
-      - restart apache
+        - restart apache
 
   - name: Change php display_errors
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?display_errors =" insertafter="^[#|;]?display_errors =" line="display_errors = 1"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?display_errors ="
+        insertafter: "^[#|;]?display_errors ="
+        line: "display_errors = 1"
     notify:
-      - restart apache
+        - restart apache
 
   - name: Change php display_startup_errors
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?display_startup_errors =" insertafter="^[#|;]?display_startup_errors =" line="display_startup_errors = 1"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?display_startup_errors ="
+        insertafter: "^[#|;]?display_startup_errors ="
+        line: "display_startup_errors = 1"
     notify:
-      - restart apache
+        - restart apache
 
   - name: Change php html_errors
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?html_errors =" insertafter="^[#|;]?html_errors =" line="html_errors = 1"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?html_errors ="
+        insertafter: "^[#|;]?html_errors ="
+        line: "html_errors = 1"
     notify:
-      - restart apache
-      
+        - restart apache
+
   - name: Change php post_max_size
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?post_max_size =" insertafter="^[#|;]?post_max_size =" line="post_max_size = 256M"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?post_max_size ="
+        insertafter: "^[#|;]?post_max_size ="
+        line: "post_max_size = 256M"
     notify:
-      - restart apache
-    
+        - restart apache
+
   - name: Change php upload_max_filesize
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?upload_max_filesize =" insertafter="^[#|;]?upload_max_filesize =" line="upload_max_filesize = 256M"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?upload_max_filesize ="
+        insertafter: "^[#|;]?upload_max_filesize ="
+        line: "upload_max_filesize = 256M"
     notify:
-      - restart apache
+        - restart apache
 
   - name: Change php date_timezone
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?date_timezone =" insertafter="^[#|;]?date_timezone =" line="date_timezone = 'America/Denver'"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?date_timezone ="
+        insertafter: "^[#|;]?date_timezone ="
+        line: "date_timezone = 'America/Denver'"
     notify:
-      - restart apache
+        - restart apache
 
   - name: change php date.timezone (php 5.4+)
-    lineinfile: dest=/etc/php.ini regexp="^[#|;]?date.timezone =" insertafter="^[#|;]?date.timezone =" line="date.timezone = 'America/Denver'"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        regexp: "^[#|;]?date.timezone ="
+        insertafter: "^[#|;]?date.timezone ="
+        line: "date.timezone = 'America/Denver'"
     notify:
-      - restart apache
+        - restart apache
 
   - name: Install PECL uploadprogress
-    command: pecl install uploadprogress creates=/usr/lib/php5/20100525/uploadprogress.so
-    sudo: true
+    become: yes
+    command: "pecl install uploadprogress"
+    args:
+        creates: "/usr/lib/php5/20100525/uploadprogress.so"
     when: php_pecl_uploadprogress is defined and php_pecl_uploadprogress == "y"
 
   - name: Add PECL uploadprogress apache php.ini setting
-    lineinfile: dest=/etc/php.ini state=present line="extension=uploadprogress.so"
-    sudo: true
+    become: yes
+    lineinfile:
+        dest: "/etc/php.ini"
+        line: "extension=uploadprogress.so"
+        state: present
     when: php_pecl_uploadprogress is defined and php_pecl_uploadprogress == "y"
     notify:
-      - restart apache
+        - restart apache
+
+  - name:  Create directory to store outgoing mail.
+    become: yes
+    file:
+        dest: "/var/log/mail"
+        owner: root
+        mode: 0777
+        state: directory
+
+  - name:  Copy sendmail php code to server
+    copy:
+        src: "sendmail"
+        dest: "/usr/local/bin/sendmail"
+        owner: "root"
+        group: "root"
+        mode: 0755
+
+  - name:  Add sendmail lines to cli php.ini
+    lineinfile:
+        dest: "/etc/php.ini"
+        line: "sendmail_path = /usr/local/bin/sendmail"
+        regexp: "^sendmail_path = /usr/local/bin/sendmail"
+        state: present
+        insertafter: EOF
+        create: True
+    notify:
+        - restart apache

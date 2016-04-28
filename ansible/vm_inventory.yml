@@ -5,8 +5,18 @@
   - include: push_ssh_keys.yml
 
   - hosts: inventory
-    sudo: yes
+    become: yes
+    vars:
+        express_code_varnish: false
+        express_code_elk: false
+        express_code_logstash: false
+        express_code_logstash_shipper: true
     roles:
       - server_base
+      - apache_inventory
       - python
-      # - logstash_forwarder
+      - logstash
+    vars:
+      python_location: /home/dplagnt/inventory-python27-environment
+
+  - include: dplagnt_ssh_key_src.yml

@@ -6,6 +6,11 @@
     #   private: no
     #   default: "testing"
 
+    - name: "bundle"
+      prompt: "Enter 'all' or the machine name of the bundle you would like to enable and test. Leave blank for"
+      private: no
+      default: "express"
+
     - name: "tags"
       prompt: "Enter an argument for the 'tags' parameter. Comma seperated list => OR, && => AND, ~ => NOT. Leave blank for"
       private: no
@@ -15,18 +20,39 @@
       prompt: "Do you want to do a clean install of the site first? (Y/N)"
       private: no
 
+  # Use until we can support all paths in runtime Behat Params.
   vars:
-      database: "express_testing"
+    path: "testing"
 
   tasks:
+
     - name: Install site
-      when: install == "Y" or install == "y"
-      command: drush si cu_fit -y
+      when: install == "y" or install == "Y" or install == "Yes"
+      command: drush si express -y
       become: yes
       become_user: dplagnt
       register: install_output
       args:
-          chdir: "/data/web/express/testing/"
+          chdir: "/data/web/express/{{path}}/"
+
+    - name: Enable bundles
+      when: bundle != "express" and bundle != "all"
+      command: "drush en {{ bundle }} -y"
+      become: yes
+      become_user: dplagnt
+      register: enable_output
+      args:
+          chdir: "/data/web/express/{{path}}/"
+
+    - name: Enable all the bundles
+      when: bundle == "all"
+      command: "drush en cu_advanced_content_bundle cu_advanced_design_bundle cu_advanced_layout_bundle cu_debug_admin_bundle cu_events_bundle cu_forms_bundle cu_news_bundle cu_people_bundle cu_photo_gallery_bundle cu_seo_bundle cu_social_media_bundle -y"
+      become: yes
+      become_user: dplagnt
+      register: enable_output
+      args:
+          chdir: "/data/web/express/{{path}}/"
+
 
     - name: Start Selenium Server
       command: xvfb-run -a java -jar /var/selenium2/selenium-server-standalone-2.46.0.jar
@@ -34,22 +60,40 @@
       poll: 0
       become: yes
 
-    - name: Run the tests
-      become: yes
-      become_user: dplagnt
-      command: behat
-      register: behat
-      args:
-          chdir: /data/web/express/testing/profiles/cu_fit/tests
-      when: tags == "all"
+    # - name: Run script
+    #   become: yes
+    #   script: roles/behat/scripts/behat_params.sh
 
-    - name: Run the tests
-      command: behat --tags {{tags}}
+    - name: Run the tests - Bundle - All tests
       become: yes
-      become_user: dplagnt
+      command: "behat --suite={{bundle}}"
       register: behat
       args:
-          chdir: /data/web/express/testing/profiles/cu_fit/tests
-      when: tags != "all"
+          chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
+      when: tags == "all" and bundle != "all"
+
+    - name: Run the tests - Bundle - Some tests
+      command: "behat --tags {{tags}} --suite={{bundle}}"
+      become: yes
+      register: behat
+      args:
+          chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
+      when: tags != "all" and bundle != "all"
+
+    - name: Run the tests - All the Things - All tests
+      command: "behat"
+      become: yes
+      register: behat
+      args:
+          chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
+      when: tags == "all" and bundle == "all"
+
+    - name: Run the tests - All the Things - Some tests
+      command: "behat --tags {{tags}}"
+      become: yes
+      register: behat
+      args:
+          chdir: "/data/web/express/{{path}}/profiles/express/tests/behat"
+      when: tags != "all" and bundle == "all"
 
     - debug: var=behat.stdout_lines
