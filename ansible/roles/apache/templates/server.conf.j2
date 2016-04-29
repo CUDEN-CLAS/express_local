@@ -283,7 +283,7 @@ SetEnv CU_CENTRAL_EVE https://{{ EVE_API_USER }}:{{ EVE_API_PW }}@eveuri/invento
     ServerAdmin webmaster@www.colorado.edu
     DocumentRoot "/data/web/express"
     ServerName www.colorado.edu
-    SetEnv WWWNG_ENV local
+    SetEnv WWWNG_ENV express_local
     ErrorLog /data/log/httpd/express_error_log
     CustomLog /data/log/httpd/express_access_log combined env=!keepalivelog
     CustomLog /data/log/httpd/express_keepalive_log combined env=keepalivelog

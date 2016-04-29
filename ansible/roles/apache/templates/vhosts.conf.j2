@@ -3,9 +3,9 @@ DirectoryIndex index.php index.html
 <VirtualHost *:80>
   ServerName express.local
 
-  SetEnvIf X-FORWARDED-PROTO https HTTPS=on
+  SetEnvIf X-FORWARDED-PROTO https HTTPS=off
   SetEnv CU_CENTRAL_EVE https://{{ EVE_API_USER }}:{{ EVE_API_PW }}@eveuri/inventory/
-  SetEnv WWWNG_ENV local
+  SetEnv WWWNG_ENV express_local
 
   LogLevel info
 
