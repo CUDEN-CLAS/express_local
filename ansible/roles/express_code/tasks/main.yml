@@ -119,5 +119,5 @@
         state: directory
         owner: dplagnt
         group: apache
-        mode: 0775
+        mode: 02775 # includes group sticky bit
         recurse: yes
