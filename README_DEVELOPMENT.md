@@ -1,6 +1,26 @@
 # Playing with variables
 * You can modify variables after they are entered using Jinja2 filters. See http://docs.ansible.com/ansible/playbooks_filters.html.
 
+# Ansible Vaults
+There are two encrypted files that define variables as follows you only need to substitute your own values for the variables in square brackets):
+* `ansible/roles/apache/defaults/main.yml` defines:
+```
+API_URI: https://[username]:[password]@eveuri/inventory/
+EVE_API_USER: [username]
+EVE_API_PW: [password]
+EVE_HOST: eveuri
+WWWNG_ENV: local_dev
+
+```
+* `ansible/roles/python/defaults/main.yml` defines:
+```
+LDAP_USER: [username]
+LDAP_PASSWORD: [password]
+GSA_USER: [gsa_username]
+GSA_PASSWORD: [gsa_password]
+
+```
+
 # Errors and debugging
 * If there are issues with passwordless SSH, check file and directory perms starting at the users home directory. Only the user can have perms to the dirs and files.
 * RVM, if you get the following, try again later:
