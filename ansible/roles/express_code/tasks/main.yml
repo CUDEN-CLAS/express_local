@@ -101,12 +101,23 @@
        - { src: "logstash_shipper-90-output-redis.conf.j2", dest: "/etc/logstash/conf.d/90-output-redis.conf"}
     notify: restart logstash
 
-  - name: Set Files directory perms
+  - name: Setup directories
+    when: "'web' in group_names"
     file:
-      path: /wwwng/sitefiles
-      state: directory
-      owner: dplagnt
-      group: apache
-      mode: 0775
-      recurse: yes
-    when: host == "express.local"
+        state: directory
+        path: "{{ item }}"
+        owner: dplagnt
+        group: lapurd
+    with_items:
+      - "/data/web/express"
+      - "/data/releases"
+
+  - name: Set Files directory perms
+    when: "'web' in group_names"
+    file:
+        path: /wwwng/sitefiles
+        state: directory
+        owner: dplagnt
+        group: apache
+        mode: 0775
+        recurse: yes

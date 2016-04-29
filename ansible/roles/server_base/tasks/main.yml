@@ -145,14 +145,3 @@
         dest: "/home/vagrant/.bashrc"
         owner: vagrant
         force: yes
-
-  - name: Setup directories
-    file:
-        state: directory
-        path: "{{ item }}"
-        owner: dplagnt
-        group: lapurd
-    with_items:
-      - "/data/web/express"
-      - "/data/releases"
-      - "/wwwng/sitefiles"
