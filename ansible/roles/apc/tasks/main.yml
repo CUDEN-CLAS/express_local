@@ -24,6 +24,7 @@
         path: "/usr/local/www.misc/sysadmintools/apc"
         owner: dplagnt
         group: lapurd
+        state: directory
         mode: 0755
 
   - name: Copy APC clear script
