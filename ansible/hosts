@@ -2,16 +2,16 @@
 localhost ansible_connection=local
 
 [web]
-express.local ansible_ssh_host=192.168.33.20 ansible_ssh_user=root
+express.local ansible_connection=ssh ansible_ssh_user=root
 
 [inventory]
-inventory.local ansible_ssh_host=192.168.33.21 ansible_ssh_user=root
+inventory.local ansible_connection=ssh ansible_ssh_user=root
 
 [logging]
-logs.local ansible_ssh_host=192.168.33.22 ansible_ssh_user=root
+logs.local ansible_connection=ssh ansible_ssh_user=root
 
 [deploy_targets]
-express.local ansible_ssh_host=192.168.33.20 ansible_ssh_user=root
+express.local ansible_connection=ssh ansible_ssh_user=root
 logs.local ansible_ssh_host=192.168.33.22 ansible_ssh_user=root
 
 [host_list]
