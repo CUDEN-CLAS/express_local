@@ -22,6 +22,15 @@
         mode: 0644
         force: yes
 
+  - name: Copy Varnish configuration
+    template:
+        src: "varnishncsa.j2"
+        dest: "/etc/sysconfig/varnishncsa"
+        owner: "root"
+        group: "root"
+        mode: 0644
+        force: yes
+
   - name: Ensure Varnish config path exists
     file:
         path: "/etc/varnish"
@@ -42,7 +51,9 @@
         group: "root"
         mode: 0644
         force: yes
-    notify: restart varnish
+    notify:
+      - restart varnish
+      - restart varnishncsa
 
   - name: Check Varnish configuration
     command: "sudo varnishd -C -f /etc/varnish/default.vcl"
@@ -56,5 +67,11 @@
   - name: Ensure Varnish is started and set to run on startup
     service:
         name: varnish
+        state: started
+        enabled: yes
+
+  - name: Ensure varnishncsa logging is started and set to run on startup
+    service:
+        name: varnishncsa
         state: started
         enabled: yes
