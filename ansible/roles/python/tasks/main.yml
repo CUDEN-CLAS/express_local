@@ -226,7 +226,7 @@
     lineinfile:
       dest: "/data/code/inventory/inventory.wsgi"
       line: "execfile(activate_this, dict(__file__=activate_this))"
-      regexp: "^execfile(activate_this, dict(__file__=activate_this))"
+      regexp: "^execfile(activate_this\\, dict(__file__\\=activate_this))"
       state: present
       insertafter: "^activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
     notify:
