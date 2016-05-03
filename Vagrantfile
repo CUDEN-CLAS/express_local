@@ -68,7 +68,6 @@ Vagrant.configure(2) do |config|
     # NFS protocol version 3.
     # Absolute time for which file and directory entries are kept in the file-attribute cache after an update is 2 seconds.
     # Use the UDP protocol because it is faster than TCP
-    config.vm.synced_folder "~/express_local/data", "/data", type: "nfs", mount_options: ["vers=3", "actimeo=2", "udp"]
-    config.vm.synced_folder "~/express_local/data/files", "/wwwng/sitefiles", type: "nfs", mount_options: ["vers=3", "actimeo=2","udp"]
+    config.vm.synced_folder "~/express_local/data/code", "/data/code", type: "nfs", mount_options: ["vers=3", "actimeo=2", "udp"]
   end
 end
