@@ -3,11 +3,13 @@ DirectoryIndex index.php index.html
 <VirtualHost *:80>
   ServerName express.local
 
-  SetEnvIf X-FORWARDED-PROTO https HTTPS=on
-  SetEnv CU_CENTRAL_EVE https://{{ EVE_API_USER }}:{{ EVE_API_PW }}@eveuri/inventory/
-  SetEnv WWWNG_ENV local-dev
+  SetEnvIf X-FORWARDED-PROTO https HTTPS=off
+  SetEnv CU_CENTRAL_EVE http://{{ EVE_API_USER }}:{{ EVE_API_PW }}@inventory.local/inventory/
+  SetEnv WWWNG_ENV express_local
 
   LogLevel info
+
+  Alias /sysadmintools/ /usr/local/www.misc/sysadmintools/
 
   DocumentRoot /data/web/express
   <Directory "/data/web/express">
