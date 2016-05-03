@@ -8,6 +8,8 @@ DirectoryIndex index.php index.html
   SetEnv WWWNG_ENV express_local
 
   LogLevel info
+  LogFormat "%{X-Forwarded-For}i %a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+  LogFormat "%h %l %u %t \"%r\" %>s %b" common
 
   Alias /sysadmintools/ /usr/local/www.misc/sysadmintools/
 
