@@ -30,7 +30,7 @@
   - name: Copy APC clear script
     copy:
         src: "clearapc.php"
-        dest: "/usr/local/www.misc/sysadmintools/clearapc.php"
+        dest: "/usr/local/www.misc/sysadmintools/apc/clearapc.php"
         owner: dplagnt
         group: lapurd
         mode: 0755
