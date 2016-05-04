@@ -145,3 +145,19 @@
         dest: "/home/vagrant/.bashrc"
         owner: vagrant
         force: yes
+
+  - name: Create deploy scripts directories
+    file:
+        path: "/usr/local/www.misc"
+        state: directory
+        owner: dplagnt
+        group: lapurd
+        mode: 0755
+
+  - name: Create sysadmintools directory
+    file:
+        path: "/usr/local/www.misc/sysadmintools"
+        state: directory
+        owner: dplagnt
+        group: lapurd
+        mode: 0755

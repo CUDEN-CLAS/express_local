@@ -74,6 +74,12 @@
         groups: "apache"
         append: yes
 
+  - name: Update user apache groups
+    user:
+        name: "dplagnt"
+        groups: "lapurd"
+        append: yes
+
   - name: Ensure Apache (httpd) is started and enabled on boot.
     service:
         name: httpd

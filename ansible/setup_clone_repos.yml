@@ -13,10 +13,7 @@
     - name: Create initial directory structure
       file: path={{ item }} state=directory mode=0775
       with_items:
-        - "~/express_local/data/web/express"
-        - "~/express_local/data/releases"
         - "~/express_local/data/code"
-        - "~/express_local/data/files"
 
     - name: Clone dslm_base repository
       git:

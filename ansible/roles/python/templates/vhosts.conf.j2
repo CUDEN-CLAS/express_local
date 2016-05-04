@@ -7,7 +7,7 @@
 
   Header set EVEENV 'local' env=inventorylog
 
-  SetEnv WWWNG_ENV local-dev
+  SetEnv WWWNG_ENV local
 
   # WSGIDaemonProcess inventory processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}
   WSGIDaemonProcess inventory python-path=/data/code/inventory:/home/dplagnt/inventory-python27-environment/lib/python2.7/site-packages processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}

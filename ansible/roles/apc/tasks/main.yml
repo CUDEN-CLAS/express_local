@@ -18,3 +18,19 @@
         line: "apc.shm_size=256M"
     notify:
         - restart apache
+
+  - name: Make directory for apc script
+    file:
+        path: "/usr/local/www.misc/sysadmintools/apc"
+        owner: dplagnt
+        group: lapurd
+        state: directory
+        mode: 0755
+
+  - name: Copy APC clear script
+    copy:
+        src: "clearapc.php"
+        dest: "/usr/local/www.misc/sysadmintools/apc/clearapc.php"
+        owner: dplagnt
+        group: lapurd
+        mode: 0755
