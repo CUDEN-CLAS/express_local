@@ -35,6 +35,11 @@ output {
         index => "logstash-celery-%{+YYYY.MM.dd}"
         host => "localhost"
       }
+    } else if [type] == "mysql_slow_query" {
+      elasticsearch {
+        index => "logstash-mysql_slow_query-%{+YYYY.MM.dd}"
+        host => "localhost"
+      }
     } else {
       elasticsearch {
         host => "localhost"
