@@ -1,7 +1,7 @@
 <VirtualHost *:80>
   ServerName inventory.local
 
-  <LocationMatch "/(inventory|sites)">
+  <LocationMatch "/(atlas|sites)">
       Require all granted
   </LocationMatch>
 
@@ -9,10 +9,10 @@
 
   SetEnv WWWNG_ENV local
 
-  # WSGIDaemonProcess inventory processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}
-  WSGIDaemonProcess inventory python-path=/data/code/inventory:/home/dplagnt/inventory-python27-environment/lib/python2.7/site-packages processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}
-  WSGIScriptAlias /inventory /data/code/inventory/inventory.wsgi
-  <Directory "/data/code/inventory">
+  # WSGIDaemonProcess atlas processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}
+  WSGIDaemonProcess atlas python-path=/data/code/atlas:/home/dplagnt/atlas-python27-environment/lib/python2.7/site-packages processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}
+  WSGIScriptAlias /atlas /data/code/atlas/atlas.wsgi
+  <Directory "/data/code/atlas">
       WSGIPassAuthorization On
       Require all granted
   </Directory>

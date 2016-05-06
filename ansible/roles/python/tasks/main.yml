@@ -65,7 +65,7 @@
     become: yes
     shell: ldconfig
 
-    # Setup a Python 2.7 virtual environment to run the inventory
+    # Setup a Python 2.7 virtual environment to run Atlas
   - name: Setup an environment for the tracker using Python 2.7
     shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/inventory-python27-environment
     args:
@@ -76,7 +76,7 @@
     pip:
       name: "{{ item.name }}"
       version: "{{ item.version }}"
-      virtualenv: "/home/dplagnt/inventory-python27-environment"
+      virtualenv: "/home/dplagnt/atlas-python27-environment"
     with_items:
       - { name: 'ecdsa', version: '0.10'} # We need this because paramiko doesn't resolve it's dependancies
       - { name: 'importlib', version: '1.0.3'}
@@ -100,7 +100,7 @@
     pip:
       name: "{{ item.name }}"
       version: "{{ item.version }}"
-      virtualenv: "/home/dplagnt/inventory-python27-environment"
+      virtualenv: "/home/dplagnt/atlas-python27-environment"
     with_items:
       - { name: 'cerberus', version: '0.9.1' }
 
@@ -118,7 +118,7 @@
 
   - name: Install mod_wsgi for Python 2.7
     become: yes
-    shell: ./configure --with-apxs=/opt/rh/httpd24/root/usr/bin/apxs --with-python=/home/dplagnt/inventory-python27-environment/bin/python2.7
+    shell: ./configure --with-apxs=/opt/rh/httpd24/root/usr/bin/apxs --with-python=/home/dplagnt/atlas-python27-environment/bin/python2.7
     args:
       chdir: /opt/mod_wsgi-3.5
 
@@ -206,29 +206,29 @@
   # Eve
   - name: Copy Eve local configuration
     become: yes
-    template: src=local_settings_eve.py.j2 dest=/data/code/inventory/local_settings.py mode=0664
+    template: src=local_settings_eve.py.j2 dest=/data/code/atlas/local_settings.py mode=0664
     notify:
       - restart celeryd
       - restart celerybeat
 
-  - name:  Add lines for the python virtualenv to inventory.wsgi
+  - name:  Add lines for the python virtualenv to atlas.wsgi
     lineinfile:
-      dest: "/data/code/inventory/inventory.wsgi"
-      line: "activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
-      regexp: "^activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
+      dest: "/data/code/atlas/atlas.wsgi"
+      line: "activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
+      regexp: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
       state: present
       insertbefore: BOF
     notify:
       - restart celeryd
       - restart celerybeat
 
-  - name:  Add lines for the python virtualenv to inventory.wsgi
+  - name:  Add lines for the python virtualenv to atlas.wsgi
     lineinfile:
-      dest: "/data/code/inventory/inventory.wsgi"
+      dest: "/data/code/atlas/atlas.wsgi"
       line: "execfile(activate_this, dict(__file__=activate_this))"
       regexp: "^execfile(activate_this\\, dict(__file__\\=activate_this))"
       state: present
-      insertafter: "^activate_this = '/home/dplagnt/inventory-python27-environment/bin/activate_this.py'"
+      insertafter: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
     notify:
       - restart celeryd
       - restart celerybeat
