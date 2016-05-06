@@ -1,0 +1,6 @@
+#
+# standard NCSA formatting with additional hit or miss and backend appended
+# to the end
+#
+FORMAT='"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\" \"%{VCL_Log:"hitmiss"}x\" \"%{VCL_Log:"backend"}x\" \"%{F5-Destination}i\""'
+DAEMON_OPTS="-a -w $logfile -D -P $pidfile -F $FORMAT"
