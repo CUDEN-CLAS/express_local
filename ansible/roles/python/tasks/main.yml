@@ -1,8 +1,11 @@
 ---
   # Also includes some packages to compile the additional version of python.
+  # Added `async` to create a 10 minute timeout. The mirrors for some of these
+  # packages can be terrible.
   - name: Installs necessary OS packages
     become: yes
     yum: pkg={{ item }} state=latest
+    async: 600
     with_items:
       - "@development"
       - gcc
