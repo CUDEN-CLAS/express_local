@@ -64,7 +64,7 @@
 - name: Create slow query log file
   file:
       path: "/var/log/mysql/mysql-slow.log"
-      state: file
+      state: touch
       owner: "mysql"
       mode: 0644
 
