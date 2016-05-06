@@ -59,7 +59,6 @@
       path: "/var/log/mysql"
       state: directory
       owner: "mysql"
-      group: "logstash"
       mode: 0755
 
 - name: Create slow query log file
