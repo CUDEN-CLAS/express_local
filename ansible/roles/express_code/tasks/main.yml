@@ -62,7 +62,9 @@
         - { src: "/data/code/logstash/conf.d/40-filter-apache_access.conf", dest: "/etc/logstash/conf.d/40-filter-apache_access.conf"}
         - { src: "/data/code/logstash/conf.d/41-filter-apache_error.conf", dest: "/etc/logstash/conf.d/41-filter-apache_error.conf"}
         - { src: "/data/code/logstash/conf.d/45-filter-celery.conf", dest: "/etc/logstash/conf.d/45-filter-celery.conf"}
+        - { src: "/data/code/logstash/conf.d/47-filter-http.conf", dest: "/etc/logstash/conf.d/47-filter-http.conf"}
         - { src: "/data/code/logstash/conf.d/50-filter-varnish.conf", dest: "/etc/logstash/conf.d/50-filter-varnish.conf"}
+        - { src: "/data/code/logstash/conf.d/55-filter-mysql_slow_query.conf", dest: "/etc/logstash/conf.d/55-filter-mysql_slow_query.conf"}
         - { src: "/data/code/logstash/conf.d/70-filter-cleanup-fields.conf", dest: "/etc/logstash/conf.d/70-filter-cleanup-fields.conf"}
         - { src: "/data/code/logstash/conf.d/80-filter-drop.conf", dest: "/etc/logstash/conf.d/80-filter-drop.conf"}
         - { src: "/data/code/logstash/conf.d/90-output-indicies.conf", dest: "/etc/logstash/conf.d/90-output-indicies.conf"}

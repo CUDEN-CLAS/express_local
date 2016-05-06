@@ -3,24 +3,29 @@ input {
     path => "/var/log/varnish/varnishncsa.log"
     type => "varnishncsa"
   }
-
   file {
     path => "/var/log/httpd/*access_log"
     type =>  "access"
   }
-
   file {
     path => "/var/log/httpd/*error_log"
     type =>  "error"
   }
-
   file {
     path => "/var/log/drupal/drupal-*-auth.log"
     type =>  "drupal_authentication"
   }
-
   file {
     path => "/var/log/drupal/drupal-*.log"
     type =>  "drupal_syslog"
+  }
+  file {
+    path => "/var/log/mysql/mysql-slow.log"
+    type =>  "mysql_slow_query"
+    codec => multiline {
+      pattern => "^# User@Host:"
+      negate => true
+      what => previous
+    }
   }
 }

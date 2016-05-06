@@ -4,3 +4,9 @@
     service:
         name: varnish
         state: restarted
+
+  - name: restart varnishncsa
+    become: yes
+    service:
+        name: varnishncsa
+        state: restarted
