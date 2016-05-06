@@ -7,12 +7,15 @@
     with_items:
         - https://download.elastic.co/logstash/logstash/packages/centos/logstash-1.5.6-1.noarch.rpm
 
-  - name: Update user group
+  - name: Update user group on the appropriate directories
     file:
-        path: "/var/log/httpd"
+        path: "{{ item }}"
         group: "logstash"
         recurse: yes
     when: "'web' in group_names"
+    with_items:
+        - /var/log/httpd
+        - /var/log/mysql
 
   - name: Ensure Logstash is started and set to run on startup
     service:

@@ -67,7 +67,6 @@
       path: "/var/log/mysql/mysql-slow.log"
       state: file
       owner: "mysql"
-      group: "logstash"
       mode: 0644
 
 - name: Remove the default config file
