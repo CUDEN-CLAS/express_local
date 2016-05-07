@@ -54,11 +54,30 @@
       login_user: "root"
   when: result|success
 
-- name: Comment out bind line
-  lineinfile:
+- name: Create slow query log directory
+  file:
+      path: "/var/log/mysql"
+      state: directory
+      owner: "mysql"
+      mode: 0755
+
+- name: Create slow query log file
+  file:
+      path: "/var/log/mysql/mysql-slow.log"
+      state: touch
+      owner: "mysql"
+      mode: 0644
+
+- name: Remove the default config file
+  file:
+      path: "/etc/my.cnf"
+      state: absent
+
+- name: Add our config file
+  template:
+      src: "mysql.my.cnf.j2"
       dest: "/etc/my.cnf"
-      regexp: "'bind-address = 127.0.0.1'"
-      line: "''#bind-address = 127.0.0.1'"
-      state: present
+      owner: "dplagnt"
+      force: yes
   notify:
       - restart mysql
