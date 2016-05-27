@@ -1,11 +1,13 @@
 ---
   # Also includes some packages to compile the additional version of python.
-  # Added `async` to create a 10 minute timeout. The mirrors for some of these
-  # packages can be terrible.
+  # Tried to use async to add a timeout. But it doesn't work whne using with_items.
+  # TODO: Add the timeout back in when using ansible 2.1 or greater.
   - name: Installs necessary OS packages
     become: yes
-    yum: pkg={{ item }} state=latest
-    async: 600
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
       - "@development"
       - gcc
