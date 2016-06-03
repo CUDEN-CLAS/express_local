@@ -65,7 +65,7 @@
     - name: Clone elasticsearch configuration
       git:
         repo: "git@github.com:CuBoulder/elasticsearch.git"
-        dest: "~/express_local/data/code/elasticsearch_config"
+        dest: "~/express_local/data/code/elasticsearch"
         version: "master"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
