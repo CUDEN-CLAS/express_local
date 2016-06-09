@@ -65,14 +65,45 @@
     become: yes
     shell: ldconfig
 
-    # Setup a Python 2.7 virtual environment to run Atlas
-  - name: Setup an environment for the tracker using Python 2.7
+    # Setup a Python 2.7 virtual environment to run the inventory
+  - name: Setup a virtualenv for the Inventory using Python 2.7
     shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/inventory-python27-environment
     args:
       chdir: /opt/Python-2.7.1
       creates:  /home/dplagnt/inventory-python27-environment/bin/python2.7
 
+  # Setup a Python 2.7 virtual environment to run Atlas
+  - name: Setup a virtualenv for Atlas using Python 2.7
+    shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/atlas-python27-environment
+    args:
+      chdir: /opt/Python-2.7.1
+      creates:  /home/dplagnt/inventory-python27-environment/bin/python2.7
+
   - name: Install Python packages in the Python 2.7 environment
+    pip:
+      name: "{{ item.name }}"
+      version: "{{ item.version }}"
+      virtualenv: "/home/dplagnt/atlas-python27-environment"
+    with_items:
+      - { name: 'ecdsa', version: '0.10'} # We need this because paramiko doesn't resolve it's dependancies
+      - { name: 'importlib', version: '1.0.3'}
+      - { name: 'cryptography', version: '0.8.2' }
+      - { name: 'pycrypto', version: '2.6.1' }
+      - { name: 'requests', version: '2.7.0' }
+      - { name: 'flask', version: '0.10.1' }
+      - { name: 'jinja2', version: '2.7.3' }
+      - { name: 'fabric', version: '1.8.0' }
+      - { name: 'pymongo', version: '2.8.1' }
+      - { name: 'cerberus', version: '0.9.1' }
+      - { name: 'python-logstash', version: '0.4.5' }
+      - { name: 'events', version: '0.2.1' }
+      - { name: 'pyopenssl', version: '0.15.1' }
+      - { name: 'paramiko', version: '1.12.0'}
+      - { name: 'python-ldap', version: '2.3.13' }
+      - { name: 'eve', version: '0.5.3' }
+      - { name: 'celery', version: '3.1.12' }
+
+  - name: Install Python packages in the Atlas virtualenv
     pip:
       name: "{{ item.name }}"
       version: "{{ item.version }}"
@@ -204,9 +235,16 @@
         enabled: yes
 
   # Eve
-  - name: Copy Eve local configuration
+  - name: Copy Eve local configuration for Inventory
     become: yes
-    template: src=local_settings_eve.py.j2 dest=/data/code/atlas/local_settings.py mode=0664
+    template: src=local_settings_inventory.py.j2 dest=/data/code/inventory/local_settings.py mode=0664
+    notify:
+      - restart celeryd
+      - restart celerybeat
+
+  - name: Copy Eve local configuration for Atlas
+    become: yes
+    template: src=local_settings_atlas.py.j2 dest=/data/code/atlas/local_settings.py mode=0664
     notify:
       - restart celeryd
       - restart celerybeat
@@ -218,6 +256,28 @@
       regexp: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
       state: present
       insertbefore: BOF
+    notify:
+      - restart celeryd
+      - restart celerybeat
+
+  - name:  Add lines for the python virtualenv to atlas.wsgi
+    lineinfile:
+      dest: "/data/code/atlas/atlas.wsgi"
+      line: "activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
+      regexp: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
+      state: present
+      insertbefore: BOF
+    notify:
+      - restart celeryd
+      - restart celerybeat
+
+  - name:  Add lines for the python virtualenv to inventory.wsgi
+    lineinfile:
+      dest: "/data/code/atlas/atlas.wsgi"
+      line: "execfile(activate_this, dict(__file__=activate_this))"
+      regexp: "^execfile(activate_this\\, dict(__file__\\=activate_this))"
+      state: present
+      insertafter: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
     notify:
       - restart celeryd
       - restart celerybeat
