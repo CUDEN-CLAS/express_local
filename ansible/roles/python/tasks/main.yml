@@ -1,8 +1,13 @@
 ---
   # Also includes some packages to compile the additional version of python.
+  # Tried to use async to add a timeout. But it doesn't work whne using with_items.
+  # TODO: Add the timeout back in when using ansible 2.1 or greater.
   - name: Installs necessary OS packages
     become: yes
-    yum: pkg={{ item }} state=latest
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
     with_items:
       - "@development"
       - gcc

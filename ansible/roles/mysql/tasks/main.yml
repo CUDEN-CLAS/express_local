@@ -59,15 +59,13 @@
       path: "/var/log/mysql"
       state: directory
       owner: "mysql"
-      group: "logstash"
       mode: 0755
 
 - name: Create slow query log file
   file:
       path: "/var/log/mysql/mysql-slow.log"
-      state: file
+      state: touch
       owner: "mysql"
-      group: "logstash"
       mode: 0644
 
 - name: Remove the default config file
