@@ -22,6 +22,7 @@
       - python-pip
       - python-setuptools-0.6.10
       - zlib-devel-1.2.3
+      - rabbitmq-server-3.1.5
 
   - name: Download Python 2.7
     get_url:
@@ -352,3 +353,9 @@
     notify:
       - restart celeryd
       - restart celerybeat
+
+  - name: Ensure RabbitMQ is started and enabled on boot.
+    service:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
