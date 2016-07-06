@@ -36,3 +36,6 @@ export PATH="$PATH:$HOME/.rvm/bin"
 [[ -r $rvm_path/scripts/completion ]] && . $rvm_path/scripts/completion
 # This line MUST be last
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+# Add Behat environmental variables
+export BEHAT_PARAMS='{"extensions":{"Drupal\\DrupalExtension":{"drupal":{"drupal_root":"/data/web/express/testing"},"drush":{"root":"/data/web/express/testing"}},"Behat\\MinkExtension":{"base_url":"http://express.local/testing","files_path":"/data/web/express/testing/profiles/express/tests/behat/assets"}}}'
