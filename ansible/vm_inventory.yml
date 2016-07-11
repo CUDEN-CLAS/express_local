@@ -12,7 +12,7 @@
       - {role: server_base }
       - {role: apache_inventory }
       - {role: python }
-      - {role: logstash }
+      #- {role: logstash }
       - {role: ssh_keys, key_set: 'dplagnt_src' }
     vars:
       python_location: /home/dplagnt/inventory-python27-environment
