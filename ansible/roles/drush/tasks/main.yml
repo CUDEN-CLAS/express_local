@@ -51,7 +51,7 @@
     git:
         repo: "http://git.drupal.org/project/dslm.git"
         dest: "/usr/local/share/drush/commands/dslm"
-        version: "7.x-2.x"
+        version: "manage-package"
 
   - name: Add DSLM_BASE variable to .profile
     lineinfile:
