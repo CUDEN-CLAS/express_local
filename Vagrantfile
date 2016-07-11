@@ -9,7 +9,7 @@
 hosts = {
   "inventory.local" => "192.168.33.21",
   "express.local" => "192.168.33.20",
-  "logs.local" => "192.168.33.22",
+  #"logs.local" => "192.168.33.22",
 }
 
 # All Vagrant configuration is done below.
