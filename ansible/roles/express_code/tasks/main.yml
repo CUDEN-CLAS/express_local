@@ -16,92 +16,92 @@
     notify:
         - restart varnish
 
-  - name: Get rid of ELK files
-    when: express_code_elk
-    file:
-        path: "{{ item }}"
-        state: absent
-    with_items:
-        - /etc/elasticsearch/elasticsearch.yml
-        - /etc/elasticsearch/logging.yml
-        - /etc/logstash/conf.d/*
-
-  - name: Symlink in Elasticsearch configuration
-    when: express_code_elk
-    file:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        state: link
-    with_items:
-        - { src: "/data/code/elasticsearch/elasticsearch.yml", dest: "/etc/elasticsearch/elasticsearch.yml"}
-        - { src: "/data/code/elasticsearch/logging.yml", dest: "/etc/elasticsearch/logging.yml"}
-    notify:
-        - restart elasticsearch
-
-  - name: Create directory for Logstash configuration
-    when: express_code_logstash
-    file:
-        path: "/etc/logstash/conf.d"
-        state: directory
-
-  - name: Symlink in our Logstash configuration
-    when: express_code_logstash
-    file:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        state: link
-        force: yes
-    with_items:
-        # This should symlink in the individual files rather than the whole directory.
-        # We need to do this so we can replace individual config files later.
-        - { src: "/data/code/logstash/conf.d/10-input.conf", dest: "/etc/logstash/conf.d/10-input.conf"}
-        - { src: "/data/code/logstash/conf.d/20-filter-environment.conf", dest: "/etc/logstash/conf.d/20-filter-environment.conf"}
-        - { src: "/data/code/logstash/conf.d/30-filter-drupal_syslog.conf", dest: "/etc/logstash/conf.d/30-filter-drupal_syslog.conf"}
-        - { src: "/data/code/logstash/conf.d/35-filter-drupal_auth.conf", dest: "/etc/logstash/conf.d/35-filter-drupal_auth.conf"}
-        - { src: "/data/code/logstash/conf.d/40-filter-apache_access.conf", dest: "/etc/logstash/conf.d/40-filter-apache_access.conf"}
-        - { src: "/data/code/logstash/conf.d/41-filter-apache_error.conf", dest: "/etc/logstash/conf.d/41-filter-apache_error.conf"}
-        - { src: "/data/code/logstash/conf.d/45-filter-celery.conf", dest: "/etc/logstash/conf.d/45-filter-celery.conf"}
-        - { src: "/data/code/logstash/conf.d/47-filter-http.conf", dest: "/etc/logstash/conf.d/47-filter-http.conf"}
-        - { src: "/data/code/logstash/conf.d/50-filter-varnish.conf", dest: "/etc/logstash/conf.d/50-filter-varnish.conf"}
-        - { src: "/data/code/logstash/conf.d/55-filter-mysql_slow_query.conf", dest: "/etc/logstash/conf.d/55-filter-mysql_slow_query.conf"}
-        - { src: "/data/code/logstash/conf.d/70-filter-cleanup-fields.conf", dest: "/etc/logstash/conf.d/70-filter-cleanup-fields.conf"}
-        - { src: "/data/code/logstash/conf.d/80-filter-drop.conf", dest: "/etc/logstash/conf.d/80-filter-drop.conf"}
-        - { src: "/data/code/logstash/conf.d/90-output-indicies.conf", dest: "/etc/logstash/conf.d/90-output-indicies.conf"}
-    notify:
-        - restart logstash
-
-  - name: Remove logstash output
-    when: express_code_logstash
-    file:
-        path: "{{ item }}"
-        state: absent
-    with_items:
-        - /etc/logstash/conf.d/90-output-indicies.conf
-
-  - name: Add localized logstash output
-    when: express_code_logstash
-    template:
-        src: "logstash-90-output-indicies.conf.j2"
-        dest: "/etc/logstash/conf.d/90-output-indicies.conf"
-        owner: "root"
-        group: "root"
-        mode: 0644
-        force: yes
-    notify: restart logstash
-
-  - name: Add local versions of the logstash_shipper files
-    when: express_code_logstash_shipper
-    template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: "root"
-        group: "root"
-        mode: 0644
-        force: yes
-    with_items:
-       - { src: "logstash_shipper-10-input.conf.j2", dest: "/etc/logstash/conf.d/10-input.conf"}
-       - { src: "logstash_shipper-90-output-redis.conf.j2", dest: "/etc/logstash/conf.d/90-output-redis.conf"}
-    notify: restart logstash
+  # - name: Get rid of ELK files
+  #   when: express_code_elk
+  #   file:
+  #       path: "{{ item }}"
+  #       state: absent
+  #   with_items:
+  #       - /etc/elasticsearch/elasticsearch.yml
+  #       - /etc/elasticsearch/logging.yml
+  #       - /etc/logstash/conf.d/*
+  #
+  # - name: Symlink in Elasticsearch configuration
+  #   when: express_code_elk
+  #   file:
+  #       src: "{{ item.src }}"
+  #       dest: "{{ item.dest }}"
+  #       state: link
+  #   with_items:
+  #       - { src: "/data/code/elasticsearch/elasticsearch.yml", dest: "/etc/elasticsearch/elasticsearch.yml"}
+  #       - { src: "/data/code/elasticsearch/logging.yml", dest: "/etc/elasticsearch/logging.yml"}
+  #   notify:
+  #       - restart elasticsearch
+  #
+  # - name: Create directory for Logstash configuration
+  #   when: express_code_logstash
+  #   file:
+  #       path: "/etc/logstash/conf.d"
+  #       state: directory
+  #
+  # - name: Symlink in our Logstash configuration
+  #   when: express_code_logstash
+  #   file:
+  #       src: "{{ item.src }}"
+  #       dest: "{{ item.dest }}"
+  #       state: link
+  #       force: yes
+  #   with_items:
+  #       # This should symlink in the individual files rather than the whole directory.
+  #       # We need to do this so we can replace individual config files later.
+  #       - { src: "/data/code/logstash/conf.d/10-input.conf", dest: "/etc/logstash/conf.d/10-input.conf"}
+  #       - { src: "/data/code/logstash/conf.d/20-filter-environment.conf", dest: "/etc/logstash/conf.d/20-filter-environment.conf"}
+  #       - { src: "/data/code/logstash/conf.d/30-filter-drupal_syslog.conf", dest: "/etc/logstash/conf.d/30-filter-drupal_syslog.conf"}
+  #       - { src: "/data/code/logstash/conf.d/35-filter-drupal_auth.conf", dest: "/etc/logstash/conf.d/35-filter-drupal_auth.conf"}
+  #       - { src: "/data/code/logstash/conf.d/40-filter-apache_access.conf", dest: "/etc/logstash/conf.d/40-filter-apache_access.conf"}
+  #       - { src: "/data/code/logstash/conf.d/41-filter-apache_error.conf", dest: "/etc/logstash/conf.d/41-filter-apache_error.conf"}
+  #       - { src: "/data/code/logstash/conf.d/45-filter-celery.conf", dest: "/etc/logstash/conf.d/45-filter-celery.conf"}
+  #       - { src: "/data/code/logstash/conf.d/47-filter-http.conf", dest: "/etc/logstash/conf.d/47-filter-http.conf"}
+  #       - { src: "/data/code/logstash/conf.d/50-filter-varnish.conf", dest: "/etc/logstash/conf.d/50-filter-varnish.conf"}
+  #       - { src: "/data/code/logstash/conf.d/55-filter-mysql_slow_query.conf", dest: "/etc/logstash/conf.d/55-filter-mysql_slow_query.conf"}
+  #       - { src: "/data/code/logstash/conf.d/70-filter-cleanup-fields.conf", dest: "/etc/logstash/conf.d/70-filter-cleanup-fields.conf"}
+  #       - { src: "/data/code/logstash/conf.d/80-filter-drop.conf", dest: "/etc/logstash/conf.d/80-filter-drop.conf"}
+  #       - { src: "/data/code/logstash/conf.d/90-output-indicies.conf", dest: "/etc/logstash/conf.d/90-output-indicies.conf"}
+  #   notify:
+  #       - restart logstash
+  #
+  # - name: Remove logstash output
+  #   when: express_code_logstash
+  #   file:
+  #       path: "{{ item }}"
+  #       state: absent
+  #   with_items:
+  #       - /etc/logstash/conf.d/90-output-indicies.conf
+  #
+  # - name: Add localized logstash output
+  #   when: express_code_logstash
+  #   template:
+  #       src: "logstash-90-output-indicies.conf.j2"
+  #       dest: "/etc/logstash/conf.d/90-output-indicies.conf"
+  #       owner: "root"
+  #       group: "root"
+  #       mode: 0644
+  #       force: yes
+  #   notify: restart logstash
+  #
+  # - name: Add local versions of the logstash_shipper files
+  #   when: express_code_logstash_shipper
+  #   template:
+  #       src: "{{ item.src }}"
+  #       dest: "{{ item.dest }}"
+  #       owner: "root"
+  #       group: "root"
+  #       mode: 0644
+  #       force: yes
+  #   with_items:
+  #      - { src: "logstash_shipper-10-input.conf.j2", dest: "/etc/logstash/conf.d/10-input.conf"}
+  #      - { src: "logstash_shipper-90-output-redis.conf.j2", dest: "/etc/logstash/conf.d/90-output-redis.conf"}
+  #   notify: restart logstash
 
   - name: Setup directories
     when: "'web' in group_names"
