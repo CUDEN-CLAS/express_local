@@ -11,7 +11,7 @@
       - {role: ssh_keys, key_set: 'user' }
       - {role: server_base }
       - {role: apache_inventory }
-      - {role: python }
+      - {role: atlas }
       #- {role: logstash }
       - {role: ssh_keys, key_set: 'dplagnt_src' }
     vars:

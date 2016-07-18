@@ -362,5 +362,5 @@
   - name: Ensure RabbitMQ is started and enabled on boot.
     service:
         name: rabbitmq-server
-        state: started
+        state: reloaded
         enabled: yes
