@@ -52,11 +52,10 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   LogLevel ERROR
 
   ```
-* Change directory to the base of this repository and run `./install.sh` (_You will only ever run this script once_).
-  The script will ask you for a SSH key to connect to GitHub and download all of our private repos. If you do not already have access to those repositories, ask a developer.
+* Copy the ssh keys for the deployment user to `ansible/keys`.
 * Create `~/.ansible_vault.txt` and enter the vault password. Make sure that only your user has access to the file `chmod 600 ~/.ansible_vault.txt`.
 
-# Logging
+# Logging (Commented out for now)
 * Logs are viewable from [logs.local:5601](http://logs.local:5601)
 * After each time the VM is provisioned you will need to setup index patterns.
   1. Choose 'Use event times to create index names'
@@ -136,11 +135,6 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
     * MongoDB 2.4.14
     * PIP
   * Python 2.7.1
-    * Flask 0.10.1
-    * Eve 0.5.3
-    * Celery 3.1.12
-    * Fabric 1.8.0
-    * Cerberus 0.9.1
   * Logstash
 * Webserver - logs.local
   * Java - 1.7.0

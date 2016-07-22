@@ -116,15 +116,6 @@
         mode: 0600
     ignore_errors: yes
 
-  # Push the list of known hosts
-  # - name: Pushes known_hosts
-  #   copy:
-  #       src: "known_hosts"
-  #       dest: "/home/dplagnt/.ssh/"
-  #       owner: dplagnt
-  #       mode: 0600
-  #   ignore_errors: yes
-
   - name: Create host file
     template:
         src: "server_base_hosts.j2"

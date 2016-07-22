@@ -8,11 +8,10 @@
         express_code_logstash: false
         express_code_logstash_shipper: true
     roles:
-      - {role: ssh_keys, key_set: 'user' }
+      - {role: ssh_keys}
       - {role: server_base }
       - {role: apache_inventory }
       - {role: atlas }
       #- {role: logstash }
-      - {role: ssh_keys, key_set: 'dplagnt_src' }
     vars:
       python_location: /home/osr_web_deploy/inventory-python27-environment

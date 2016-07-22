@@ -11,7 +11,7 @@
         express_code_logstash: false
         express_code_logstash_shipper: true
     roles:
-        - {role: ssh_keys, key_set: 'user' }
+        - {role: ssh_keys}
         - {role: server_base }
         - {role: apache }
         - {role: php }
@@ -26,4 +26,3 @@
         #- {role: logstash }
         - {role: express_code }
         - {role: logging }
-        - {role: ssh_keys, key_set: 'dplagnt_dest' }
