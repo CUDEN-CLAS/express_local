@@ -245,20 +245,12 @@
         state: started
         enabled: yes
 
-  # Eve
-  - name: Copy Eve local configuration for Inventory
-    become: yes
-    template: src=local_settings_inventory.py.j2 dest=/data/code/inventory/local_settings.py mode=0664
-    notify:
-      - restart celeryd
-      - restart celerybeat
-
-  - name: Copy Eve local configuration for Atlas
-    become: yes
-    template: src=local_settings_atlas.py.j2 dest=/data/code/atlas/local_settings.py mode=0664
-    notify:
-      - restart celeryd
-      - restart celerybeat
+  # - name: Copy Eve local configuration for Atlas
+  #   become: yes
+  #   template: src=local_settings_atlas.py.j2 dest=/data/code/atlas/local_settings.py mode=0664
+  #   notify:
+  #     - restart celeryd
+  #     - restart celerybeat
 
   - name:  Add lines for the python virtualenv to atlas.wsgi
     lineinfile:
