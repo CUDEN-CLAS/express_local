@@ -107,6 +107,13 @@
         mode: 0600
     ignore_errors: yes
 
+  - name: Add key to authorized_keys
+    become: yes
+    become_user: osr_web_deploy
+    authorized_key:
+        user: osr_web_deploy
+        key: "{{ lookup('file', '../../../keys/id_rsa.pub') }}"
+
   - name: Push ssh config
     copy:
         src: "config.ssh"
