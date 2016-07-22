@@ -37,82 +37,82 @@
         regexp: "^# %wheel        ALL=(ALL)  NOPASSWD: ALL"
         line: "%wheel        ALL=(ALL)  NOPASSWD: ALL"
 
-  # Setup the dplagnt user
-  - name: Create lapurd group
+  # Setup the osr_web_deploy user
+  - name: Create osr_web_deploy group
     group:
-        name: "lapurd"
+        name: "osr_web_deploy"
         state: present
 
-  - name: Create dplagnt user
+  - name: Create osr_web_deploy user
     user:
-        name: "dplagnt"
-        group: "lapurd"
+        name: "osr_web_deploy"
+        group: "osr_web_deploy"
         shell: "/bin/bash"
 
-  - name: Update user dplagnt groups
+  - name: Update user osr_web_deploy groups
     user:
-        name: "dplagnt"
+        name: "osr_web_deploy"
         groups: "adm,wheel"
         append: yes
 
   - name: Update user vagrant groups
     user:
       name: vagrant
-      groups: lapurd
+      groups: osr_web_deploy
       append: yes
 
-  - name: Update dplagnt home directory group permissions
+  - name: Update osr_web_deploy home directory group permissions
     file:
       state: directory
       mode: 0750
-      path: /home/dplagnt
+      path: /home/osr_web_deploy
 
-  # Get the user's SSH keys to dplagnt
+  # Get the user's SSH keys to osr_web_deploy
   - name: Create destination directory for SSH keys
     # Workaround for #2372
     file:
-        dest: "/home/dplagnt/.ssh/"
+        dest: "/home/osr_web_deploy/.ssh/"
         state: directory
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0700
 
-  - name: Push user's rsa key to dplagnt's authorized_keys
+  - name: Push user's rsa key to osr_web_deploy's authorized_keys
     # action: authorized_key user=root key='$FILE(~/.ssh/id_rsa.pub)'
     # Workaround for #2372
     copy:
         src: "~/.ssh/id_rsa.pub"
-        dest: "/home/dplagnt/.ssh/authorized_keys"
-        owner: dplagnt
-        group: lapurd
+        dest: "/home/osr_web_deploy/.ssh/authorized_keys"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     register: rsa
     ignore_errors: yes
 
-  - name: Push user's id_rsa.pub to dplagnt's .ssh/id_rsa.pub
+  - name: Push id_rsa.pub to osr_web_deploy
     copy:
-        src: "~/.ssh/id_rsa.pub"
-        dest: "/home/dplagnt/.ssh/"
-        owner: dplagnt
-        group: lapurd
+        src: "../../../keys/id_rsa.pub"
+        dest: "/home/osr_web_deploy/.ssh/"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     ignore_errors: yes
 
-  - name: Push user's id_rsa to dplagnt's .ssh/
+  - name: Push id_rsa to osr_web_deploy
     copy:
-        src: "~/.ssh/id_rsa"
-        dest: "/home/dplagnt/.ssh/"
-        owner: dplagnt
-        group: lapurd
+        src: "../../../keys/id_rsa"
+        dest: "/home/osr_web_deploy/.ssh/"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     ignore_errors: yes
 
   - name: Push ssh config
     copy:
         src: "config.ssh"
-        dest: "/home/dplagnt/.ssh/config"
-        owner: dplagnt
-        group: lapurd
+        dest: "/home/osr_web_deploy/.ssh/config"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     ignore_errors: yes
 
@@ -132,11 +132,11 @@
         owner: root
         force: yes
 
-  - name: Create .bashrc for dplagnt
+  - name: Create .bashrc for osr_web_deploy
     template:
         src: "bashrc.j2"
-        dest: "/home/dplagnt/.bashrc"
-        owner: dplagnt
+        dest: "/home/osr_web_deploy/.bashrc"
+        owner: osr_web_deploy
         force: yes
 
   - name: Create .bashrc for vagrant
@@ -150,14 +150,14 @@
     file:
         path: "/usr/local/www.misc"
         state: directory
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0755
 
   - name: Create sysadmintools directory
     file:
         path: "/usr/local/www.misc/sysadmintools"
         state: directory
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0755

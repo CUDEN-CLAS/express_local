@@ -108,8 +108,8 @@
     file:
         state: directory
         path: "{{ item }}"
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
     with_items:
       - "/data/web/express"
       - "/data/releases"
@@ -120,7 +120,7 @@
     file:
         path: /wwwng/sitefiles
         state: directory
-        owner: dplagnt
+        owner: osr_web_deploy
         group: apache
         mode: 02775 # includes group sticky bit
         recurse: yes

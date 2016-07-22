@@ -9,8 +9,8 @@
 
   SetEnv WWWNG_ENV local
 
-  # WSGIDaemonProcess atlas processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}
-  WSGIDaemonProcess atlas python-path=/data/code/atlas:/home/dplagnt/atlas-python27-environment/lib/python2.7/site-packages processes=2 threads=5 user=dplagnt group=lapurd display-name=%{GROUP}
+  # WSGIDaemonProcess atlas processes=2 threads=5 user=osr_web_deploy group=osr_web_deploy display-name=%{GROUP}
+  WSGIDaemonProcess atlas python-path=/data/code/atlas:/home/osr_web_deploy/atlas-python27-environment/lib/python2.7/site-packages processes=2 threads=5 user=osr_web_deploy group=osr_web_deploy display-name=%{GROUP}
   WSGIScriptAlias /atlas /data/code/atlas/atlas.wsgi
   <Directory "/data/code/atlas">
       WSGIPassAuthorization On

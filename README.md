@@ -48,7 +48,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   Host 192.168.33.* express.local inventory.local logs.local
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
-  User dplagnt
+  User osr_web_deploy
   LogLevel ERROR
 
   ```

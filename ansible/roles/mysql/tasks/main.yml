@@ -35,18 +35,18 @@
       force: yes
   when: result|success
 
-- name: Configure for easy access as dplagnt user
+- name: Configure for easy access as osr_web_deploy user
   template:
       src: "mysql_root.my.cnf.j2"
-      dest: "/home/dplagnt/.my.cnf"
-      owner: "dplagnt"
+      dest: "/home/osr_web_deploy/.my.cnf"
+      owner: "osr_web_deploy"
       force: yes
   when: result|success
 
 - name: Create application database user
   mysql_user:
-      name: "dplagnt"
-      password: "dplagnt"
+      name: "osr_web_deploy"
+      password: "osr_web_deploy"
       priv: "*.*:ALL"
       host: "'%'"
       state: present
@@ -77,7 +77,7 @@
   template:
       src: "mysql.my.cnf.j2"
       dest: "/etc/my.cnf"
-      owner: "dplagnt"
+      owner: "osr_web_deploy"
       force: yes
   notify:
       - restart mysql

@@ -73,23 +73,23 @@
 
     # Setup a Python 2.7 virtual environment to run the inventory
   - name: Setup a virtualenv for the Inventory using Python 2.7
-    shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/inventory-python27-environment
+    shell: virtualenv -p /usr/local/bin/python2.7 /home/osr_web_deploy/inventory-python27-environment
     args:
       chdir: /opt/Python-2.7.1
-      creates:  /home/dplagnt/inventory-python27-environment/bin/python2.7
+      creates:  /home/osr_web_deploy/inventory-python27-environment/bin/python2.7
 
   # Setup a Python 2.7 virtual environment to run Atlas
   - name: Setup a virtualenv for Atlas using Python 2.7
-    shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/atlas-python27-environment
+    shell: virtualenv -p /usr/local/bin/python2.7 /home/osr_web_deploy/atlas-python27-environment
     args:
       chdir: /opt/Python-2.7.1
-      creates:  /home/dplagnt/atlas-python27-environment/bin/python2.7
+      creates:  /home/osr_web_deploy/atlas-python27-environment/bin/python2.7
 
   - name: Install Python packages in the Inventory virtualenv
     pip:
       name: "{{ item.name }}"
       version: "{{ item.version }}"
-      virtualenv: "/home/dplagnt/inventory-python27-environment"
+      virtualenv: "/home/osr_web_deploy/inventory-python27-environment"
     with_items:
       - { name: 'ecdsa', version: '0.10'} # We need this because paramiko doesn't resolve it's dependancies
       - { name: 'importlib', version: '1.0.3'}
@@ -112,7 +112,7 @@
     pip:
       name: "{{ item.name }}"
       version: "{{ item.version }}"
-      virtualenv: "/home/dplagnt/inventory-python27-environment"
+      virtualenv: "/home/osr_web_deploy/inventory-python27-environment"
     with_items:
       - { name: 'cerberus', version: '0.9.1' }
 
@@ -120,7 +120,7 @@
     pip:
       name: "{{ item.name }}"
       version: "{{ item.version }}"
-      virtualenv: "/home/dplagnt/atlas-python27-environment"
+      virtualenv: "/home/osr_web_deploy/atlas-python27-environment"
     with_items:
       # Versions that are hard dependancies are indicated. The rest are listed
       # so that things don't break silently.
@@ -160,7 +160,7 @@
 
   - name: Install mod_wsgi for Python 2.7
     become: yes
-    shell: ./configure --with-apxs=/opt/rh/httpd24/root/usr/bin/apxs --with-python=/home/dplagnt/atlas-python27-environment/bin/python2.7
+    shell: ./configure --with-apxs=/opt/rh/httpd24/root/usr/bin/apxs --with-python=/home/osr_web_deploy/atlas-python27-environment/bin/python2.7
     args:
       chdir: /opt/mod_wsgi-3.5
 
@@ -263,8 +263,8 @@
   - name:  Add lines for the python virtualenv to atlas.wsgi
     lineinfile:
       dest: "/data/code/atlas/atlas.wsgi"
-      line: "activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
-      regexp: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
+      line: "activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
+      regexp: "^activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
       state: present
       insertbefore: BOF
     notify:
@@ -274,8 +274,8 @@
   - name:  Add lines for the python virtualenv to atlas.wsgi
     lineinfile:
       dest: "/data/code/atlas/atlas.wsgi"
-      line: "activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
-      regexp: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
+      line: "activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
+      regexp: "^activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
       state: present
       insertbefore: BOF
     notify:
@@ -288,7 +288,7 @@
       line: "execfile(activate_this, dict(__file__=activate_this))"
       regexp: "^execfile(activate_this\\, dict(__file__\\=activate_this))"
       state: present
-      insertafter: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
+      insertafter: "^activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
     notify:
       - restart celeryd
       - restart celerybeat
@@ -299,7 +299,7 @@
       line: "execfile(activate_this, dict(__file__=activate_this))"
       regexp: "^execfile(activate_this\\, dict(__file__\\=activate_this))"
       state: present
-      insertafter: "^activate_this = '/home/dplagnt/atlas-python27-environment/bin/activate_this.py'"
+      insertafter: "^activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
     notify:
       - restart celeryd
       - restart celerybeat

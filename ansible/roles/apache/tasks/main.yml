@@ -68,16 +68,16 @@
     fail: msg="Configuration file is not valid. Please check that before re-running the playbook."
     when: result|failed
 
-  - name: Update user dplagnt groups
+  - name: Update user osr_web_deploy groups
     user:
-        name: "dplagnt"
+        name: "osr_web_deploy"
         groups: "apache"
         append: yes
 
   - name: Update user apache groups
     user:
-        name: "dplagnt"
-        groups: "lapurd"
+        name: "osr_web_deploy"
+        groups: "osr_web_deploy"
         append: yes
 
   - name: Ensure Apache (httpd) is started and enabled on boot.

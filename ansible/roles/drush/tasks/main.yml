@@ -55,7 +55,7 @@
 
   - name: Add DSLM_BASE variable to .profile
     lineinfile:
-        dest: "/home/dplagnt/.profile"
+        dest: "/home/osr_web_deploy/.profile"
         line: "export DSLM_BASE=/data/code/dslm_base"
         regexp: "^export DSLM_BASE=/data/code/dslm_base"
         state: present
@@ -64,7 +64,7 @@
 
   - name: Add PACKAGES_BASE variable to .profile
     lineinfile:
-        dest: "/home/dplagnt/.profile"
+        dest: "/home/osr_web_deploy/.profile"
         line: "export PACKAGES_BASE=/data/code/packages_base"
         regexp: "^export PACKAGES_BASE=/data/code/packages_base"
         state: present
@@ -73,56 +73,56 @@
 
   - name: Create ~/.drush
     file:
-        path: "/home/dplagnt/.drush"
+        path: "/home/osr_web_deploy/.drush"
         state: directory
-        owner: dplagnt
+        owner: osr_web_deploy
 
   - name: Create composer file for Patchfile and CodeSniffer
     become: yes
-    become_user: dplagnt
+    become_user: osr_web_deploy
     template:
         src: "drush.composer.json.j2"
-        dest: "/home/dplagnt/composer.json"
+        dest: "/home/osr_web_deploy/composer.json"
         force: yes
 
   - name: Remove existing lock file
     become: yes
     file:
-        path: "/home/dplagnt/composer.lock"
+        path: "/home/osr_web_deploy/composer.lock"
         state: absent
 
   - name: Install packages via composer
     become: yes
     shell: "/usr/local/bin/composer install --no-interaction"
     args:
-        chdir: "/home/dplagnt"
+        chdir: "/home/osr_web_deploy"
 
-  - name: Copy drushrc.php to VM to dplagnt
+  - name: Copy drushrc.php to VM to osr_web_deploy
     template:
       src: "drushrc.php.j2"
-      dest: "/home/dplagnt/.drush/drushrc.php"
-      owner: dplagnt
+      dest: "/home/osr_web_deploy/.drush/drushrc.php"
+      owner: osr_web_deploy
       force: yes
 
   - name: Install registry_rebuild
     become: yes
-    become_user: dplagnt
+    become_user: osr_web_deploy
     command: "drush dl registry_rebuild -y"
 
   - name: Link phpcs command
     file:
         dest: "/usr/bin/phpcs"
-        src: "/home/dplagnt/bin/phpcs"
+        src: "/home/osr_web_deploy/bin/phpcs"
         state: link
 
   - name: Add Drupal coding standards to PHP CodeSniffer
     become: yes
-    command: "phpcs --config-set installed_paths /home/dplagnt/modules/coder/coder_sniffer"
+    command: "phpcs --config-set installed_paths /home/osr_web_deploy/modules/coder/coder_sniffer"
 
-  - name: Set owner to dplagnt
+  - name: Set owner to osr_web_deploy
     file:
-        path: "/home/dplagnt/.drush"
-        owner: dplagnt
-        group: lapurd
+        path: "/home/osr_web_deploy/.drush"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         state: directory
         recurse: yes
