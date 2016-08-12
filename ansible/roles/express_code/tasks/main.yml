@@ -122,5 +122,5 @@
         state: directory
         owner: osr_web_deploy
         group: apache
-        mode: 02775 # includes group sticky bit
+        mode: 2775 # includes group sticky bit
         recurse: yes
