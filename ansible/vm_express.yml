@@ -23,7 +23,7 @@
         - {role: rvm }
         - {role: drush }
         - {role: behat }
-        - {role: logstash }
+        #- {role: logstash }
         - {role: express_code }
         - {role: logging }
         - {role: ssh_keys, key_set: 'dplagnt_dest' }

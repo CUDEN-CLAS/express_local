@@ -60,6 +60,7 @@
       url: "http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar"
       dest: "/var/selenium2/selenium-server-standalone-2.46.0.jar"
       force: no
+      timeout: 400
 
   - name: Copy PAM environmental variables.
     become: yes

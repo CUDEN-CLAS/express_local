@@ -5,7 +5,7 @@
         path: "/var/log/drupal"
         state: directory
         mode: 0774
-        group: logstash
+        #group: logstash
         recurse: yes
 
   - name: Push rsyslog configuration
