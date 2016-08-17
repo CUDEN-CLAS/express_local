@@ -21,6 +21,7 @@
       - mongodb-server-2.4.14
       - python-pip
       - python-setuptools-0.6.10
+      - python-devel
       - zlib-devel-1.2.3
       - rabbitmq-server-3.1.5
 

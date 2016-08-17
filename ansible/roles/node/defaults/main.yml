@@ -17,5 +17,7 @@ nodejs_npm_global_packages:
 #  # Install a specific version of a package.
   - name: ember-cli
     version: 2.7
+  - name: phantomjs-prebuilt
+    version: 2.1.7
 #  # Install the latest stable release of a package.
 #  - name: node-sass
