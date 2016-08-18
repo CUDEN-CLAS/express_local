@@ -72,7 +72,7 @@
     ```
 * Errors
   * A VirtualBox machine with the name 'express.local' already exists.
-Please use another name or delete the machine with the existing
-name, and try again.
+    Please use another name or delete the machine with the existing
+    name, and try again.
 
-Open the Virtual Box app and remove all express.local vms - then run vagrant up again
+    Open the Virtual Box app and remove all express.local vms - then run vagrant up again
