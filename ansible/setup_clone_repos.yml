@@ -15,29 +15,6 @@
       with_items:
         - "~/express_local/data/code"
 
-    - name: Clone dslm_base repository
-      git:
-        repo: "git@github.com:CuBoulder/dslm_base.git"
-        dest: "~/express_local/data/code/dslm_base"
-        version: "poolb-dev"
-        recursive: yes
-        accept_hostkey: yes
-        key_file: "{{ key_file }}"
-
-    - name: Check out Express 2.0 branch
-      command: "git checkout dev"
-      args:
-        chdir: "~/express_local/data/code/dslm_base/profiles/express-current"
-
-    - name: Clone package_base repository
-      git:
-        repo: "git@github.com:CuBoulder/packages_base.git"
-        dest: "~/express_local/data/code/packages_base"
-        version: "dev"
-        recursive: yes
-        accept_hostkey: yes
-        key_file: "{{ key_file }}"
-
     - name: Clone Varnish VCL
       git:
         repo: "git@github.com:CuBoulder/varnish.git"
@@ -48,24 +25,8 @@
 
     - name: Clone Inventory
       git:
-        repo: "git@github.com:CuBoulder/inventory.git"
-        dest: "~/express_local/data/code/inventory"
-        version: "dev"
-        accept_hostkey: yes
-        key_file: "{{ key_file }}"
-
-    - name: Clone logstash configuration
-      git:
-        repo: "git@github.com:CuBoulder/logstash.git"
-        dest: "~/express_local/data/code/logstash"
-        version: "master"
-        accept_hostkey: yes
-        key_file: "{{ key_file }}"
-
-    - name: Clone elasticsearch configuration
-      git:
-        repo: "git@github.com:CuBoulder/elasticsearch.git"
-        dest: "~/express_local/data/code/elasticsearch"
+        repo: "git@github.com:CuBoulder/atlas.git"
+        dest: "~/express_local/data/code/atlas"
         version: "master"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
