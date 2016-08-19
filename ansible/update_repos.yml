@@ -24,7 +24,6 @@
       with_items:
           - { path: "~/express_local/data/code/varnish"}
           - { path: "~/express_local/data/code/atlas"}
-          - { path: "~/express_local/data/code/logstash"}
 
     - name: Checkout the correct branches
       command: "git checkout {{ item.branch }}"
