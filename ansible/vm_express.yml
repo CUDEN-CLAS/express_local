@@ -20,7 +20,7 @@
         - {role: apc }
         - {role: memcache }
         - {role: xdebug }
-        - {role: rvm }
+        #- {role: rvm }
         - {role: drush }
         - {role: behat }
         #- {role: logstash }
