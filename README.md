@@ -6,8 +6,8 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 # You will need
 * git
 * Ansible 1.9.x
-* Vagrant > 1.8
-* VirtualBox
+* Vagrant > 1.8 (recommend 1.8.4, 1.8.5 has a [bug](https://github.com/mitchellh/vagrant/issues/7610), should be fixed in 1.8.6)
+* VirtualBox 5.0.x
 * Python 2.7
 
 # Installation
@@ -52,7 +52,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   LogLevel ERROR
 
   ```
-* Copy the ssh keys for the deployment user to `ansible/keys`.
+* Copy the ssh keys for the deployment user to `ansible/keys`. Keys need to be passwordless and to be able to read all relevant repositories. When working with multiple developersm, consider create a machine account with a ssh key per user.
 * Create `~/.ansible_vault.txt` and enter the vault password. Make sure that only your user has access to the file `chmod 600 ~/.ansible_vault.txt`.
 
 # Logging (Commented out for now)
