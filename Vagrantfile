@@ -7,8 +7,8 @@
 # TODO:
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
-  "inventory.local" => "192.168.33.21",
   "express.local" => "192.168.33.20",
+  "inventory.local" => "192.168.33.21",
   #"logs.local" => "192.168.33.22",
 }
 
@@ -40,18 +40,17 @@ Vagrant.configure(2) do |config|
 
     end
 
-    if name.include? "inventory.local"
-      config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/vm_inventory.yml"
-        ansible.inventory_path = "ansible/hosts"
-        ansible.vault_password_file = "~/.ansible_vault.txt"
-        ansible.verbose = "vv"
-      end
-    end
-
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_express.yml"
+        ansible.inventory_path = "ansible/hosts"
+        ansible.vault_password_file = "~/.ansible_vault.txt"
+      end
+    end
+
+    if name.include? "inventory.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/vm_inventory.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.vault_password_file = "~/.ansible_vault.txt"
       end
