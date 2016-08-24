@@ -112,8 +112,16 @@
         group: osr_web_deploy
     with_items:
       - "/data/web/express"
-      - "/data/releases"
       - "/data/sites"
+
+  - name: Set Files directory perms
+    when: "'web' in group_names"
+    file:
+        path: /wwwng
+        state: directory
+        owner: osr_web_deploy
+        group: apache
+        mode: 0775
 
   - name: Set Files directory perms
     when: "'web' in group_names"
@@ -122,5 +130,11 @@
         state: directory
         owner: osr_web_deploy
         group: apache
-        mode: 2775 # includes group sticky bit
-        recurse: yes
+        mode: 0775
+
+  - name: Set Files directory stickybit
+    when: "'web' in group_names"
+    file:
+        path: /wwwng/sitefiles
+        state: directory
+        mode: g+t
