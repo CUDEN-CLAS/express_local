@@ -9,21 +9,14 @@
         - mod_ssl
         - openssl
 
-  - name: Configure Apache to listen on 80
-    lineinfile:
+  - name: Configure Apache
+    copy:
+        src: "httpd.conf"
         dest: "/etc/httpd/conf/httpd.conf"
-        regexp: "^Listen "
-        line: "Listen 80"
-        state: present
-    notify:
-        - restart apache
-
-  - name: Name Apache vhost for :80
-    lineinfile:
-        dest: "/etc/httpd/conf/httpd.conf"
-        regexp: "^NameVirtualHost "
-        line: "NameVirtualHost *:80"
-        state: present
+        owner: apache
+        group: apache
+        mode: 0644
+        force: yes
     notify:
         - restart apache
 
@@ -54,7 +47,7 @@
         dest: "/etc/httpd/conf.d/vhosts.conf"
         owner: apache
         group: apache
-        mode: 0650
+        mode: 0644
         force: yes
     notify:
         - restart apache

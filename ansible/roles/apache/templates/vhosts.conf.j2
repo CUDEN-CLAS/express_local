@@ -22,6 +22,28 @@ DirectoryIndex index.php index.html
   </Directory>
 </VirtualHost>
 
+<VirtualHost *:81>
+  ServerName express.local
+
+  SetEnvIf X-FORWARDED-PROTO https HTTPS=off
+  SetEnv CU_CENTRAL_EVE http://{{ EVE_API_USER }}:{{ EVE_API_PW }}@inventory.local/atlas/
+  SetEnv WWWNG_ENV express_local
+
+  LogLevel info
+  LogFormat "%{X-Forwarded-For}i %a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+  LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+  Alias /sysadmintools/ /usr/local/www.misc/sysadmintools/
+
+  DocumentRoot /data/web/homepage
+  <Directory "/data/web/homepage">
+    AllowOverride All
+    Options -Indexes FollowSymLinks
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>
+
 #<VirtualHost *:443>
 #  ServerName express.local
 #
