@@ -146,6 +146,8 @@
       - { name: 'fabric', version: '1.11.1' } # Required this version
       - { name: 'celery', version: '3.1.23' } # Required this version
       - { name: 'eve', version: '0.6.4' } # Required this version
+      - { name: 'sphinx', version: '1.4.6' }
+      - { name: 'sphinx-autobuild', version: '0.6.0' }
 
   - name: Get mod_wsgi
     get_url:
