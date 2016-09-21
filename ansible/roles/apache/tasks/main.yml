@@ -1,17 +1,27 @@
 ---
+  
   - name:  Install necessary packages
     yum:
         name: "{{ item }}"
         state: present
         update_cache: yes
     with_items:
-        - httpd-2.2.15
-        - mod_ssl
+        - httpd24
+        - httpd24-httpd-devel
+        - httpd24-mod_ssl
         - openssl
+        
+  - name:  Uninstall older httpd packages
+    yum:
+        name: "{{ item }}"
+        state: absent
+        update_cache: no
+    with_items:
+        - httpd
 
   - name: Configure Apache to listen on 80
     lineinfile:
-        dest: "/etc/httpd/conf/httpd.conf"
+        dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
         regexp: "^Listen "
         line: "Listen 80"
         state: present
@@ -20,10 +30,36 @@
 
   - name: Name Apache vhost for :80
     lineinfile:
-        dest: "/etc/httpd/conf/httpd.conf"
+        dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
         regexp: "^NameVirtualHost "
         line: "NameVirtualHost *:80"
         state: present
+    notify:
+        - restart apache
+        
+  - name: Turn off HTTP2
+    lineinfile:
+        dest: "/opt/rh/httpd24/root/etc/httpd/conf.modules.d/00-base.conf"
+        regexp: "^LoadModule http2_module "
+        line: "#LoadModule http2_module modules/mod_http2.so"
+        state: present
+    notify:
+      - restart apache
+      
+  - name: Apache should own it's logs
+    file:
+      path:  /var/log/httpd24
+      owner: apache
+      group: apache
+      
+  - name: Create symlink to apachectl
+    become: yes
+    file:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      state: link
+    with_items:
+      - { src: "/opt/rh/httpd24/root/usr/sbin/apachectl", dest: "/usr/sbin/apachectl"}   
     notify:
         - restart apache
 
@@ -32,7 +68,7 @@
   # mod_ssl will take care of listening on 443
   # - name: Name Apache vhost for :443
   #   lineinfile:
-  #       dest: "/etc/httpd/conf/httpd.conf"
+  #       dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
   #       line: "NameVirtualHost *:443"
   #       state: present
   #   notify:
@@ -40,18 +76,18 @@
   #
   # - name: Create directory for SSL cert
   #   file:
-  #       path: "/etc/httpd/ssl"
+  #       path: "/opt/rh/httpd24/root/etc/httpd/ssl"
   #       state: directory
   #
   # - name: Generate SSL cert
   #   command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt"
   #   args:
-  #       creates: /etc/httpd/ssl/apache.crt
+  #       creates: /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt
 
   - name:  Add vhost configuration
     template:
         src: "vhosts.conf.j2"
-        dest: "/etc/httpd/conf.d/vhosts.conf"
+        dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf"
         owner: apache
         group: apache
         mode: 0650
@@ -82,6 +118,6 @@
 
   - name: Ensure Apache (httpd) is started and enabled on boot.
     service:
-        name: httpd
+        name: httpd24-httpd
         state: started
         enabled: yes

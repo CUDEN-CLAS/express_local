@@ -7,9 +7,11 @@
 # TODO:
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
+
   "inventory.local" => "192.168.33.21",
   "express.local" => "192.168.33.20",
   #"logs.local" => "192.168.33.22",
+
 }
 
 # All Vagrant configuration is done below.
@@ -19,8 +21,8 @@ Vagrant.configure(2) do |config|
   hosts.each do |name, ip|
 
     config.vm.define name do |machine|
-      machine.vm.box = "bento/centos-6.7"
-      machine.vm.box_url = "https://atlas.hashicorp.com/bento/boxes/centos-6.7"
+      machine.vm.box = "bento/centos-7.2"
+      machine.vm.box_url = "https://atlas.hashicorp.com/bento/boxes/centos-7.2"
       machine.vm.hostname = "%s" % name
       machine.vm.network :private_network, ip: ip
 
@@ -56,6 +58,7 @@ Vagrant.configure(2) do |config|
         ansible.vault_password_file = "~/.ansible_vault.txt"
       end
     end
+
 
     # if name.include? "logs.local"
     #   config.vm.provision "ansible" do |ansible|

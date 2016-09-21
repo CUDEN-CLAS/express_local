@@ -7,9 +7,9 @@ symbolic-links=0
 max_allowed_packet=256M
 # Log queries that take longer than 1 second.
 slow-query-log = 1
-slow-query-log-file = /var/log/mysql/mysql-slow.log
+slow-query-log-file = /var/log/mariadb/mariadb-slow.log
 long_query_time = 1
 
 [mysqld_safe]
-log-error=/var/log/mysqld.log
-pid-file=/var/run/mysqld/mysqld.pid
+log-error=/var/log/mariadb/mariadb.log
+pid-file=/var/run/mariadb/mariadb.pid

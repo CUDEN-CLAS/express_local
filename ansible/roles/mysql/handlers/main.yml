@@ -2,5 +2,5 @@
 - name: restart mysql
   become: yes
   service:
-      name: mysqld
+      name: mariadb
       state: restarted

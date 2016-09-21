@@ -6,27 +6,29 @@
         state: present
         update_cache: yes
     with_items:
-        - php-5.3.3
-        - php-cli
-        - php-common
-        - php-devel
-        - php-gd
-        - php-ldap
-        - php-mcrypt
-        - php-mysql
-        - php-pdo
-        - php-pear
-        - php-pecl-apc
-        - php-pecl-memcache
-        - php-soap
-        - php-xmlrpc
+        - php55-php-devel
+        - php55
+        - php55-php
+        - php55-php-cli
+        - php55-php-common
+        - php55-php-gd
+        - php55-php-ldap
+        #- php-mcrypt
+        - php55-php-mysqlnd
+        - php55-php-pdo
+        - php55-php-pear
+        #- php-pecl-apc
+        - php55-php-opcache
+        - php55-php-pecl-memcache
+        - php55-php-soap
+        - php55-php-xmlrpc
     notify:
         - restart apache
 
   - name: Change php memory_limit
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?memory_limit ="
         insertafter: "^[#|;]?memory_limit ="
         line: "memory_limit = 512M"
@@ -36,7 +38,7 @@
   - name: Change php display_errors
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?display_errors ="
         insertafter: "^[#|;]?display_errors ="
         line: "display_errors = 1"
@@ -46,7 +48,7 @@
   - name: Change php display_startup_errors
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?display_startup_errors ="
         insertafter: "^[#|;]?display_startup_errors ="
         line: "display_startup_errors = 1"
@@ -56,7 +58,7 @@
   - name: Change php html_errors
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?html_errors ="
         insertafter: "^[#|;]?html_errors ="
         line: "html_errors = 1"
@@ -66,7 +68,7 @@
   - name: Change php post_max_size
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?post_max_size ="
         insertafter: "^[#|;]?post_max_size ="
         line: "post_max_size = 256M"
@@ -76,7 +78,7 @@
   - name: Change php upload_max_filesize
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?upload_max_filesize ="
         insertafter: "^[#|;]?upload_max_filesize ="
         line: "upload_max_filesize = 256M"
@@ -86,7 +88,7 @@
   - name: Change php date_timezone
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?date_timezone ="
         insertafter: "^[#|;]?date_timezone ="
         line: "date_timezone = 'America/Denver'"
@@ -96,7 +98,7 @@
   - name: change php date.timezone (php 5.4+)
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         regexp: "^[#|;]?date.timezone ="
         insertafter: "^[#|;]?date.timezone ="
         line: "date.timezone = 'America/Denver'"
@@ -113,7 +115,7 @@
   - name: Add PECL uploadprogress apache php.ini setting
     become: yes
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         line: "extension=uploadprogress.so"
         state: present
     when: php_pecl_uploadprogress is defined and php_pecl_uploadprogress == "y"
@@ -138,7 +140,7 @@
 
   - name:  Add sendmail lines to cli php.ini
     lineinfile:
-        dest: "/etc/php.ini"
+        dest: "/opt/rh/php55/root/etc/php.ini"
         line: "sendmail_path = /usr/local/bin/sendmail"
         regexp: "^sendmail_path = /usr/local/bin/sendmail"
         state: present
@@ -146,3 +148,16 @@
         create: True
     notify:
         - restart apache
+        
+  - name: Create symlinks for php55
+    become: yes
+    file:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      state: link
+    with_items:
+      - { src: "/opt/rh/php55/root/usr/bin/php", dest: "/usr/bin/php"}   
+      - { src: "/opt/rh/php55/root/usr/bin/pecl", dest: "/usr/bin/pecl"}
+      - { src: "/opt/rh/php55/root/usr/bin/pear", dest: "/usr/bin/pear"}
+    notify:
+        - restart apache  

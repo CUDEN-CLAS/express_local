@@ -12,13 +12,15 @@ DirectoryIndex index.php index.html
   LogFormat "%h %l %u %t \"%r\" %>s %b" common
 
   Alias /sysadmintools/ /usr/local/www.misc/sysadmintools/
+  <Directory "/usr/local/www.misc/sysadmintools/">
+    Require all granted
+  </Directory>
 
   DocumentRoot /data/web/express
   <Directory "/data/web/express">
     AllowOverride All
-    Options -Indexes FollowSymLinks
-    Order allow,deny
-    Allow from all
+    Options -Indexes +FollowSymLinks
+    Require all granted
   </Directory>
 </VirtualHost>
 

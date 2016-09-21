@@ -17,7 +17,7 @@
         - {role: php }
         - {role: mysql }
         - {role: varnish }
-        - {role: apc }
+        - {role: opcache }
         - {role: memcache }
         - {role: xdebug }
         - {role: rvm }

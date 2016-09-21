@@ -1,0 +1,26 @@
+---
+  
+  - name: Change opcache memory consumption
+    become: yes
+    lineinfile:
+        dest: "/opt/rh/php55/root/etc/php.d/opcache.ini"
+        regexp: "^opcache.memory_consumption="
+        line: "opcache.memory_consumption=256M"
+    notify:
+        - restart apache
+
+  - name: Make directory for opcache script
+    file:
+        path: "/usr/local/www.misc/sysadmintools/opcache"
+        owner: dplagnt
+        group: lapurd
+        state: directory
+        mode: 0755
+
+  - name: Copy opcache clear script
+    copy:
+        src: "clear_opcache.php"
+        dest: "/usr/local/www.misc/sysadmintools/opcache/clear_opcache.php"
+        owner: dplagnt
+        group: lapurd
+        mode: 0755

@@ -1,20 +1,26 @@
 ---
-- name: Ensure MySQL Python libraries are installed
-  yum:
-      name: "MySQL-python"
-      state: installed
 
 - name: Install mysql packages
   become: yes
   yum:
-      pkg: "mysql-server"
+      pkg: "{{ item }}"
       state: present
-
+      update_cache: yes
+  with_items:
+      - mariadb
+      - mariadb-server
+      - mariadb-libs
+      
+- name: Ensure MySQL Python libraries are installed
+  yum:
+      name: "MySQL-python"
+      state: installed
+ 
 - name: Ensure MySQL is started and enabled on boot.
   service:
-    name: mysqld
-    state: started
-    enabled: yes
+      name: mariadb
+      state: started
+      enabled: yes
 
 # Set root mysql user's pw to root
 # This will fail if this isn't the first time running..no biggie because it is already done
@@ -56,14 +62,14 @@
 
 - name: Create slow query log directory
   file:
-      path: "/var/log/mysql"
+      path: "/var/log/mariadb"
       state: directory
       owner: "mysql"
       mode: 0755
 
 - name: Create slow query log file
   file:
-      path: "/var/log/mysql/mysql-slow.log"
+      path: "/var/log/mariadb/mariadb-slow.log"
       state: touch
       owner: "mysql"
       mode: 0644

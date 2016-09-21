@@ -2,5 +2,18 @@
 # standard NCSA formatting with additional hit or miss and backend appended
 # to the end
 #
-FORMAT='"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\" \"%{VCL_Log:"hitmiss"}x\" \"%{VCL_Log:"backend"}x\" \"%{F5-Destination}i\""'
-DAEMON_OPTS="-a -w $logfile -D -P $pidfile -F $FORMAT"
+#FORMAT='"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\" \"%{VCL_Log:"hitmiss"}x\" \"%{VCL_Log:"backend"}x\" \"%{F5-Destination}i\""'
+#DAEMON_OPTS="-a -w $logfile -D -P $pidfile -F $FORMAT"
+[Unit]
+Description=Varnish HTTP accelerator log daemon
+After=varnish.service
+
+[Service]
+Type=forking
+User=root
+#Environment="LOG_FORMAT='%%h %%l %%u %%t \"%%r\" %%s %%b \"%{Referer}i\" \"%{User-agent}i\" \"%{VCL_Log:"hitmiss"}x\" \"%{VCL_Log:"backend"}x\" \"%{F5-Destination}i\"'"
+ExecStart=/usr/bin/varnishncsa -a -w /var/log/varnish/varnishncsa.log -D -P /var/run/varnishncsa.pid -F '%h %l %u %t "%r" %s %b "%{Referer}i" "%{User-agent}i" "%{VCL_Log:"hitmiss"}x" "%{VCL_Log:"backend"}x" "%{F5-Destination}i"'
+#ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

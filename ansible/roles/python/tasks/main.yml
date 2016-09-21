@@ -9,56 +9,58 @@
         state: present
         update_cache: yes
     with_items:
+      - python-devel
       - "@development"
       - gcc
       - gcc-c++
-      - libffi-devel-3.0.5
+      - libffi-devel-3.0.13
       - openssl-1.0.1e
       - openssl-devel-1.0.1e
       - openldap-devel
-      - cyrus-sasl-lib-2.1.23
-      - mongodb-2.4.14
-      - mongodb-server-2.4.14
+      - cyrus-sasl-lib-2.1.26
+      - mongodb-2.6.12
+      - mongodb-server-2.6.12
       - python-pip
-      - python-setuptools-0.6.10
-      - zlib-devel-1.2.3
+      #- mod_wsgi
+      - python-setuptools-0.9.8
+      - zlib-devel-1.2.7
 
-  - name: Download Python 2.7
-    get_url:
-      dest: /home/vagrant
-      url: http://www.python.org/ftp/python/2.7.1/Python-2.7.1.tgz
-    become: yes
+  #- name: Download Python 2.7
+    #get_url:
+      #dest: /home/vagrant
+      #url: http://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz
+    #become: yes
 
-  - name: Extract Python 2.7
-    shell: tar xzf ./Python-2.7.1.tgz -C /opt
-    become: yes
-    args:
-      chdir: /home/vagrant
-      creates: /opt/Python-2.7.1
+  #- name: Extract Python 2.7
+    #shell: tar xzf ./Python-2.7.5.tgz -C /opt
+    #become: yes
+    #args:
+      #chdir: /home/vagrant
+      #creates: /opt/Python-2.7.5
 
-  - name: Configure Python 2.7
-    shell: ./configure --prefix=/usr/local --enable-shared
-    become: yes
-    args:
-      chdir: /opt/Python-2.7.1
+  #- name: Configure Python 2.7
+    #shell: ./configure --prefix=/usr/local --enable-shared
+    #become: yes
+    #args:
+      #chdir: /opt/Python-2.7.5
 
-  - name: Make Python 2.7
-    shell: make
-    become: yes
-    args:
-      chdir: /opt/Python-2.7.1
+  #- name: Make Python 2.7
+    #shell: make
+    #become: yes
+    #args:
+      #chdir: /opt/Python-2.7.5
 
-  - name: Install Python 2.7
-    shell: make altinstall
-    become: yes
-    args:
-      chdir: /opt/Python-2.7.1 # Need to add a 'creates=' flag here
+  #- name: Install Python 2.7
+    #shell: make altinstall
+    #become: yes
+    #args:
+      #chdir: /opt/Python-2.7.5 # Need to add a 'creates=' flag here
 
   - name: Install Python packages to allow virtual environments
     shell: pip install virtualenv
     become: yes
-    args:
-      chdir: /opt/Python-2.7.1
+    #args:
+      #chdir: /opt/Python-2.7.5
 
   - name: Add location of LD_LIBRARY_PATH
     become: yes
@@ -72,9 +74,9 @@
 
     # Setup a Python 2.7 virtual environment to run the inventory
   - name: Setup an environment for the tracker using Python 2.7
-    shell: virtualenv -p /usr/local/bin/python2.7 /home/dplagnt/inventory-python27-environment
+    shell: virtualenv -p /usr/bin/python2.7 /home/dplagnt/inventory-python27-environment
     args:
-      chdir: /opt/Python-2.7.1
+      #chdir: /opt/Python-2.7.5
       creates:  /home/dplagnt/inventory-python27-environment/bin/python2.7
 
   - name: Install Python packages in the Python 2.7 environment
