@@ -7,9 +7,9 @@
 # TODO:
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
-
-  "inventory.local" => "192.168.33.21",
+  
   "express.local" => "192.168.33.20",
+  "inventory.local" => "192.168.33.21",
   #"logs.local" => "192.168.33.22",
 
 }
