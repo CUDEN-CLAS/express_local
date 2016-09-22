@@ -12,6 +12,8 @@
         - php55-php-cli
         - php55-php-common
         - php55-php-gd
+        - php55-php-process
+        - php55-php-xml
         - php55-php-ldap
         #- php-mcrypt
         - php55-php-mysqlnd

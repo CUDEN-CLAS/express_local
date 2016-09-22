@@ -21,10 +21,10 @@
     notify:
         - restart memcached
 
-  - name: Install PECL memcache
-    shell: yes | pecl install memcache
-    register: pecl_memcache_result
-    ignore_errors: True
+  #- name: Install PECL memcache (installed from PHP role)
+    #shell: yes | pecl install memcache
+    #register: pecl_memcache_result
+    #ignore_errors: True
 
   - name: Ensure Memcached is started and set to run on startup.
     service:
