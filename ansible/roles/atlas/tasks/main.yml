@@ -108,6 +108,7 @@
       - { name: 'python-ldap', version: '2.3.13' }
       - { name: 'eve', version: '0.5.3' }
       - { name: 'celery', version: '3.1.12' }
+      - { name: 'flower'}
 
   - name: Install Cerberus second since eve is dependant on a lower version
     pip:
