@@ -75,3 +75,15 @@
     copy:
       src: "selenium.init.d"
       dest: "/etc/init.d/selenium"
+
+  - name: Copy xvfb init script.
+    become: yes
+    copy:
+      src: "xvfb.init.d"
+      dest: "/etc/init.d/xvfb"
+
+- name: Ensure Selenium is started and enabled on boot.
+  service:
+      name: selenium
+      state: started
+      enabled: yes
