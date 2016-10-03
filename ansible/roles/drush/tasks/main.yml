@@ -56,8 +56,8 @@
   - name: Add DSLM_BASE variable to .profile
     lineinfile:
         dest: "/home/osr_web_deploy/.profile"
-        line: "export DSLM_BASE=/data/atlas/code"
-        regexp: "^export DSLM_BASE=/data/atlas/code"
+        line: "export DSLM_BASE=/data/code/dslm_base"
+        regexp: "^export DSLM_BASE=/data/code/dslm_base"
         state: present
         insertafter: EOF
         create: True
@@ -65,8 +65,8 @@
   - name: Add PACKAGES_BASE variable to .profile
     lineinfile:
         dest: "/home/osr_web_deploy/.profile"
-        line: "export PACKAGES_BASE=/data/atlas/code"
-        regexp: "^export PACKAGES_BASE=/data/atlas/code"
+        line: "export PACKAGES_BASE=/data/code/packages_base"
+        regexp: "^export PACKAGES_BASE=/data/code/packages_base"
         state: present
         insertafter: EOF
         create: True
