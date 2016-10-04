@@ -115,8 +115,8 @@
         owner: osr_web_deploy
         group: osr_web_deploy
     with_items:
-      - "/data/atlas/web/express"
-      - "/data/atlas/sites"
+      - "/data/web/express"
+      - "/data/sites"
 
   - name: Set Files directory perms
     when: "'web' in group_names"
@@ -130,7 +130,7 @@
   - name: Set Files directory perms
     when: "'web' in group_names"
     file:
-        path: /wwwng/atlas/sitefiles
+        path: /wwwng/sitefiles
         state: directory
         owner: osr_web_deploy
         group: apache
@@ -139,6 +139,6 @@
   - name: Set Files directory stickybit
     when: "'web' in group_names"
     file:
-        path: /wwwng/atlas/sitefiles
+        path: /wwwng/sitefiles
         state: directory
         mode: g+t
