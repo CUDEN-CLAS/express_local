@@ -13,7 +13,7 @@ java_bin=/usr/bin/java
 xvfb_bin=/usr/bin/xvfb-run
 
 selenium_dir=/opt/selenium
-selenium_jar_file="$selenium_dir/selenium-server-standalone-2.46.0.jar"
+selenium_jar_file="$selenium_dir/selenium-server-standalone-2.53.1.jar"
 user=root
 exec="$xvfb_bin $java_bin"
 args=" -client -jar $selenium_jar_file"
