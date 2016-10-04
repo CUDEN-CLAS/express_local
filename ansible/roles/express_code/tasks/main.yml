@@ -10,9 +10,13 @@
   - name: Symlink in default.vcl
     when: express_code_varnish
     file:
-        src: "/data/code/varnish/default.vcl"
-        dest: "/etc/varnish/default.vcl"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         state: link
+    with_items:
+      - { src: '/data/code/varnish/default.vcl', dest: '/etc/varnish/default.vcl'}
+      - { src: '/data/code/varnish/backends.vcl', dest: '/etc/varnish/backends.vcl'}
+      - { src: '/data/code/varnish/50x.html', dest: '/etc/varnish/50x.html'}
     notify:
         - restart varnish
 
