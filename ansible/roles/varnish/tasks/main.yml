@@ -11,7 +11,7 @@
         update_cache: yes
     with_items:
         - gcc
-        - varnish
+        - varnish-3.0.7
 
   - name: Copy Varnish configuration
     template:
