@@ -1,4 +1,12 @@
 ---
+  - name: Make directory for error page
+    when: express_code_varnish
+    file:
+        path: "{{ item }}"
+        state: directory
+    with_items:
+        - /usr/local/varnish/etc/varnish
+
   - name: Get rid of default Varnish files
     when: express_code_varnish
     file:
@@ -17,6 +25,7 @@
       - { src: '/data/code/varnish/default.vcl', dest: '/etc/varnish/default.vcl'}
       - { src: '/data/code/varnish/backends.vcl', dest: '/etc/varnish/backends.vcl'}
       - { src: '/data/code/varnish/50x.html', dest: '/etc/varnish/50x.html'}
+      - { src: '/data/code/varnish/50x.html', dest: '/usr/local/varnish/etc/varnish/50x.html'}
     notify:
         - restart varnish
 
