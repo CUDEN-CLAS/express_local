@@ -27,8 +27,11 @@
         - htop
 
   # Need to add MySQL repo for mysql-python-connector.
-  - name: Add repo for MySQL
+  - name: Add repo for EPEL and MySQL Python Connector
     when: os == 'centos-7'
+    yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+        state: present
     yum:
         name: "https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-2.1.4-1.el7.x86_64.rpm"
         state: present
