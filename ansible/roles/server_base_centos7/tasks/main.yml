@@ -1,0 +1,160 @@
+---
+  # - name: fix vagrant uid
+  #   user: name=vagrant uid=5000
+  #
+  # - name: update files owned by vagrant
+  #   shell: chown -Rhc --from=1000 5000 /home/vagrant
+
+  # Install some basics
+  - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
+    yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+        state: present
+    yum:
+        name: "http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
+        state: present
+
+  - name: Install necessary OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - git
+        - epel-release
+        - mysql-connector-python
+        - nano
+        - nmap
+        - mlocate
+        - htop
+        - man
+
+  - name: Allow wheel group to sudo without a password
+    become: yes
+    lineinfile:
+        dest: "/etc/sudoers"
+        regexp: "^# %wheel        ALL=(ALL)  NOPASSWD: ALL"
+        line: "%wheel        ALL=(ALL)  NOPASSWD: ALL"
+
+  # Setup the osr_web_deploy user
+  - name: Create osr_web_deploy group
+    group:
+        name: "osr_web_deploy"
+        state: present
+
+  - name: Create osr_web_deploy user
+    user:
+        name: "osr_web_deploy"
+        group: "osr_web_deploy"
+        shell: "/bin/bash"
+
+  - name: Update user osr_web_deploy groups
+    user:
+        name: "osr_web_deploy"
+        groups: "adm,wheel"
+        append: yes
+
+  - name: Update user vagrant groups
+    user:
+      name: vagrant
+      groups: osr_web_deploy
+      append: yes
+
+  - name: Update osr_web_deploy home directory group permissions
+    file:
+      state: directory
+      mode: 0750
+      path: /home/osr_web_deploy
+
+  # Get the user's SSH keys to osr_web_deploy
+  - name: Create destination directory for SSH keys
+    # Workaround for #2372
+    file:
+        dest: "/home/osr_web_deploy/.ssh/"
+        state: directory
+        owner: osr_web_deploy
+        group: osr_web_deploy
+        mode: 0700
+
+  - name: Push user's rsa key to osr_web_deploy's authorized_keys
+    # action: authorized_key user=root key='$FILE(~/.ssh/id_rsa.pub)'
+    # Workaround for #2372
+    copy:
+        src: "~/.ssh/id_rsa.pub"
+        dest: "/home/osr_web_deploy/.ssh/authorized_keys"
+        owner: osr_web_deploy
+        group: osr_web_deploy
+        mode: 0600
+    register: rsa
+    ignore_errors: yes
+
+  - name: Push id_rsa.pub to osr_web_deploy
+    copy:
+        src: "../../../keys/id_rsa.pub"
+        dest: "/home/osr_web_deploy/.ssh/"
+        owner: osr_web_deploy
+        group: osr_web_deploy
+        mode: 0600
+    ignore_errors: yes
+
+  - name: Push id_rsa to osr_web_deploy
+    copy:
+        src: "../../../keys/id_rsa"
+        dest: "/home/osr_web_deploy/.ssh/"
+        owner: osr_web_deploy
+        group: osr_web_deploy
+        mode: 0600
+    ignore_errors: yes
+
+  - name: Add key to authorized_keys
+    become: yes
+    become_user: osr_web_deploy
+    authorized_key:
+        user: osr_web_deploy
+        key: "{{ lookup('file', '../../../keys/id_rsa.pub') }}"
+
+  - name: Push ssh config
+    copy:
+        src: "config.ssh"
+        dest: "/home/osr_web_deploy/.ssh/config"
+        owner: osr_web_deploy
+        group: osr_web_deploy
+        mode: 0600
+    ignore_errors: yes
+
+  - name: Create host file
+    template:
+        src: "server_base_hosts.j2"
+        dest: "/etc/hosts"
+        owner: root
+        force: yes
+
+  - name: Create .bashrc for osr_web_deploy
+    template:
+        src: "bashrc.j2"
+        dest: "/home/osr_web_deploy/.bashrc"
+        owner: osr_web_deploy
+        force: yes
+
+  - name: Create .bashrc for vagrant
+    template:
+        src: "bashrc.j2"
+        dest: "/home/vagrant/.bashrc"
+        owner: vagrant
+        force: yes
+
+  - name: Create deploy scripts directories
+    file:
+        path: "/usr/local/www.misc"
+        state: directory
+        owner: osr_web_deploy
+        group: osr_web_deploy
+        mode: 0755
+
+  - name: Create sysadmintools directory
+    file:
+        path: "/usr/local/www.misc/sysadmintools"
+        state: directory
+        owner: osr_web_deploy
+        group: osr_web_deploy
+        mode: 0755

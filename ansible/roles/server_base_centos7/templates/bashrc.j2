@@ -1,0 +1,42 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+# Needed for drush commands under sitefiles
+umask 002
+# PHP scripts run by drush can't get apache env vars
+export WWWNG_ENV="express_local";
+
+# Don't put duplicate lines or lines starting with space in the history.
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# Git info in the prompt
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+# For Drush 6
+export PATH="$HOME/.composer/vendor/bin:$PATH"
+
+# Added alias to support code sniffer
+alias drupalcs="phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,js,css,info,txt'"
+alias tailatlas="sudo tail -f /var/log/celery/*.log /opt/rh/httpd24/root/var/log/httpd/access_log /opt/rh/httpd24/root/var/log/httpd/error_log"
+
+# Add RVM to PATH for scripting
+export PATH="$PATH:$HOME/.rvm/bin"
+[[ -r $rvm_path/scripts/completion ]] && . $rvm_path/scripts/completion
+# This line MUST be last
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+# Add Behat environmental variables
+export BEHAT_PARAMS='{"extensions":{"Drupal\\DrupalExtension":{"drupal":{"drupal_root":"/data/web/express/testing"},"drush":{"root":"/data/web/express/testing"}},"Behat\\MinkExtension":{"base_url":"http://express.local/testing","files_path":"/data/web/express/testing/profiles/express/tests/behat/assets"}}}'

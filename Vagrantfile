@@ -24,7 +24,7 @@ Vagrant.configure(2) do |config|
       machine.vm.hostname = "%s" % name
       machine.vm.network :private_network, ip: ip
 
-      machine.vm.provider "virtualbox" do |v|
+      machine.vm.provider "virtualbox" do |v, override|
         v.name = name
 
         if name.include? "express.local"
@@ -32,6 +32,8 @@ Vagrant.configure(2) do |config|
           v.customize ["modifyvm", :id, "--cpus", "2"]
         else
           v.customize ["modifyvm", :id, "--memory", 1024]
+          override.vm.box = "centos/7"
+          override.vm.box_url = "https://atlas.hashicorp.com/centos/boxes/7"
         end
 
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
