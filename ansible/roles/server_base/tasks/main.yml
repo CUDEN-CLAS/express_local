@@ -7,7 +7,6 @@
 
 
   # Need to add EPEL and Remi.
-  # Install some basics
   - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
     when: os == 'centos-6'
     yum:
@@ -25,6 +24,14 @@
         update_cache: yes
     with_items:
         - epel-release
+        - htop
+
+  # Need to add MySQL repo for mysql-python-connector.
+  - name: Add repo for MySQL
+    when: os == 'centos-7'
+    yum:
+        name: "https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-2.1.4-1.el7.x86_64.rpm"
+        state: present
 
   - name: Install OS packages
     yum:
@@ -33,13 +40,12 @@
         update_cache: yes
     with_items:
         - git
-        - mysql-connector-python
         - nano
         - nc
         - nmap
         - mlocate
-        - htop
         - man
+        - mysql-connector-python
 
   - name: Allow wheel group to sudo without a password
     become: yes

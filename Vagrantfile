@@ -32,9 +32,12 @@ Vagrant.configure(2) do |config|
           v.customize ["modifyvm", :id, "--memory", 4096]
           v.customize ["modifyvm", :id, "--cpus", "2"]
         elsif name.include? "d8.local"
-          v.customize ["modifyvm", :id, "--memory", 1024]
+          v.customize ["modifyvm", :id, "--memory", 2048]
+          v.customize ["modifyvm", :id, "--cpus", "2"]
           override.vm.box = "bento/centos-7.2"
           override.vm.box_url = "https://atlas.hashicorp.com/bento/boxes/centos-7.2"
+        else
+          v.customize ["modifyvm", :id, "--memory", 1024]
         end
 
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
