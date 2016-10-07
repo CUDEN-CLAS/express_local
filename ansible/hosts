@@ -4,6 +4,9 @@ localhost ansible_connection=local
 [web]
 express.local ansible_ssh_host=192.168.33.20 ansible_ssh_user=root
 
+[d8_web]
+d8.local ansible_ssh_host=192.168.33.23 ansible_ssh_user=root
+
 [inventory]
 inventory.local ansible_ssh_host=192.168.33.21 ansible_ssh_user=root
 

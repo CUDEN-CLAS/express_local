@@ -5,8 +5,11 @@
   # - name: update files owned by vagrant
   #   shell: chown -Rhc --from=1000 5000 /home/vagrant
 
+
+  # Need to add EPEL and Remi.
   # Install some basics
   - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
+    when: os == 'centos-6'
     yum:
         name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
         state: present
@@ -14,14 +17,22 @@
         name: "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
         state: present
 
-  - name: Install necessary OS packages
+  - name: Install CentOS 6 OS packages
+    when: os == 'centos-6'
     yum:
         name: "{{ item }}"
         state: present
         update_cache: yes
     with_items:
-        - git-1.7.1
         - epel-release
+
+  - name: Install OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - git
         - mysql-connector-python
         - nano
         - nc

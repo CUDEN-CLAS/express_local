@@ -1,6 +1,0 @@
-HashKnownHosts no
-StrictHostKeyChecking no
-UserKnownHostsFile=/dev/null
-User osr_web_deploy
-LogLevel ERROR
-IdentityFile ~/.ssh/id_rsa

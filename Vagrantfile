@@ -10,6 +10,7 @@ hosts = {
   "express.local" => "192.168.33.20",
   "inventory.local" => "192.168.33.21",
   #"logs.local" => "192.168.33.22",
+  "d8.local" => "192.168.33.23",
 }
 
 # All Vagrant configuration is done below.
@@ -30,10 +31,10 @@ Vagrant.configure(2) do |config|
         if name.include? "express.local"
           v.customize ["modifyvm", :id, "--memory", 4096]
           v.customize ["modifyvm", :id, "--cpus", "2"]
-        else
+        elsif name.include? "d8.local"
           v.customize ["modifyvm", :id, "--memory", 1024]
-          override.vm.box = "centos/7"
-          override.vm.box_url = "https://atlas.hashicorp.com/centos/boxes/7"
+          override.vm.box = "bento/centos-7.2"
+          override.vm.box_url = "https://atlas.hashicorp.com/bento/boxes/centos-7.2"
         end
 
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -45,6 +46,14 @@ Vagrant.configure(2) do |config|
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_express.yml"
+        ansible.inventory_path = "ansible/hosts"
+        ansible.vault_password_file = "~/.ansible_vault.txt"
+      end
+    end
+
+    if name.include? "d8.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/vm_d8_express.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.vault_password_file = "~/.ansible_vault.txt"
       end
