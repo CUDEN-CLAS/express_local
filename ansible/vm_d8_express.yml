@@ -18,8 +18,8 @@
         - {role: php }
         - {role: mysql }
         - {role: varnish }
-        - {role: apc }
-        - {role: memcache }
+        #- {role: opcode }
+        #- {role: memcache }
         - {role: xdebug }
         #- {role: rvm }
         - {role: drush }
