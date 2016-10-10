@@ -1,5 +1,37 @@
 ---
   - name: Install additional OS packages
+    when: os == 'centos-6'
+    become: yes
+    yum:
+        pkg: "{{ item }}"
+        state: installed
+    with_items:
+        - gcc
+        - gcc-c++
+        - autoconf
+        - automake
+
+  - name: Install PECL memcache
+    when: os == 'centos-6'
+    become: yes
+    shell: "yes | pecl install xdebug-2.2.7"
+    register: pecl_result
+    failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
+
+  - name: Copy xdebug INI into php.d folder.
+    when: os == 'centos-6'
+    template:
+        src: "xdebug.ini.centos-6.j2"
+        dest: "/etc/php.d/xdebug.ini"
+        owner: "root"
+        group: "root"
+        mode: 0644
+        force: yes
+    notify:
+        - restart apache
+
+  - name: Install additional OS packages
+    when: os == 'centos-7'
     become: yes
     yum:
         pkg: "{{ item }}"
@@ -8,12 +40,14 @@
         - "@development"
 
   - name: Download xdebug
+    when: os == 'centos-7'
     get_url:
       url: "https://xdebug.org/files/xdebug-{{ php_xdebug_version }}.tgz"
       dest: "{{ workspace }}"
     become: yes
 
   - name: Extract xdebug
+    when: os == 'centos-7'
     shell: "tar xzf ./xdebug-{{ php_xdebug_version }}.tgz -C {{ workspace }}"
     become: yes
     args:
@@ -21,6 +55,7 @@
       creates: "{{ workspace }}/xdebug-{{ php_xdebug_version }}"
 
   - name: Build Xdebug.
+    when: os == 'centos-7'
     shell: >
       {{ item }}
       chdir={{ workspace }}/xdebug-{{ php_xdebug_version }}
@@ -32,6 +67,7 @@
     notify: restart apache
 
   - name: Ensure Xdebug module path exists.
+    when: os == 'centos-7'
     file:
       path: "{{ php_xdebug_module_path }}"
       state: directory
@@ -40,14 +76,16 @@
       mode: 0755
 
   - name: Move Xdebug module into place.
+    when: os == 'centos-7'
     shell: >
       cp {{ workspace }}/xdebug-{{ php_xdebug_version }}/modules/xdebug.so {{ php_xdebug_module_path }}/xdebug.so
       creates={{ php_xdebug_module_path }}/xdebug.so
     notify: restart apache
 
   - name: Copy xdebug ini into main extension config folder.
+    when: os == 'centos-7'
     template:
-      src: xdebug.ini.j2
+      src: xdebug.centos-7.ini.j2
       dest: "/etc/php.d/{{ php_xdebug_config_filename }}"
       owner: root
       group: root
