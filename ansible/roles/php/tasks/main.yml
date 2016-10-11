@@ -38,10 +38,15 @@
         state: present
         update_cache: yes
     with_items:
-        - mod_php70u
+        - php70u-common
         - php70u-cli
         - php70u-mysqlnd
         - php70u-devel
+        - php70u-gd
+        - php70u-ldap
+        - php70u-opcache
+        - mod_php70u
+        -
     notify:
         - restart apache
 
