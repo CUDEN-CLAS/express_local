@@ -56,10 +56,18 @@
         creates: "/usr/local/bin/composer"
 
   - name: Clone Drush from GitHub
+    when: os == 'centos-7'
     git:
         repo: "https://github.com/drush-ops/drush.git"
         dest: "/usr/local/share/drush"
         version: "8.x"
+
+  - name: Clone Drush from GitHub
+    when: os == 'centos-6'
+    git:
+        repo: "https://github.com/drush-ops/drush.git"
+        dest: "/usr/local/share/drush"
+        version: "6.x"
 
   - name: Install Drush dependencies with Composer
     become: yes
