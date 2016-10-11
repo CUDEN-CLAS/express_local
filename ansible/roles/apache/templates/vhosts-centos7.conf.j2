@@ -15,10 +15,9 @@ DirectoryIndex index.php index.html
 
   DocumentRoot /data/atlas/web/express
   <Directory "/data/atlas/web/express">
+    Options FollowSymLinks
     AllowOverride All
-    Options Indexes FollowSymLinks
-    Order allow,deny
-    Allow from all
+    Require all granted
   </Directory>
 </VirtualHost>
 
@@ -37,10 +36,9 @@ DirectoryIndex index.php index.html
 
   DocumentRoot /data/atlas/web/homepage
   <Directory "/data/atlas/web/homepage">
+    Options FollowSymLinks
     AllowOverride All
-    Options Indexes FollowSymLinks
-    Order allow,deny
-    Allow from all
+    Require all granted
   </Directory>
 </VirtualHost>
 
