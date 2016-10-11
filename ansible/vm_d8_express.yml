@@ -3,8 +3,6 @@
   # Drush includes the Composer install, so needs to be before Behat.
   - hosts: d8_web
     become: yes
-
-    # Pick which configuration files we want to swap in
     vars:
         express_code_varnish: true
         express_code_elk: false

@@ -8,9 +8,9 @@
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
   "express.local" => "192.168.33.20",
+  "d8.local" => "192.168.33.23",
   "inventory.local" => "192.168.33.21",
   #"logs.local" => "192.168.33.22",
-  "d8.local" => "192.168.33.23",
 }
 
 # All Vagrant configuration is done below.

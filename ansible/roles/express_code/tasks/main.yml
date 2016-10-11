@@ -16,7 +16,7 @@
         - /etc/varnish/default.vcl
 
   - name: Symlink in default.vcl
-    when: express_code_varnish
+    when: os == 'centos-7' and express_code_varnish
     file:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -26,6 +26,20 @@
       - { src: '/data/code/varnish/backends.vcl', dest: '/etc/varnish/backends.vcl'}
       - { src: '/data/code/varnish/50x.html', dest: '/etc/varnish/50x.html'}
       - { src: '/data/code/varnish/50x.html', dest: '/usr/local/varnish/etc/varnish/50x.html'}
+    notify:
+        - restart varnish
+
+  - name: Symlink in default.vcl
+    when: os == 'centos-6' and express_code_varnish
+    file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+    with_items:
+      - { src: '/data/code/varnish-3/default.vcl', dest: '/etc/varnish/default.vcl'}
+      - { src: '/data/code/varnish-3/backends.vcl', dest: '/etc/varnish/backends.vcl'}
+      - { src: '/data/code/varnish-3/50x.html', dest: '/etc/varnish/50x.html'}
+      - { src: '/data/code/varnish-3/50x.html', dest: '/usr/local/varnish/etc/varnish/50x.html'}
     notify:
         - restart varnish
 

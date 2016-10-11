@@ -15,9 +15,11 @@ logs.local ansible_ssh_host=192.168.33.22 ansible_ssh_user=root
 
 [deploy_targets]
 express.local
+d8.local
 logs.local
 
 [host_list]
 express.local
 inventory.local
 logs.local
+d8.local
