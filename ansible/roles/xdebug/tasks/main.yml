@@ -85,7 +85,7 @@
   - name: Copy xdebug ini into main extension config folder.
     when: os == 'centos-7'
     template:
-      src: xdebug.centos-7.ini.j2
+      src: xdebug.ini.centos-7.j2
       dest: "/etc/php.d/{{ php_xdebug_config_filename }}"
       owner: root
       group: root

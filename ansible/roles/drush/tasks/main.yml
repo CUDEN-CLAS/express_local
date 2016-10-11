@@ -28,6 +28,13 @@
     args:
         creates: "/usr/local/bin/composer"
 
+  - name: Download Composer installer
+    when: os == 'centos-7'
+    get_url:
+      url: https://getcomposer.org/installer
+      dest: /tmp/composer-installer.php
+      mode: 0755
+
   - name: Run Composer installer
     when: os == 'centos-7'
     command: "php composer-installer.php"
