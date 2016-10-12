@@ -1,5 +1,6 @@
 ---
   - name: Install additional OS packages
+    when: os == 'centos-6'
     become: yes
     yum:
         name: "{{ item }}"
@@ -9,20 +10,60 @@
         - php-posix
         - php-xml
 
+  - name: Install additional OS packages
+    when: os == 'centos-7'
+    become: yes
+    yum:
+        name: "{{ item }}"
+        state: present
+    with_items:
+        - php70u-json
+        - php70u-posix
+        - php70u-xml
 
   - name: Install Composer
+    when: os == 'centos-6'
     become: yes
     shell: "curl -sS https://getcomposer.org/installer | php"
     args:
         creates: "/usr/local/bin/composer"
 
+  - name: Download Composer installer
+    when: os == 'centos-7'
+    get_url:
+      url: https://getcomposer.org/installer
+      dest: /tmp/composer-installer.php
+      mode: 0755
+
+  - name: Run Composer installer
+    when: os == 'centos-7'
+    command: "php composer-installer.php"
+    args:
+        chdir: "/tmp"
+
   - name: Move Composer into globally-accessible location
+    when: os == 'centos-6'
     become: yes
     shell: "mv composer.phar /usr/local/bin/composer"
     args:
         creates: "/usr/local/bin/composer"
 
+  - name: Move Composer into globally-accessible location
+    when: os == 'centos-7'
+    become: yes
+    shell: "mv /tmp/composer.phar /usr/local/bin/composer"
+    args:
+        creates: "/usr/local/bin/composer"
+
   - name: Clone Drush from GitHub
+    when: os == 'centos-7'
+    git:
+        repo: "https://github.com/drush-ops/drush.git"
+        dest: "/usr/local/share/drush"
+        version: "8.x"
+
+  - name: Clone Drush from GitHub
+    when: os == 'centos-6'
     git:
         repo: "https://github.com/drush-ops/drush.git"
         dest: "/usr/local/share/drush"
@@ -52,24 +93,6 @@
         repo: "http://git.drupal.org/project/dslm.git"
         dest: "/usr/local/share/drush/commands/dslm"
         version: "manage-package"
-
-  - name: Add DSLM_BASE variable to .profile
-    lineinfile:
-        dest: "/home/osr_web_deploy/.profile"
-        line: "export DSLM_BASE=/data/code"
-        regexp: "^export DSLM_BASE=/data/code"
-        state: present
-        insertafter: EOF
-        create: True
-
-  - name: Add PACKAGES_BASE variable to .profile
-    lineinfile:
-        dest: "/home/osr_web_deploy/.profile"
-        line: "export PACKAGES_BASE=/data/code"
-        regexp: "^export PACKAGES_BASE=/data/code"
-        state: present
-        insertafter: EOF
-        create: True
 
   - name: Create ~/.drush
     file:
@@ -105,6 +128,7 @@
       force: yes
 
   - name: Install registry_rebuild
+    when: os == 'centos-6'
     become: yes
     become_user: osr_web_deploy
     command: "drush dl registry_rebuild -y"

@@ -1,10 +1,12 @@
 ---
   - name: Add Varnish repository
+    when: os == 'centos-6'
     yum:
       name: "https://repo.varnish-cache.org/redhat/varnish-3.0.el6.rpm"
       state: present
 
   - name: Install OS packages
+    when: os == 'centos-6'
     yum:
         name: "{{ item }}"
         state: present
@@ -13,23 +15,32 @@
         - gcc
         - varnish-3.0.7
 
-  - name: Copy Varnish configuration
-    template:
-        src: "varnish.j2"
-        dest: "/etc/sysconfig/varnish"
-        owner: "root"
-        group: "root"
-        mode: 0644
-        force: yes
+  - name: Install OS packages
+    when: os == 'centos-7'
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - varnish
 
-  - name: Copy Varnish configuration
-    template:
-        src: "varnishncsa.j2"
-        dest: "/etc/sysconfig/varnishncsa"
-        owner: "root"
-        group: "root"
-        mode: 0644
-        force: yes
+  # - name: Copy Varnish configuration
+  #   template:
+  #       src: "varnish.j2"
+  #       dest: "/etc/sysconfig/varnish"
+  #       owner: "root"
+  #       group: "root"
+  #       mode: 0644
+  #       force: yes
+  #
+  # - name: Copy Varnish configuration
+  #   template:
+  #       src: "varnishncsa.j2"
+  #       dest: "/etc/sysconfig/varnishncsa"
+  #       owner: "root"
+  #       group: "root"
+  #       mode: 0644
+  #       force: yes
 
   - name: Ensure Varnish config path exists
     file:

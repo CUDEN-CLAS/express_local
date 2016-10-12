@@ -21,10 +21,15 @@
     notify:
         - restart memcached
 
-  - name: Install PECL memcache
-    shell: yes | pecl install memcache
-    register: pecl_memcache_result
-    ignore_errors: True
+  - name: Install PECL Memcache
+    yum:
+        pkg: "{{ item }}"
+        state: installed
+        update_cache: yes
+    with_items:
+        - php-pecl-memcache
+    notify:
+        - restart memcached
 
   - name: Ensure Memcached is started and set to run on startup.
     service:

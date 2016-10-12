@@ -1,4 +1,10 @@
 ---
+- name: Add MySQL community repo
+  when: os == 'centos-7'
+  yum:
+      name: "http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm"
+      state: present
+
 - name: Ensure MySQL Python libraries are installed
   yum:
       name: "MySQL-python"

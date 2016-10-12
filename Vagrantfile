@@ -8,6 +8,7 @@
 # Test webserver so that the inventory can move sites up and down the environment stack.
 hosts = {
   "express.local" => "192.168.33.20",
+  "d8.local" => "192.168.33.23",
   "inventory.local" => "192.168.33.21",
   #"logs.local" => "192.168.33.22",
 }
@@ -24,12 +25,17 @@ Vagrant.configure(2) do |config|
       machine.vm.hostname = "%s" % name
       machine.vm.network :private_network, ip: ip
 
-      machine.vm.provider "virtualbox" do |v|
+      machine.vm.provider "virtualbox" do |v, override|
         v.name = name
 
         if name.include? "express.local"
           v.customize ["modifyvm", :id, "--memory", 4096]
           v.customize ["modifyvm", :id, "--cpus", "2"]
+        elsif name.include? "d8.local"
+          v.customize ["modifyvm", :id, "--memory", 2048]
+          v.customize ["modifyvm", :id, "--cpus", "2"]
+          override.vm.box = "bento/centos-7.2"
+          override.vm.box_url = "https://atlas.hashicorp.com/bento/boxes/centos-7.2"
         else
           v.customize ["modifyvm", :id, "--memory", 1024]
         end
@@ -43,6 +49,14 @@ Vagrant.configure(2) do |config|
     if name.include? "express.local"
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/vm_express.yml"
+        ansible.inventory_path = "ansible/hosts"
+        ansible.vault_password_file = "~/.ansible_vault.txt"
+      end
+    end
+
+    if name.include? "d8.local"
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/vm_d8_express.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.vault_password_file = "~/.ansible_vault.txt"
       end

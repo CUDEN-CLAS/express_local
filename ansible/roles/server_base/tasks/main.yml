@@ -5,8 +5,10 @@
   # - name: update files owned by vagrant
   #   shell: chown -Rhc --from=1000 5000 /home/vagrant
 
-  # Install some basics
+
+  # Need to add EPEL and Remi.
   - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
+    when: os == 'centos-6'
     yum:
         name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
         state: present
@@ -14,21 +16,39 @@
         name: "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
         state: present
 
-  - name: Install necessary OS packages
+  - name: Install CentOS 6 OS packages
+    when: os == 'centos-6'
     yum:
         name: "{{ item }}"
         state: present
         update_cache: yes
     with_items:
-        - git-1.7.1
         - epel-release
-        - mysql-connector-python
+        - htop
+
+  # Need to add MySQL repo for mysql-python-connector.
+  - name: Add repo for EPEL and MySQL Python Connector
+    when: os == 'centos-7'
+    yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+        state: present
+    yum:
+        name: "https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-2.1.4-1.el7.x86_64.rpm"
+        state: present
+
+  - name: Install OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - git
         - nano
         - nc
         - nmap
         - mlocate
-        - htop
         - man
+        - mysql-connector-python
 
   - name: Allow wheel group to sudo without a password
     become: yes

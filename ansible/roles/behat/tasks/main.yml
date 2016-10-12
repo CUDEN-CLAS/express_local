@@ -1,5 +1,21 @@
 ---
   - name: Install additional OS packages
+    when: os == 'centos-7'
+    become: yes
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+      - php70u-mbstring
+      - java-1.8.0-openjdk-headless
+      - xorg-x11-server-Xvfb
+      - firefox
+      - xorg-x11-server-Xorg
+      - libXfont
+
+  - name: Install additional OS packages
+    when: os == 'centos-6'
     become: yes
     yum:
         name: "{{ item }}"
