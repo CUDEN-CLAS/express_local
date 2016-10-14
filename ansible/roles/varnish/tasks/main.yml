@@ -67,7 +67,8 @@
       - restart varnishncsa
 
   - name: Check Varnish configuration
-    command: "sudo varnishd -C -f /etc/varnish/default.vcl"
+    become: yes
+    command: "varnishd -C -f /etc/varnish/default.vcl"
     register: result
     ignore_errors: True
 
