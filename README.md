@@ -5,7 +5,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 
 # You will need
 * git
-* Ansible 2.1.x (currently also compatible with 1.9.x)
+* Ansible 2.1.x
 * Vagrant > 1.8 (recommend 1.8.6)
 * VirtualBox 5.1.x
 * Python 2.7
