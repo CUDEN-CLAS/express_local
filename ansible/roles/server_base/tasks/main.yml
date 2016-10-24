@@ -10,11 +10,11 @@
   - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
     when: os == 'centos-6'
     yum:
-        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
+        name: "{{ item }}"
         state: present
-    yum:
-        name: "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
-        state: present
+    with_items:
+        - "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
+        - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
 
   - name: Install CentOS 6 OS packages
     when: os == 'centos-6'
@@ -30,11 +30,11 @@
   - name: Add repo for EPEL and MySQL Python Connector
     when: os == 'centos-7'
     yum:
-        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+        name: "{{ item }}"
         state: present
-    yum:
-        name: "https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-2.1.4-1.el7.x86_64.rpm"
-        state: present
+    with_items:
+        - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+        - "https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-2.1.4-1.el7.x86_64.rpm"
 
   - name: Install OS packages
     yum:

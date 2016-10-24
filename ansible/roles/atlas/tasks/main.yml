@@ -1,4 +1,13 @@
 ---
+  # Add repo for mongoDB 3
+  - name: Add MongoDB Repository
+    yum_repository:
+      name: mongodb
+      description: MongoDB Repository
+      baseurl: http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.2/x86_64/
+      gpgcheck: no
+      enabled: yes
+
   # Also includes some packages to compile the additional version of python.
   # Tried to use async to add a timeout. But it doesn't work whne using with_items.
   # TODO: Add the timeout back in when using ansible 2.1 or greater.
@@ -17,8 +26,7 @@
       - openssl-devel-1.0.1e
       - openldap-devel
       - cyrus-sasl-lib-2.1.23
-      - mongodb-2.4.14
-      - mongodb-server-2.4.14
+      - mongodb-org-3.2.10
       - python-pip
       - python-setuptools-0.6.10
       - python-devel
@@ -301,50 +309,26 @@
       - restart celerybeat
 
   # MongoDB
-  - name: Copy MongoDB configuration
-    template:
-        src: "mongodb.conf.j2"
-        dest: "/etc/mongodb.conf"
-        mode: 0644
-        owner: root
-        group: root
-
-  - name: Create the mongodb startup file
-    template:
-        src: "mongod.j2"
-        dest: "/etc/init.d/mongod"
-        mode: 0655
-
-  - name: Create mongod group
-    group:
-        name: mongodb
-        state: present
-
-  - name: Create mongod user
-    user:
-        name: "mongodb"
-        group: "mongodb"
-
   - name: Create data directory for mongodb
     file:
-        path: "/data_local/mongodb"
+        path: "/data_local/mongod"
         state: directory
-        owner: mongodb
-        group: mongodb
+        owner: mongod
+        group: mongod
 
   - name: Create logging directory for mongodb
     file:
-        path: "/var/log/mongodb"
+        path: "/var/log/mongod"
         state: directory
-        owner: mongodb
-        group: mongodb
+        owner: mongod
+        group: mongod
 
   - name: Create run directory for mongodb
     file:
-        path: "/var/run/mongodb"
+        path: "/var/run/mongod"
         state: directory
-        owner: mongodb
-        group: mongodb
+        owner: mongod
+        group: mongod
 
   - name: Ensure MongoDB is started and enabled on boot.
     service:

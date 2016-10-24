@@ -5,9 +5,9 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 
 # You will need
 * git
-* Ansible 1.9.x
-* Vagrant > 1.8 (recommend 1.8.4, 1.8.5 has a [bug](https://github.com/mitchellh/vagrant/issues/7610), should be fixed in 1.8.6)
-* VirtualBox 5.0.x
+* Ansible 2.1.x
+* Vagrant > 1.8 (recommend 1.8.6)
+* VirtualBox 5.1.x
 * Python 2.7
 
 # Installation

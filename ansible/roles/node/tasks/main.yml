@@ -1,11 +1,23 @@
 ---
+# https://github.com/ansible/ansible/issues/12161
+- name: Install Python packages so we can install Node from Cloudflare
+  pip:
+    name: "{{ item.name }}"
+  with_items:
+    - { name: 'urllib3'}
+    - { name: 'pyopenssl'}
+    - { name: 'ndg-httpsclient'}
+    - { name: 'pyasn1'}
+
 - name: Add Nodesource repositories for Node.js.
   yum:
     name: "https://rpm.nodesource.com/pub_0.12/el/6/x86_64/nodejs-0.12.15-1nodesource.el6.x86_64.rpm"
     state: present
 
 - name: Ensure Node.js and npm are installed.
-  yum: "name=nodejs state=present enablerepo='epel,nodesource'"
+  yum:
+    name: nodejs
+    state: present
 
 - name: Define nodejs_install_npm_user
   set_fact:
