@@ -44,20 +44,19 @@ DirectoryIndex index.php index.html
   </Directory>
 </VirtualHost>
 
-#<VirtualHost *:443>
-#  ServerName express.local
-#
-#
-#  SSLEngine on
-#  SSLProtocol All -SSLv2 -SSLv3
-#  SSLCertificateFile /etc/httpd/ssl/apache.crt
-#  SSLCertificateKeyFile /etc/httpd/ssl/apache.key
-#
-#  DocumentRoot /data/atlas/web/express
-#  <Directory "/data/atlas/web/express">
-#    AllowOverride All
-#    Options -Indexes FollowSymLinks
-#    Order allow,deny
-#    Allow from all
-#  </Directory>
-#</VirtualHost>
+<VirtualHost express.local:443>
+  ServerName express.local:443
+
+  SSLEngine on
+  SSLProtocol All -SSLv2 -SSLv3
+  SSLCertificateFile /etc/httpd/ssl/apache.crt
+  SSLCertificateKeyFile /etc/httpd/ssl/apache.key
+
+  DocumentRoot /data/web/express
+  <Directory "/data/web/express">
+    AllowOverride All
+    Options -Indexes FollowSymLinks
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>
