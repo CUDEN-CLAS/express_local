@@ -24,23 +24,25 @@
     with_items:
         - varnish
 
-  # - name: Copy Varnish configuration
-  #   template:
-  #       src: "varnish.j2"
-  #       dest: "/etc/sysconfig/varnish"
-  #       owner: "root"
-  #       group: "root"
-  #       mode: 0644
-  #       force: yes
-  #
-  # - name: Copy Varnish configuration
-  #   template:
-  #       src: "varnishncsa.j2"
-  #       dest: "/etc/sysconfig/varnishncsa"
-  #       owner: "root"
-  #       group: "root"
-  #       mode: 0644
-  #       force: yes
+  - name: Copy Varnish configuration
+    when: os == 'centos-6'
+    template:
+        src: "varnish.j2"
+        dest: "/etc/sysconfig/varnish"
+        owner: "root"
+        group: "root"
+        mode: 0644
+        force: yes
+
+  - name: Copy Varnish configuration
+    when: os == 'centos-6'
+    template:
+        src: "varnishncsa.j2"
+        dest: "/etc/sysconfig/varnishncsa"
+        owner: "root"
+        group: "root"
+        mode: 0644
+        force: yes
 
   - name: Ensure Varnish config path exists
     file:
