@@ -268,7 +268,7 @@
     lineinfile:
       dest: "/data/code/atlas/atlas.wsgi"
       line: "activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
-      regexp: "^activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
+      regexp: "^activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this\\.py'"
       state: present
       insertbefore: BOF
     notify:
@@ -279,10 +279,9 @@
     lineinfile:
       dest: "/data/code/atlas/atlas.wsgi"
       line: "execfile(activate_this, dict(__file__=activate_this))"
-      regexp: "^execfile(activate_this, dict(__file__=activate_this))"
+      regexp: "^execfile\\(activate_this, dict\\(__file__=activate_this\\)\\)"
       state: present
       insertafter: "^activate_this = '/home/osr_web_deploy/atlas-python27-environment/bin/activate_this.py'"
-      backrefs: yes
     notify:
       - restart celeryd
       - restart celerybeat
