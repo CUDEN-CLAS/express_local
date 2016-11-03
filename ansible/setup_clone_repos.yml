@@ -15,11 +15,19 @@
       with_items:
         - "~/express_local/data/code"
 
-    - name: Clone Varnish VCL
+    - name: Clone Varnish VCL for Varnish 3
+      git:
+        repo: "git@github.com:CuBoulder/varnish.git"
+        dest: "~/express_local/data/code/varnish-3"
+        version: "master"
+        accept_hostkey: yes
+        key_file: "{{ key_file }}"
+
+    - name: Clone Varnish VCL for Varnish 4
       git:
         repo: "git@github.com:CuBoulder/varnish.git"
         dest: "~/express_local/data/code/varnish"
-        version: "master"
+        version: "feature/varnish4"
         accept_hostkey: yes
         key_file: "{{ key_file }}"
 

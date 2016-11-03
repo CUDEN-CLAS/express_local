@@ -14,7 +14,8 @@
       args:
         chdir: "{{ item.path }}"
       with_items:
-          - { path: "~/express_local/data/code/varnish", branch: "master"}
+          - { path: "~/express_local/data/code/varnish", branch: "feature/varnish4"}
+          - { path: "~/express_local/data/code/varnish-3", branch: "master"}
           - { path: "~/express_local/data/code/atlas", branch: "master"}
 
     - name: Fetch the repositories
@@ -23,6 +24,7 @@
           chdir: "{{ item.path }}"
       with_items:
           - { path: "~/express_local/data/code/varnish"}
+          - { path: "~/express_local/data/code/varnish-3"}
           - { path: "~/express_local/data/code/atlas"}
 
     - name: Checkout the correct branches
@@ -30,7 +32,8 @@
       args:
           chdir: "{{ item.path }}"
       with_items:
-          - { path: "~/express_local/data/code/varnish", branch: "master"}
+          - { path: "~/express_local/data/code/varnish", branch: "feature/varnish4"}
+          - { path: "~/express_local/data/code/varnish-3", branch: "master"}
           - { path: "~/express_local/data/code/atlas", branch: "master"}
 
     - name: Pull the repositories

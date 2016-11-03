@@ -21,14 +21,6 @@
     vagrant share
 
     ```
-* SSH Keys
-  * Follow [GitHub's instructions](https://help.github.com/articles/generating-ssh-keys/) to setup an SSH key.
-  * Unlock your SSH key (_will not work if the VM hasn't been created, may be needed before updating code_):  
-    ```
-    cd ~/express_local/data/code/dslm_base/profiles/express  
-    git pull
-
-    ```
 * Express_local commands
   * Create a new express site:  
     ```
