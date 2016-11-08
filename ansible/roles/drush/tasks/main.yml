@@ -92,7 +92,7 @@
     git:
         repo: "http://git.drupal.org/project/dslm.git"
         dest: "/usr/local/share/drush/commands/dslm"
-        version: "manage-package"
+        version: "7.x-3.x"
 
   - name: Create ~/.drush
     file:
