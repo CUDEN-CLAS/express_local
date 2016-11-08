@@ -40,8 +40,8 @@
 
   - name: Configure Apache
     when: os == 'centos-6'
-    copy:
-        src: "httpd-centos6.conf"
+    template:
+        src: "httpd-centos6.conf.j2"
         dest: "/etc/httpd/conf/httpd.conf"
         owner: apache
         group: apache
