@@ -974,5 +974,6 @@ BrowserMatch "^Dreamweaver-WebDAV-SCM1" redirect-carefully
 ### Section 3: Virtual Hosts
 # See vhost.conf for vhost configs.
 
-SetEnv CU_CENTRAL_EVE http://{{ EVE_API_USER }}:{{ EVE_API_PW }}@inventory.local/
+SetEnv CU_CENTRAL_EVE http://{{ EVE_API_USER }}:{{ EVE_API_PW }}@inventory.local/inventory/
+SetEnv ATLAS_URI http://{{ EVE_API_USER }}:{{ EVE_API_PW }}@inventory.local/
 SetEnv WWWNG_ENV express_local
