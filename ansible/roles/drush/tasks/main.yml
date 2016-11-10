@@ -94,13 +94,19 @@
         dest: "/usr/local/share/drush/commands/dslm"
         version: "7.x-3.x"
 
+  - name: Clone Patchfile from bitbucket
+    git:
+        repo: "https://bitbucket.org/davereid/drush-patchfile.git"
+        dest: "/usr/local/share/drush/commands/drush-patchfile"
+        version: "master"
+
   - name: Create ~/.drush
     file:
         path: "/home/osr_web_deploy/.drush"
         state: directory
         owner: osr_web_deploy
 
-  - name: Create composer file for Patchfile and CodeSniffer
+  - name: Create composer file for CodeSniffer
     become: yes
     become_user: osr_web_deploy
     template:
