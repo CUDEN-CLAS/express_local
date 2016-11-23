@@ -31,6 +31,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   192.168.33.20 express.local
   192.168.33.21 inventory.local
   192.168.33.22 logs.local
+  192.168.33.23 d8.local
 
   # Eve API URI
   # Local
@@ -45,14 +46,14 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * Edit your SSH config (`~/.ssh/config`) to include the following
   ```
   # Connection information for express_local VMs
-  Host 192.168.33.* express.local inventory.local logs.local
+  Host 192.168.33.* express.local inventory.local logs.local d8.local
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
   User osr_web_deploy
   LogLevel ERROR
 
   ```
-* Copy the ssh keys for the deployment user to `ansible/keys`. Keys need to be passwordless and to be able to read all relevant repositories. When working with multiple developersm, consider create a machine account with a ssh key per user.
+* Copy the ssh keys for the deployment user to `ansible/keys`. Keys need to be passwordless and to be able to read all relevant repositories. When working with multiple developers, consider create a machine account with a ssh key per user.
 * Create `~/.ansible_vault.txt` and enter the vault password. Make sure that only your user has access to the file `chmod 600 ~/.ansible_vault.txt`.
 
 # Logging (Commented out for now)
@@ -102,50 +103,8 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 11. The last thing to do is to map the folders on your machine to the paths on your VM, PHPStorm > Preferences > PHP > Servers. Because of the symbolic links used in DSLM, the paths will reside in the "dslm_base" and "packages_base" folders. your root level project folder should map to a Drupal core, e.g. "/data/code/dslm_base/cores/drupal-7.41", and the profile path to whichever profile you are using, e.g. "/data/code/dslm_base/profiles/express"
 12. Once your path mapping is setup, you should be able to turn on debugging in PHPStorm, Run > Start Listening for PHP Connections, set a breakpoint, and use XDebug from within PHPStorm.
 
-# This repo includes
-* All VMs
-  * Vagrant 2
-  * Ansible 1.9.4
-  * CentOS 6.7
-* Webserver - express.local
-  * Varnish 3.0.3
-  * Apache 2.2.15
-  * MySQL 5.6.20
-  * PHP 5.3.3
-    * CodeSniffer 1.5.6 (with Drupal coding standards)
-  * APC 3.1.9
-  * Memcache 3.0.6
-  * xdebug 2.2.7
-  * RVM
-  * Behat
-  * Logstash
-  * Drush
-    * DSLM
-    * Composer
-  * Express code
-    * express
-    * dslm_base
-    * packages_base
-    * express_webcentral
-* Webserver - inventory.local
-  * Additional OS packages
-    * Development tools # Allows us to compile Python 2.7
-    * Apache 2.4 # Specific role for the inventory
-    * GCC
-    * MongoDB 2.4.14
-    * PIP
-  * Python 2.7.1
-  * Logstash
-* Webserver - logs.local
-  * Java - 1.7.0
-  * Elasticsearch - 1.6.2
-  * Logstash
-  * Kibana
-  * Redis - 2.4.10
-
 # To Dos:
 * xprof
-* Support SSL properly
 * Make sure every package has a version
 * Combine apache roles
 
