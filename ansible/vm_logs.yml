@@ -9,11 +9,10 @@
         express_code_logstash: true
         express_code_logstash_shipper: false
     roles:
-        - {role: ssh_keys, key_set: 'user' }
+        - {role: ssh_keys}
         - {role: server_base }
         - {role: elasticsearch }
         - {role: logstash }
         - {role: kibana }
         - {role: redis }
         - {role: express_code }
-        - {role: ssh_keys, key_set: 'dplagnt_dest' }

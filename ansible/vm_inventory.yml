@@ -7,12 +7,11 @@
         express_code_elk: false
         express_code_logstash: false
         express_code_logstash_shipper: true
+        os: centos-6
     roles:
-      - {role: ssh_keys, key_set: 'user' }
+      - {role: ssh_keys}
       - {role: server_base }
       - {role: apache_inventory }
-      - {role: python }
+      - {role: atlas }
+      - {role: node }
       #- {role: logstash }
-      - {role: ssh_keys, key_set: 'dplagnt_src' }
-    vars:
-      python_location: /home/dplagnt/inventory-python27-environment

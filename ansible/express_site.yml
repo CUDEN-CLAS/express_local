@@ -27,7 +27,7 @@
 
       - name: Create dslm entry for site
         become: yes
-        become_user: dplagnt
+        become_user: osr_web_deploy
         command: "drush dslm-new {{path}} --current"
         when: type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         args:
@@ -37,7 +37,7 @@
 
       - name: Add Express
         become: yes
-        become_user: dplagnt
+        become_user: osr_web_deploy
         command: drush dslm-add-profile express --current
         when: type == "S" or type == "s" or type == "skeleton" or type == "Skeleton"
         args:
@@ -50,7 +50,7 @@
         file:
             path: "/data/web/express/{{path}}"
             state: directory
-            owner: dplagnt
+            owner: osr_web_deploy
             group: apache
             mode: 0775
             recurse: yes
@@ -60,7 +60,7 @@
         template:
             src: templates/express_settings.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.php"
-            owner: dplagnt
+            owner: osr_web_deploy
             group: apache
             mode: 0774
 
@@ -69,7 +69,7 @@
         template:
             src: templates/express_settings_local_pre.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_pre.php"
-            owner: dplagnt
+            owner: osr_web_deploy
             group: apache
             mode: 0774
 
@@ -78,7 +78,7 @@
         template:
             src: templates/express_settings_local_post.j2
             dest: "/data/web/express/{{path}}/sites/default/settings.local_post.php"
-            owner: dplagnt
+            owner: osr_web_deploy
             group: apache
             mode: 0774
 
@@ -87,7 +87,7 @@
         file:
             path: "{{ item }}"
             state: directory
-            owner: dplagnt
+            owner: osr_web_deploy
             group: apache
             mode: 0775
         with_items:
@@ -104,7 +104,7 @@
       - name: Install site
         command: drush si express -y
         become: yes
-        become_user: dplagnt
+        become_user: osr_web_deploy
         register: install_output
         when: type == "R" or type == "r" or type == "reinstall" or type == "Reinstall"
         args:

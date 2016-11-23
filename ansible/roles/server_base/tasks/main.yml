@@ -5,30 +5,50 @@
   # - name: update files owned by vagrant
   #   shell: chown -Rhc --from=1000 5000 /home/vagrant
 
-  # Install some basics
-  - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
-    yum:
-        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
-        state: present
-    yum:
-        name: "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
-        state: present
 
-  - name: Install necessary OS packages
+  # Need to add EPEL and Remi.
+  - name: Add repo for Extra Packages for Enterprise Linux (EPEL) and Remi
+    when: os == 'centos-6'
+    yum:
+        name: "{{ item }}"
+        state: present
+    with_items:
+        - "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
+        - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
+
+  - name: Install CentOS 6 OS packages
+    when: os == 'centos-6'
     yum:
         name: "{{ item }}"
         state: present
         update_cache: yes
     with_items:
-        - git-1.7.1
         - epel-release
-        - mysql-connector-python
+        - htop
+
+  # Need to add MySQL repo for mysql-python-connector.
+  - name: Add repo for EPEL and MySQL Python Connector
+    when: os == 'centos-7'
+    yum:
+        name: "{{ item }}"
+        state: present
+    with_items:
+        - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+        - "https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-2.1.4-1.el7.x86_64.rpm"
+
+  - name: Install OS packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - git
         - nano
         - nc
         - nmap
         - mlocate
-        - htop
         - man
+        - mysql-connector-python
 
   - name: Allow wheel group to sudo without a password
     become: yes
@@ -37,93 +57,91 @@
         regexp: "^# %wheel        ALL=(ALL)  NOPASSWD: ALL"
         line: "%wheel        ALL=(ALL)  NOPASSWD: ALL"
 
-  # Setup the dplagnt user
-  - name: Create lapurd group
+  # Setup the osr_web_deploy user
+  - name: Create osr_web_deploy group
     group:
-        name: "lapurd"
+        name: "osr_web_deploy"
         state: present
 
-  - name: Create dplagnt user
+  - name: Create osr_web_deploy user
     user:
-        name: "dplagnt"
-        group: "lapurd"
+        name: "osr_web_deploy"
+        group: "osr_web_deploy"
         shell: "/bin/bash"
 
-  - name: Update user dplagnt groups
+  - name: Update user osr_web_deploy groups
     user:
-        name: "dplagnt"
+        name: "osr_web_deploy"
         groups: "adm,wheel"
         append: yes
 
   - name: Update user vagrant groups
     user:
       name: vagrant
-      groups: lapurd
+      groups: osr_web_deploy
       append: yes
 
-  - name: Update dplagnt home directory group permissions
+  - name: Update osr_web_deploy home directory group permissions
     file:
       state: directory
       mode: 0750
-      path: /home/dplagnt
+      path: /home/osr_web_deploy
 
-  # Get the user's SSH keys to dplagnt
+  # Get the user's SSH keys to osr_web_deploy
   - name: Create destination directory for SSH keys
     # Workaround for #2372
     file:
-        dest: "/home/dplagnt/.ssh/"
+        dest: "/home/osr_web_deploy/.ssh/"
         state: directory
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0700
 
-  - name: Push user's rsa key to dplagnt's authorized_keys
+  - name: Push user's rsa key to osr_web_deploy's authorized_keys
     # action: authorized_key user=root key='$FILE(~/.ssh/id_rsa.pub)'
     # Workaround for #2372
     copy:
         src: "~/.ssh/id_rsa.pub"
-        dest: "/home/dplagnt/.ssh/authorized_keys"
-        owner: dplagnt
-        group: lapurd
+        dest: "/home/osr_web_deploy/.ssh/authorized_keys"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     register: rsa
     ignore_errors: yes
 
-  - name: Push user's id_rsa.pub to dplagnt's .ssh/id_rsa.pub
+  - name: Push id_rsa.pub to osr_web_deploy
     copy:
-        src: "~/.ssh/id_rsa.pub"
-        dest: "/home/dplagnt/.ssh/"
-        owner: dplagnt
-        group: lapurd
+        src: "../../../keys/id_rsa.pub"
+        dest: "/home/osr_web_deploy/.ssh/"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     ignore_errors: yes
 
-  - name: Push user's id_rsa to dplagnt's .ssh/
+  - name: Push id_rsa to osr_web_deploy
     copy:
-        src: "~/.ssh/id_rsa"
-        dest: "/home/dplagnt/.ssh/"
-        owner: dplagnt
-        group: lapurd
+        src: "../../../keys/id_rsa"
+        dest: "/home/osr_web_deploy/.ssh/"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     ignore_errors: yes
+
+  - name: Add key to authorized_keys
+    become: yes
+    become_user: osr_web_deploy
+    authorized_key:
+        user: osr_web_deploy
+        key: "{{ lookup('file', '../../../keys/id_rsa.pub') }}"
 
   - name: Push ssh config
     copy:
         src: "config.ssh"
-        dest: "/home/dplagnt/.ssh/config"
-        owner: dplagnt
-        group: lapurd
+        dest: "/home/osr_web_deploy/.ssh/config"
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0600
     ignore_errors: yes
-
-  # Push the list of known hosts
-  # - name: Pushes known_hosts
-  #   copy:
-  #       src: "known_hosts"
-  #       dest: "/home/dplagnt/.ssh/"
-  #       owner: dplagnt
-  #       mode: 0600
-  #   ignore_errors: yes
 
   - name: Create host file
     template:
@@ -132,11 +150,11 @@
         owner: root
         force: yes
 
-  - name: Create .bashrc for dplagnt
+  - name: Create .bashrc for osr_web_deploy
     template:
         src: "bashrc.j2"
-        dest: "/home/dplagnt/.bashrc"
-        owner: dplagnt
+        dest: "/home/osr_web_deploy/.bashrc"
+        owner: osr_web_deploy
         force: yes
 
   - name: Create .bashrc for vagrant
@@ -150,14 +168,14 @@
     file:
         path: "/usr/local/www.misc"
         state: directory
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0755
 
   - name: Create sysadmintools directory
     file:
         path: "/usr/local/www.misc/sysadmintools"
         state: directory
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0755

@@ -1,19 +1,31 @@
 ---
   - name: Add Varnish repository
+    when: os == 'centos-6'
     yum:
       name: "https://repo.varnish-cache.org/redhat/varnish-3.0.el6.rpm"
       state: present
 
   - name: Install OS packages
+    when: os == 'centos-6'
     yum:
         name: "{{ item }}"
         state: present
         update_cache: yes
     with_items:
         - gcc
+        - varnish-3.0.7
+
+  - name: Install OS packages
+    when: os == 'centos-7'
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
         - varnish
 
   - name: Copy Varnish configuration
+    when: os == 'centos-6'
     template:
         src: "varnish.j2"
         dest: "/etc/sysconfig/varnish"
@@ -23,6 +35,7 @@
         force: yes
 
   - name: Copy Varnish configuration
+    when: os == 'centos-6'
     template:
         src: "varnishncsa.j2"
         dest: "/etc/sysconfig/varnishncsa"
@@ -56,7 +69,8 @@
       - restart varnishncsa
 
   - name: Check Varnish configuration
-    command: "sudo varnishd -C -f /etc/varnish/default.vcl"
+    become: yes
+    command: "varnishd -C -f /etc/varnish/default.vcl"
     register: result
     ignore_errors: True
 

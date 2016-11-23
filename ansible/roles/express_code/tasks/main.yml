@@ -1,4 +1,12 @@
 ---
+  - name: Make directory for error page
+    when: express_code_varnish
+    file:
+        path: "{{ item }}"
+        state: directory
+    with_items:
+        - /usr/local/varnish/etc/varnish
+
   - name: Get rid of default Varnish files
     when: express_code_varnish
     file:
@@ -8,11 +16,30 @@
         - /etc/varnish/default.vcl
 
   - name: Symlink in default.vcl
-    when: express_code_varnish
+    when: os == 'centos-7' and express_code_varnish
     file:
-        src: "/data/code/varnish/default.vcl"
-        dest: "/etc/varnish/default.vcl"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         state: link
+    with_items:
+      - { src: '/data/code/varnish/default.vcl', dest: '/etc/varnish/default.vcl'}
+      - { src: '/data/code/varnish/backends.vcl', dest: '/etc/varnish/backends.vcl'}
+      - { src: '/data/code/varnish/50x.html', dest: '/etc/varnish/50x.html'}
+      - { src: '/data/code/varnish/50x.html', dest: '/usr/local/varnish/etc/varnish/50x.html'}
+    notify:
+        - restart varnish
+
+  - name: Symlink in default.vcl
+    when: os == 'centos-6' and express_code_varnish
+    file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+    with_items:
+      - { src: '/data/code/varnish-3/default.vcl', dest: '/etc/varnish/default.vcl'}
+      - { src: '/data/code/varnish-3/backends.vcl', dest: '/etc/varnish/backends.vcl'}
+      - { src: '/data/code/varnish-3/50x.html', dest: '/etc/varnish/50x.html'}
+      - { src: '/data/code/varnish-3/50x.html', dest: '/usr/local/varnish/etc/varnish/50x.html'}
     notify:
         - restart varnish
 
@@ -108,18 +135,33 @@
     file:
         state: directory
         path: "{{ item }}"
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
     with_items:
       - "/data/web/express"
-      - "/data/releases"
+      - "/data/sites"
+
+  - name: Set Files directory perms
+    when: "'web' in group_names"
+    file:
+        path: /wwwng
+        state: directory
+        owner: osr_web_deploy
+        group: apache
+        mode: 0775
 
   - name: Set Files directory perms
     when: "'web' in group_names"
     file:
         path: /wwwng/sitefiles
         state: directory
-        owner: dplagnt
+        owner: osr_web_deploy
         group: apache
-        mode: 02775 # includes group sticky bit
-        recurse: yes
+        mode: 0775
+
+  - name: Set Files directory stickybit
+    when: "'web' in group_names"
+    file:
+        path: /wwwng/sitefiles
+        state: directory
+        mode: g+t

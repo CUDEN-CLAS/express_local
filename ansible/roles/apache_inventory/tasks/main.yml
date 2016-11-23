@@ -57,12 +57,12 @@
   - name: Update user apache groups
     user:
         name: "apache"
-        groups: "lapurd"
+        groups: "osr_web_deploy"
         append: yes
 
-  - name: Update user dplagnt groups
+  - name: Update user osr_web_deploy groups
     user:
-        name: "dplagnt"
+        name: "osr_web_deploy"
         groups: "apache"
         append: yes
 

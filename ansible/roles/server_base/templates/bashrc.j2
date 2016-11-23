@@ -30,6 +30,8 @@ export PATH="$HOME/.composer/vendor/bin:$PATH"
 
 # Added alias to support code sniffer
 alias drupalcs="phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,js,css,info,txt'"
+alias tailatlas="sudo tail -f /var/log/celery/*.log /opt/rh/httpd24/root/var/log/httpd/access_log /opt/rh/httpd24/root/var/log/httpd/error_log"
+alias restartatlas="sudo service celeryd restart && sudo service celerybeat restart && sudo service httpd24-httpd restart"
 
 # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.rvm/bin"
@@ -38,4 +40,4 @@ export PATH="$PATH:$HOME/.rvm/bin"
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 # Add Behat environmental variables
-export BEHAT_PARAMS='{"extensions":{"Drupal\\DrupalExtension":{"drupal":{"drupal_root":"/data/web/express/testing"},"drush":{"root":"/data/web/express/testing"}},"Behat\\MinkExtension":{"base_url":"http://express.local/testing","files_path":"/data/web/express/testing/profiles/express/tests/behat/assets"}}}'
+export BEHAT_PARAMS='{"extensions":{"Drupal\\DrupalExtension":{"drupal":{"drupal_root":"/data/atlas/web/express/testing"},"drush":{"root":"/data/atlas/web/express/testing"}},"Behat\\MinkExtension":{"base_url":"http://express.local/testing","files_path":"/data/atlas/web/express/testing/profiles/express/tests/behat/assets"}}}'

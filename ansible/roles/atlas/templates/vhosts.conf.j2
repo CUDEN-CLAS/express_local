@@ -1,0 +1,18 @@
+<VirtualHost *:80>
+  ServerName inventory.local
+
+  <LocationMatch "/(atlas|sites)">
+      Require all granted
+  </LocationMatch>
+
+  Header set EVEENV 'local'
+  SetEnv WWWNG_ENV local
+
+  # WSGIDaemonProcess atlas processes=2 threads=5 user=osr_web_deploy group=osr_web_deploy display-name=%{GROUP}
+  WSGIDaemonProcess atlas python-path=/data/code/atlas:/data/environments/atlas/lib/python2.7/site-packages processes=2 threads=5 user=osr_web_deploy group=osr_web_deploy display-name=%{GROUP}
+  WSGIScriptAlias / /data/code/atlas/atlas.wsgi
+  <Directory "/data/code/atlas">
+      WSGIPassAuthorization On
+      Require all granted
+  </Directory>
+</VirtualHost>
