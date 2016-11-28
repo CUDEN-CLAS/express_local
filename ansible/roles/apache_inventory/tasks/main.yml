@@ -15,44 +15,20 @@
     with_items:
       - httpd24
       - httpd24-httpd-devel
-      #- openssl
+      - httpd24-mod_ssl
+      - openssl
 
-  - name: Configure Apache to listen on 80
-    lineinfile:
-      dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
-      regexp: "^Listen "
-      line: "Listen 80"
-      state: present
-    notify:
-      - restart httpd24-httpd
+  - name: Create directory for SSL cert
+    become: yes
+    file:
+        path: "/opt/rh/httpd24/root/etc/httpd/ssl"
+        state: directory
 
-  - name: Name Apache vhost for :80
-    lineinfile:
-      dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
-      regexp: "^NameVirtualHost "
-      line: "NameVirtualHost *:80"
-      state: present
-    notify:
-      - restart httpd24-httpd
-
-  # TODO: Support SSL properly. See also settings.local_post.php
-  #
-  # mod_ssl will take care of listening on 443
-  # - name: Name Apache vhost for :443
-  #   lineinfile:
-  #     dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
-  #     line: "NameVirtualHost *:443"
-  #     state: present
-  #   notify:
-  #    - restart httpd24-httpd
-  #
-  # - name: Create directory for SSL cert
-  #   file: path=/opt/rh/httpd24/root/etc/httpd/ssl state=directory
-  #
-  # - name: Generate SSL cert
-  #   command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /opt/rh/httpd24/root/etc/httpd/ssl/apache.key -out /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt"
-  #   args:
-  #     creates: /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt
+  - name: Generate SSL cert
+    become: yes
+    command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=inventory.local' -keyout /opt/rh/httpd24/root/etc/httpd/ssl/apache.key -out /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt"
+    args:
+        creates: /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt
 
   - name: Update user apache groups
     user:

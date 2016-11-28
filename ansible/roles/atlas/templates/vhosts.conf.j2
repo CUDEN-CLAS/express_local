@@ -1,14 +1,18 @@
-<VirtualHost *:80>
-  ServerName inventory.local
+<VirtualHost inventory.local:443>
+  ServerName inventory.local:443
 
-  <LocationMatch "/(atlas|sites)">
+  SSLEngine on
+  SSLProtocol All -SSLv2 -SSLv3
+  SSLCertificateFile /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt
+  SSLCertificateKeyFile /opt/rh/httpd24/root/etc/httpd/ssl/apache.key
+
+  <LocationMatch "/(sites|code|statistics)">
       Require all granted
   </LocationMatch>
 
   Header set EVEENV 'local'
   SetEnv WWWNG_ENV local
 
-  # WSGIDaemonProcess atlas processes=2 threads=5 user=osr_web_deploy group=osr_web_deploy display-name=%{GROUP}
   WSGIDaemonProcess atlas python-path=/data/code/atlas:/data/environments/atlas/lib/python2.7/site-packages processes=2 threads=5 user=osr_web_deploy group=osr_web_deploy display-name=%{GROUP}
   WSGIScriptAlias / /data/code/atlas/atlas.wsgi
   <Directory "/data/code/atlas">
