@@ -19,7 +19,7 @@
 
 - name: Add Nodesource repositories for Node.js.
   yum:
-    name: "https://rpm.nodesource.com/pub_0.12/el/6/x86_64/nodejs-0.12.15-1nodesource.el6.x86_64.rpm"
+    name: "http://rpm.nodesource.com/pub_0.12/el/6/x86_64/nodejs-0.12.15-1nodesource.el6.x86_64.rpm"
     state: present
 
 - name: Ensure Node.js and npm are installed.
