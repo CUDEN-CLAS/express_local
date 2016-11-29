@@ -58,6 +58,15 @@
       - { src: "/opt/rh/httpd24/root/usr/lib64/httpd", dest: "/httpd"}
       - { src: "/opt/rh/httpd24/root/usr/lib64/apr-1", dest: "/apr-1"}
 
+  - name: Push ssl.conf
+    copy:
+        src: "ssl.conf"
+        dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/"
+        owner: root
+        group: root
+        mode: 0644
+        force: yes
+
   - name: Ensure Apache 2.4 (httpd24-httpd) is started and enabled on boot.
     service:
         name: httpd24-httpd
