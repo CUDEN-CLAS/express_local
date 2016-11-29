@@ -30,7 +30,7 @@ export PATH="$HOME/.composer/vendor/bin:$PATH"
 
 # Added alias to support code sniffer
 alias drupalcs="phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,js,css,info,txt'"
-alias tailatlas="sudo tail -f /var/log/celery/*.log /opt/rh/httpd24/root/var/log/httpd/access_log /opt/rh/httpd24/root/var/log/httpd/error_log"
+alias tailatlas="sudo tail -f /var/log/celery/*.log /opt/rh/httpd24/root/var/log/httpd/access_log /opt/rh/httpd24/root/var/log/httpd/ssl_access_log /opt/rh/httpd24/root/var/log/httpd/error_log /opt/rh/httpd24/root/var/log/httpd/ssl_error_log"
 alias restartatlas="sudo service celeryd restart && sudo service celerybeat restart && sudo service httpd24-httpd restart"
 
 # Add RVM to PATH for scripting
