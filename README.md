@@ -15,7 +15,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * `sudo apt-get install git ansible nfs-kernel-server`
 
 ## OSX
-* Install Pypthon 2.7 (Can be with [Homebrew](http://brew.sh/))
+* Install Python 2.7 (Can be with [Homebrew](http://brew.sh/))
 * Install ansible
   ```
   sudo pip install ansible
@@ -55,6 +55,9 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
   ```
 * Copy the ssh keys for the deployment user to `ansible/keys`. Keys need to be passwordless and to be able to read all relevant repositories. When working with multiple developers, consider create a machine account with a ssh key per user.
 * Create `~/.ansible_vault.txt` and enter the vault password. Make sure that only your user has access to the file `chmod 600 ~/.ansible_vault.txt`.
+
+## Installation Troubleshooting
+* Firefox can have issues resolving express.local. If you experience a connection issue, please follow the IPv6 part of: [https://support.mozilla.org/en-US/kb/firefox-cant-load-websites-other-browsers-can#w_ipv6](https://support.mozilla.org/en-US/kb/firefox-cant-load-websites-other-browsers-can#w_ipv6)
 
 # Logging (Commented out for now)
 * Logs are viewable from [logs.local:5601](http://logs.local:5601)
