@@ -15,7 +15,7 @@ A local development environment for Cu Boulder's Web Express Platform. **The pla
 * `sudo apt-get install git ansible nfs-kernel-server`
 
 ## OSX
-* Install Pypthon 2.7 (Can be with [Homebrew](http://brew.sh/))
+* Install Python 2.7 (Can be with [Homebrew](http://brew.sh/))
 * Install ansible
   ```
   sudo pip install ansible
