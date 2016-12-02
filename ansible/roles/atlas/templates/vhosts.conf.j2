@@ -1,10 +1,6 @@
 <VirtualHost *:80>
   ServerName inventory.local
 
-  <LocationMatch "/(atlas|sites)">
-      Require all granted
-  </LocationMatch>
-
   Header set EVEENV 'local'
   SetEnv WWWNG_ENV local
 
