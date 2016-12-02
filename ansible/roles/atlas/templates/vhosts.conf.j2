@@ -11,10 +11,6 @@
   SSLCertificateFile /opt/rh/httpd24/root/etc/httpd/ssl/apache.crt
   SSLCertificateKeyFile /opt/rh/httpd24/root/etc/httpd/ssl/apache.key
 
-  <LocationMatch "/(sites|code|statistics)">
-      Require all granted
-  </LocationMatch>
-
   Header set EVEENV 'local'
   SetEnv WWWNG_ENV local
 
