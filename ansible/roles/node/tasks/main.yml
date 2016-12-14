@@ -1,13 +1,21 @@
 ---
 # https://github.com/ansible/ansible/issues/12161
-- name: Install Python packages so we can install Node from Cloudflare
-  pip:
-    name: "{{ item.name }}"
-  with_items:
-    - { name: 'urllib3'}
-    - { name: 'pyopenssl'}
-    - { name: 'ndg-httpsclient'}
-    - { name: 'pyasn1'}
+# https://github.com/geerlingguy/ansible-role-nodejs/issues/46
+# - name: Install specific version of Python packages so we can install Node from Cloudflare
+#   pip:
+#     name: "{{ item.name }}"
+#     version: "{{ item.version }}"
+#   with_items:
+#     - { name: 'urllib3', version: '1.18.1'}
+#
+# - name: Install Python packages so we can install Node from Cloudflare
+#   pip:
+#     name: "{{ item.name }}"
+#     virtualenv: "/data/environments/atlas_ui"
+#   with_items:
+#     - { name: 'pyopenssl'}
+#     - { name: 'ndg-httpsclient'}
+#     - { name: 'pyasn1'}
 
 - name: Add Nodesource repositories for Node.js.
   yum:

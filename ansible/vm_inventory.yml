@@ -13,5 +13,5 @@
       - {role: server_base }
       - {role: apache_inventory }
       - {role: atlas }
-      #- {role: node }
+      - {role: node }
       #- {role: logstash }
