@@ -1,0 +1,331 @@
+---
+  # Add repo for mongoDB 3
+  - name: Add MongoDB Repository
+    yum_repository:
+      name: mongodb
+      description: MongoDB Repository
+      baseurl: http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.2/x86_64/
+      gpgcheck: no
+      enabled: yes
+
+  # Also includes some packages to compile the additional version of python.
+  # Tried to use async to add a timeout. But it doesn't work whne using with_items.
+  # TODO: Add the timeout back in when using ansible 2.1 or greater.
+  - name: Installs necessary OS packages
+    become: yes
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+      - "@development"
+      - gcc
+      - gcc-c++
+      - libffi-devel-3.0.5
+      - openssl-1.0.1e
+      - openssl-devel-1.0.1e
+      - openldap-devel
+      - cyrus-sasl-lib-2.1.23
+      - mongodb-org-3.2.10
+      - python-pip
+      - python-setuptools-0.6.10
+      - python-devel
+      - zlib-devel-1.2.3
+      - rabbitmq-server-3.1.5
+
+  - name: Download Python 2.7
+    get_url:
+      dest: /home/vagrant
+      url: http://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
+    become: yes
+
+  - name: Extract Python 2.7
+    shell: tar xzf ./Python-2.7.12.tgz -C /opt
+    become: yes
+    args:
+      chdir: /home/vagrant
+      creates: /opt/Python-2.7.12
+
+  - name: Configure Python 2.7
+    shell: ./configure --prefix=/usr/local --enable-shared
+    become: yes
+    args:
+      chdir: /opt/Python-2.7.12
+
+  - name: Make Python 2.7
+    shell: make
+    become: yes
+    args:
+      chdir: /opt/Python-2.7.12
+
+  - name: Install Python 2.7
+    shell: make altinstall
+    become: yes
+    args:
+      chdir: /opt/Python-2.7.12 # Need to add a 'creates=' flag here
+
+  - name: Install Python packages to allow virtual environments
+    shell: pip install virtualenv
+    become: yes
+    args:
+      chdir: /opt/Python-2.7.12
+
+  - name: Add location of LD_LIBRARY_PATH
+    become: yes
+    copy:
+      src: "python2.7.conf"
+      dest: "/etc/ld.so.conf.d/"
+
+  - name: Run ldconfig
+    become: yes
+    shell: ldconfig
+
+    # Setup a Python 2.7 virtual environment to run the inventory
+  # - name: Setup a virtualenv for the Inventory using Python 2.7
+  #   shell: virtualenv -p /usr/local/bin/python2.7 /home/osr_web_deploy/inventory-python27-environment
+  #   args:
+  #     chdir: /opt/Python-2.7.12
+  #     creates:  /home/osr_web_deploy/inventory-python27-environment/bin/python2.7
+
+  - name: Create directory for environments
+    file:
+        path: "/data/environments"
+        state: directory
+        owner: osr_web_deploy
+        group: osr_web_deploy
+
+  # Setup a Python 2.7 virtual environment to run Atlas
+  - name: Setup a virtualenv for Atlas using Python 2.7
+    shell: virtualenv -p /usr/local/bin/python2.7 /data/environments/atlas
+    args:
+      chdir: /opt/Python-2.7.12
+      creates:  /data/environments/atlas/bin/python2.7
+
+  # - name: Install Python packages in the Inventory virtualenv
+  #   pip:
+  #     name: "{{ item.name }}"
+  #     version: "{{ item.version }}"
+  #     virtualenv: "/home/osr_web_deploy/inventory-python27-environment"
+  #   with_items:
+  #     - { name: 'ecdsa', version: '0.10'} # We need this because paramiko doesn't resolve it's dependancies
+  #     - { name: 'importlib', version: '1.0.3'}
+  #     - { name: 'cryptography', version: '0.8.2' }
+  #     - { name: 'pycrypto', version: '2.6.1' }
+  #     - { name: 'requests', version: '2.7.0' }
+  #     - { name: 'flask', version: '0.10.1' }
+  #     - { name: 'jinja2', version: '2.7.3' }
+  #     - { name: 'fabric', version: '1.8.0' }
+  #     - { name: 'pymongo', version: '2.8.1' }
+  #     - { name: 'cerberus', version: '0.9.1' }
+  #     - { name: 'events', version: '0.2.1' }
+  #     - { name: 'pyopenssl', version: '0.15.1' }
+  #     - { name: 'paramiko', version: '1.12.0'}
+  #     - { name: 'python-ldap', version: '2.3.13' }
+  #     - { name: 'eve', version: '0.5.3' }
+  #     - { name: 'celery', version: '3.1.12' }
+
+  # - name: Install Cerberus second since eve is dependant on a lower version
+  #   pip:
+  #     name: "{{ item.name }}"
+  #     version: "{{ item.version }}"
+  #     virtualenv: "/home/osr_web_deploy/inventory-python27-environment"
+  #   with_items:
+  #     - { name: 'cerberus', version: '0.9.1' }
+
+  - name: Install Python packages in the Atlas virtualenv
+    pip:
+      name: "{{ item.name }}"
+      version: "{{ item.version }}"
+      virtualenv: "/data/environments/atlas"
+    with_items:
+      # Versions that are hard dependancies are indicated. The rest are listed
+      # so that things don't break silently.
+      - { name: 'amqp', version: '1.4.9' }
+      - { name: 'anyjson', version: '0.3.3' }
+      - { name: 'paramiko', version: '2.0.1' } # Required this version
+      - { name: 'kombu', version: '3.0.35' }
+      - { name: 'pytz', version: '2016.4' }
+      - { name: 'billiard', version: '3.3.0.23' }
+      - { name: 'flask-pymongo', version: '0.4.1' }
+      - { name: 'pymongo', version: '3.4.0' }
+      - { name: 'requests', version: '2.12.3' } # Required this version
+      - { name: 'flask', version: '0.10.1' }
+      - { name: 'itsdangerous', version: '0.24' }
+      - { name: 'jinja2', version: '2.8' }
+      - { name: 'markupsafe', version: '0.23' }
+      - { name: 'werkzeug', version: '0.11.3' }
+      - { name: 'simplejson', version: '3.10.0' }
+      - { name: 'events', version: '0.2.1' }
+      - { name: 'cerberus', version: '0.9.2' }
+      - { name: 'python-ldap', version: '2.4.28' }
+      - { name: 'fabric', version: '1.11.1' } # Required this version
+      - { name: 'celery', version: '3.1.23' } # Required this version
+      - { name: 'eve', version: '0.6.4' } # Required this version
+      - { name: 'flower', version: '0.9.1' }
+      - { name: 'sphinx', version: '1.4.6' }
+      - { name: 'sphinx-autobuild', version: '0.6.0' }
+
+  - name: Get mod_wsgi
+    get_url:
+      url: https://github.com/GrahamDumpleton/mod_wsgi/archive/3.5.tar.gz
+      dest: /opt
+      mode: 0440
+
+  - name: Unpack mod_wsgi
+    unarchive:
+      src: /opt/mod_wsgi-3.5.tar.gz
+      dest: /opt
+      copy: no
+
+  - name: Install mod_wsgi for Python 2.7
+    become: yes
+    shell: ./configure --with-apxs=/opt/rh/httpd24/root/usr/bin/apxs --with-python=/data/environments/atlas/bin/python2.7
+    args:
+      chdir: /opt/mod_wsgi-3.5
+
+  - name: Make mod_wsgi
+    become: yes
+    shell: make
+    args:
+      chdir: /opt/mod_wsgi-3.5
+
+  - name: Link mod_wsgi in
+    become: yes
+    shell: "cp /opt/mod_wsgi-3.5/.libs/mod_wsgi.so /opt/rh/httpd24/root/usr/lib64/httpd/modules/mod_wsgi.so"
+
+  - name: Configure Apache 2.4 to use mod_wsgi
+    lineinfile:
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf/httpd.conf"
+      regexp: "^LoadModule wsgi_module modules/mod_wsgi.so"
+      line: "LoadModule wsgi_module modules/mod_wsgi.so"
+      state: present
+    notify:
+      - restart httpd24-httpd
+
+  - name:  Add vhost configuration
+    template:
+      src: "vhosts.conf.j2"
+      dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/vhosts.conf"
+      mode: 0650
+      owner: apache
+      group: apache
+    notify:
+      - restart httpd24-httpd
+
+  # Celery and CeleryBeat
+  - name: Push celeryd init script
+    copy:
+        src: "celeryd"
+        dest: "/etc/init.d/"
+        owner: root
+        group: root
+        mode: 0777
+
+  - name: Push celerybeat init script
+    copy:
+        src: "celerybeat"
+        dest: "/etc/init.d/"
+        mode: 0777
+
+  - name: Pushes celeryd configuration
+    template:
+        src: "celeryd.j2"
+        dest: "/etc/default/celeryd"
+        owner: root
+        group: root
+        mode: 0640
+        force: yes
+
+  - name: Create celery group
+    group:
+        name: celery
+        state: present
+
+  - name: Create celery user
+    user:
+        name: "celery"
+        group: "celery"
+
+  - name: Update user vagrant groups
+    user:
+        name: "vagrant"
+        groups: "celery"
+        append: yes
+
+  - name: Ensure Celery is started and enabled on boot.
+    service:
+        name: celeryd
+        state: started
+        enabled: yes
+
+  - name: Ensure CeleryBeat is started and enabled on boot.
+    service:
+        name: celerybeat
+        state: started
+        enabled: yes
+
+  # - name: Copy Eve local configuration for Atlas
+  #   become: yes
+  #   template: src=local_settings_atlas.py.j2 dest=/data/code/atlas/local_settings.py mode=0664
+  #   notify:
+  #     - restart celeryd
+  #     - restart celerybeat
+
+  - name:  Add lines for the python virtualenv to atlas.wsgi
+    lineinfile:
+      dest: "/data/code/atlas/atlas.wsgi"
+      line: "activate_this = '/data/environments/atlas/bin/activate_this.py'"
+      regexp: "^activate_this = '/data/environments/atlas/bin/activate_this\\.py'"
+      state: present
+      insertbefore: BOF
+    notify:
+      - restart celeryd
+      - restart celerybeat
+
+  - name:  Add lines for the python virtualenv to atlas.wsgi
+    lineinfile:
+      dest: "/data/code/atlas/atlas.wsgi"
+      line: "execfile(activate_this, dict(__file__=activate_this))"
+      regexp: "^execfile\\(activate_this, dict\\(__file__=activate_this\\)\\)"
+      state: present
+      insertafter: "^activate_this = '/data/environments/atlas/bin/activate_this.py'"
+    notify:
+      - restart celeryd
+      - restart celerybeat
+
+  # MongoDB
+  - name: Create data directory for mongodb
+    file:
+        path: "/data_local/mongod"
+        state: directory
+        owner: mongod
+        group: mongod
+
+  - name: Create logging directory for mongodb
+    file:
+        path: "/var/log/mongod"
+        state: directory
+        owner: mongod
+        group: mongod
+
+  - name: Create run directory for mongodb
+    file:
+        path: "/var/run/mongod"
+        state: directory
+        owner: mongod
+        group: mongod
+
+  - name: Ensure MongoDB is started and enabled on boot.
+    service:
+        name: mongod
+        state: started
+        enabled: yes
+    notify:
+      - restart celeryd
+      - restart celerybeat
+
+  - name: Ensure RabbitMQ is started and enabled on boot.
+    service:
+        name: rabbitmq-server
+        state: reloaded
+        enabled: yes

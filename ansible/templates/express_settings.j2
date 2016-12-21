@@ -7,31 +7,45 @@
  * main file and override config as needed.
  */
 
- /**
-  * Include a pre local settings file if it exists.
-  */
- $local_pre_settings = dirname(__FILE__) . '/settings.local_pre.php';
- if (file_exists($local_pre_settings)) {
-   include $local_pre_settings;
- }
-
-
-if (isset($launched) && $launched) {
-   if (isset($_SERVER['WWWNG_ENV'])) {
-     if ($_SERVER['HTTP_HOST'] == 'www-dev.colorado.edu' &&
-       strpos($_SERVER['REQUEST_URI'], $conf['cu_sid']) !== false) {
-       header('HTTP/1.0 301 Moved Permanently');
-       header('Location: http://www-dev.colorado.edu'. str_replace($conf['cu_sid'], $path, $_SERVER['REQUEST_URI']));
-       exit();
-     }
-     elseif ($_SERVER['HTTP_HOST'] == 'www.colorado.edu' &&
-       strpos($_SERVER['REQUEST_URI'], $conf['cu_sid']) !== false) {
-       header('HTTP/1.0 301 Moved Permanently');
-       header('Location: http://www.colorado.edu'. str_replace($conf['cu_sid'], $path, $_SERVER['REQUEST_URI']));
-       exit();
-     }
-   }
+/**
+ * Include a pre local settings file if it exists.
+ */
+$local_pre_settings = dirname(__FILE__) . '/settings.local_pre.php';
+if (file_exists($local_pre_settings)) {
+  include $local_pre_settings;
 }
+
+
+if (isset($launched) && $launched && isset($conf["cu_path"])) {
+  if (isset($_SERVER['WWWNG_ENV'])) {
+    if ($_SERVER['HTTP_HOST'] == 'www.colorado.edu' &&
+      strpos($_SERVER['REQUEST_URI'], $conf['cu_sid']) !== false) {
+      header('HTTP/1.0 301 Moved Permanently');
+      header('Location: http://www.colorado.edu'. str_replace($conf['cu_sid'], $conf["cu_path"], $_SERVER['REQUEST_URI']));
+      exit();
+    }
+    elseif ($_SERVER['HTTP_HOST'] == 'www-test.colorado.edu' &&
+      strpos($_SERVER['REQUEST_URI'], $conf['cu_sid']) !== false) {
+      header('HTTP/1.0 301 Moved Permanently');
+      header('Location: http://www-test.colorado.edu'. str_replace($conf['cu_sid'], $conf["cu_path"], $_SERVER['REQUEST_URI']));
+      exit();
+    }
+    elseif ($_SERVER['HTTP_HOST'] == 'www-dev.colorado.edu' &&
+      strpos($_SERVER['REQUEST_URI'], $conf['cu_sid']) !== false) {
+      header('HTTP/1.0 301 Moved Permanently');
+      header('Location: http://www-dev.colorado.edu'. str_replace($conf['cu_sid'], $conf["cu_path"], $_SERVER['REQUEST_URI']));
+      exit();
+    }
+    elseif ($_SERVER['HTTP_HOST'] == 'express.local' &&
+      strpos($_SERVER['REQUEST_URI'], $conf['cu_sid']) !== false) {
+      header('HTTP/1.0 301 Moved Permanently');
+      header('Location: http://express.local'. str_replace($conf['cu_sid'], $conf["cu_path"], $_SERVER['REQUEST_URI']));
+      exit();
+    }
+  }
+}
+
+$host = $_SERVER['HTTP_HOST'];
 
 // Set up environment specific variables for wwwng.
 // If wwwng env isset or php executed through cli (drush).

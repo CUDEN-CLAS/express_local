@@ -1,5 +1,6 @@
 ---
   - name: Install php packages
+    when: os == 'centos-6'
     become: yes
     yum:
         pkg: "{{ item }}"
@@ -9,17 +10,42 @@
         - php-5.3.3
         - php-cli
         - php-common
+        - php-mysql
         - php-devel
         - php-gd
         - php-ldap
         - php-mcrypt
-        - php-mysql
         - php-pdo
         - php-pear
         - php-pecl-apc
         - php-pecl-memcache
         - php-soap
         - php-xmlrpc
+    notify:
+        - restart apache
+
+  - name: Add repo for PHP
+    when: os == 'centos-7'
+    yum:
+        name: "https://centos7.iuscommunity.org/ius-release.rpm"
+        state: present
+
+  - name: Install php packages
+    when: os == 'centos-7'
+    become: yes
+    yum:
+        pkg: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - php70u-common
+        - php70u-cli
+        - php70u-mysqlnd
+        - php70u-devel
+        - php70u-gd
+        - php70u-ldap
+        - php70u-opcache
+        - mod_php70u
     notify:
         - restart apache
 

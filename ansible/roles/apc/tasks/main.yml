@@ -22,8 +22,8 @@
   - name: Make directory for apc script
     file:
         path: "/usr/local/www.misc/sysadmintools/apc"
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         state: directory
         mode: 0755
 
@@ -31,6 +31,6 @@
     copy:
         src: "clearapc.php"
         dest: "/usr/local/www.misc/sysadmintools/apc/clearapc.php"
-        owner: dplagnt
-        group: lapurd
+        owner: osr_web_deploy
+        group: osr_web_deploy
         mode: 0755

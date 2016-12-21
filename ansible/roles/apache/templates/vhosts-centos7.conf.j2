@@ -1,0 +1,59 @@
+DirectoryIndex index.php index.html
+
+<VirtualHost *:80>
+  ServerName d8.local
+
+  SetEnvIf X-FORWARDED-PROTO https HTTPS=off
+
+  LogLevel info
+  LogFormat "%{X-Forwarded-For}i %a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+  LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+  Alias /sysadmintools/ /usr/local/www.misc/sysadmintools/
+
+  DocumentRoot /data/web/express
+  <Directory "/data/web/express">
+    Options FollowSymLinks
+    AllowOverride All
+    Require all granted
+  </Directory>
+</VirtualHost>
+
+<VirtualHost *:81>
+  ServerName d8.local
+
+  SetEnvIf X-FORWARDED-PROTO https HTTPS=off
+  SetEnv CU_CENTRAL_EVE http://{{ EVE_API_USER }}:{{ EVE_API_PW }}@inventory.local/atlas/
+  SetEnv WWWNG_ENV express_local
+
+  LogLevel info
+  LogFormat "%{X-Forwarded-For}i %a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+  LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+  Alias /sysadmintools/ /usr/local/www.misc/sysadmintools/
+
+  DocumentRoot /data/web/homepage
+  <Directory "/data/web/homepage">
+    Options FollowSymLinks
+    AllowOverride All
+    Require all granted
+  </Directory>
+</VirtualHost>
+
+#<VirtualHost *:443>
+#  ServerName d8.local
+#
+#
+#  SSLEngine on
+#  SSLProtocol All -SSLv2 -SSLv3
+#  SSLCertificateFile /etc/httpd/ssl/apache.crt
+#  SSLCertificateKeyFile /etc/httpd/ssl/apache.key
+#
+#  DocumentRoot /data/atlas/web/express
+#  <Directory "/data/atlas/web/express">
+#    AllowOverride All
+#    Options -Indexes FollowSymLinks
+#    Order allow,deny
+#    Allow from all
+#  </Directory>
+#</VirtualHost>

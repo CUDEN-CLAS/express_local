@@ -1,60 +1,75 @@
 ---
-  - name:  Install necessary packages
+  - name: Install CentOS 6 Packages
+    when: os == 'centos-6'
     yum:
         name: "{{ item }}"
         state: present
         update_cache: yes
     with_items:
         - httpd-2.2.15
+
+  - name: Install CentOS 7 Packages
+    when: os == 'centos-7'
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+        - httpd
+
+  - name:  Install necessary packages
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
         - mod_ssl
         - openssl
 
-  - name: Configure Apache to listen on 80
-    lineinfile:
+  - name: Create directory for SSL cert
+    become: yes
+    file:
+        path: "/etc/httpd/ssl"
+        state: directory
+
+  - name: Generate SSL cert
+    become: yes
+    command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt"
+    args:
+        creates: /etc/httpd/ssl/apache.crt
+
+  - name: Configure Apache
+    when: os == 'centos-6'
+    template:
+        src: "httpd-centos6.conf.j2"
         dest: "/etc/httpd/conf/httpd.conf"
-        regexp: "^Listen "
-        line: "Listen 80"
-        state: present
+        owner: apache
+        group: apache
+        mode: 0644
+        force: yes
     notify:
         - restart apache
-
-  - name: Name Apache vhost for :80
-    lineinfile:
-        dest: "/etc/httpd/conf/httpd.conf"
-        regexp: "^NameVirtualHost "
-        line: "NameVirtualHost *:80"
-        state: present
-    notify:
-        - restart apache
-
-  # TODO: Support SSL properly. See also settings.local_post.php
-  #
-  # mod_ssl will take care of listening on 443
-  # - name: Name Apache vhost for :443
-  #   lineinfile:
-  #       dest: "/etc/httpd/conf/httpd.conf"
-  #       line: "NameVirtualHost *:443"
-  #       state: present
-  #   notify:
-  #       - restart apache
-  #
-  # - name: Create directory for SSL cert
-  #   file:
-  #       path: "/etc/httpd/ssl"
-  #       state: directory
-  #
-  # - name: Generate SSL cert
-  #   command: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=US/ST=Colorado/L=Boulder/O=UComm/CN=express.local' -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt"
-  #   args:
-  #       creates: /etc/httpd/ssl/apache.crt
 
   - name:  Add vhost configuration
+    when: os == 'centos-6'
     template:
-        src: "vhosts.conf.j2"
+        src: "vhosts-centos6.conf.j2"
         dest: "/etc/httpd/conf.d/vhosts.conf"
         owner: apache
         group: apache
-        mode: 0650
+        mode: 0644
+        force: yes
+    notify:
+        - restart apache
+
+  - name:  Add vhost configuration
+    when: os == 'centos-7'
+    template:
+        src: "vhosts-centos7.conf.j2"
+        dest: "/etc/httpd/conf.d/vhosts.conf"
+        owner: apache
+        group: apache
+        mode: 0644
         force: yes
     notify:
         - restart apache
@@ -68,16 +83,16 @@
     fail: msg="Configuration file is not valid. Please check that before re-running the playbook."
     when: result|failed
 
-  - name: Update user dplagnt groups
+  - name: Update user osr_web_deploy groups
     user:
-        name: "dplagnt"
+        name: "osr_web_deploy"
         groups: "apache"
         append: yes
 
   - name: Update user apache groups
     user:
-        name: "dplagnt"
-        groups: "lapurd"
+        name: "osr_web_deploy"
+        groups: "osr_web_deploy"
         append: yes
 
   - name: Ensure Apache (httpd) is started and enabled on boot.

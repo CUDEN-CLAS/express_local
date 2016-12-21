@@ -1,5 +1,21 @@
 ---
   - name: Install additional OS packages
+    when: os == 'centos-7'
+    become: yes
+    yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    with_items:
+      - php70u-mbstring
+      - java-1.8.0-openjdk-headless
+      - xorg-x11-server-Xvfb
+      - firefox
+      - xorg-x11-server-Xorg
+      - libXfont
+
+  - name: Install additional OS packages
+    when: os == 'centos-6'
     become: yes
     yum:
         name: "{{ item }}"
@@ -8,8 +24,10 @@
     with_items:
       - php-mbstring
       - java-1.8.0-openjdk-headless
-      - xorg-x11-server-Xvfb
-      - firefox
+      - xorg-x11-server-Xvfb-1.17.4-9.5.el6.centos
+      - firefox-45.4.0-1.el6.centos
+      - xorg-x11-server-Xorg-1.17.4-9.5.el6.centos
+      - libXfont-1.5.1-2.el6.x86_64
 
   - name: Create behat install directory
     become: yes
@@ -48,17 +66,19 @@
 
 
   - name: Create selenium directory
+    become: yes
     file:
-        path: "/var/selenium2"
+        path: "/opt/selenium"
         owner: root
         group: root
         state: directory
         follow: yes
 
   - name: Download selenium
+    become: yes
     get_url:
-      url: "http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar"
-      dest: "/var/selenium2/selenium-server-standalone-2.46.0.jar"
+      url: "http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar"
+      dest: "/opt/selenium/selenium-server-standalone-2.53.1.jar"
       force: no
       timeout: 400
 
@@ -67,3 +87,23 @@
     template:
       src: "pam_env.conf"
       dest: "/etc/security/pam_env.conf"
+
+  - name: Copy selenium init script.
+    become: yes
+    copy:
+      src: "selenium.init.d"
+      dest: "/etc/init.d/selenium"
+      mode: 0755
+
+  - name: Copy xvfb init script.
+    become: yes
+    copy:
+      src: "xvfb.init.d"
+      dest: "/etc/init.d/xvfb"
+      mode: 0755
+
+  - name: Ensure Selenium is started and enabled on boot.
+    service:
+        name: selenium
+        state: started
+        enabled: yes
